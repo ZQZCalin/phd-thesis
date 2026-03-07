@@ -1,0 +1,7 @@
+\begin{lemma}[\cite{cutkosky2019anytime}]
+\label{lem:basic-lemma}
+For any sequence of $\weight_t>0, g_t\in\RR^d$, suppose an online learner predicts $w_t$ and receives $t$-th loss $\ell_t(w)=\langle g_t,w\rangle$. Define $x_t=\sum_{i=1}^t \frac{\weight_iw_i}{\weight_{1:t}}$ where $\weight_{1:t}=\sum_{i=1}^t\weight_i$. Then for any convex and differentiable $f$,
+\begin{align*}
+    \weight_{1:T}(f(x_T)-f(u)) \leq \regret_T(u) + \sum_{t=1}^T \langle \weight_t\nabla f(x_t) - g_t, w_t-u\rangle, \ \forall u\in \RR^d.
+\end{align*}
+\end{lemma}

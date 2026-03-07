@@ -1,0 +1,295 @@
+\section{Proofs for RDP (Section \ref{sec:OTB})}
+\label{app:tree-aggregation-RDP}
+
+In this section, we prove the tree aggregation mechanism for RDP mechanisms implemented in Algorithm \ref{alg:DP-OTB} correctly composes individual RDP mechanisms. Before that, we will first prove a general composition theorem for RDP. 
+
+\subsection{Advanced Composition for RDP}
+
+Throughout this section, we use the subscript $1:T$ to denote a sequence of $T$ elements. 
+We denote $\calZ$ the data space and $Z=(z_1,\ldots,z_T), Z'=(z_1',\ldots,z_T')$ neighboring datasets in $\calZ^T$ that differs only at the $q$-th element (i.e., $z_t\neq z_t'$ if and only if $t=q$).
+% and we denote $W\subset\RR^d$ the range of 
+We consider RDP mechanisms $F_1,\ldots,F_T$ such that $F_1:\calZ^T\to W$ and $F_t:\calZ^T\times W^{t-1}\to W$.  We assume that for each $t$, there exists some index set $S_t\subseteq[T]$ such that $F_t$ only depends on $S_t$. Formally, we assume:
+
+\begin{assumption}
+\label{as:data-dependence}
+Let $Z,Z'\in\calZ$ be two neighboring datasets which differs only at the $q$-th element. Each $F_t$ associates with $S_t\subseteq [T]$ such that if $q\not\in S_t$, then $F_t(Z,x_{1:t-1})=F_t(Z',x_{1:t-1})$ for all $x_{1:t-1}\in W^{t-1}$.
+\end{assumption}
+
+For a fixed norm $\|\cdot\|$, we assume $\calD$ is a $(V,\alpha)$-RDP distribution on norm $\|\cdot\|$ (see Definition \ref{def:RDP-dist}), and we define the sensitivity of $F_t$ w.r.t. $\|\cdot\|$ as $\Delta_t(x_{1:t-1})$, a function of inputs $x_{1:t-1}$:
+\begin{align*}
+    % \Delta_t = \sup_{\substack{|Z-Z'|=1 \\ x_{1:t-1}\in W^{t-1}}} \|F_t(Z, x_{1:t-1}) - F_t(Z', x_{1:t-1})\|_*. \\
+    \Delta_t(x_{1:t-1}) = \sup_{|Z-Z'|=1} \|F_t(Z,x_{1:t-1}) - F_t(Z',x_{1:t-1})\|_*.
+\end{align*}
+We also define the output as $\hat{f}_t = F_t(Z,\hat{f}_{1:t-1})+\sigma_t\zeta_t$, where $\zeta_t\sim \calD$ and $\sigma_t^2\geq \Delta_t(\hat{f}_{1:t-1})^2/\rho^2$. In particular, $\sigma_t$ only depends on $\hat f_{1:t-1}$ and does not depend on $\hat f_{t:T}$, i.e., the future.
+The pseudo-code of this composition is in Algorithm \ref{alg:gaussianaggregation}. For simplicity, we assume $F$'s are deterministic mechanisms, but we can extend to random mechanisms by treating the random generator as part of the input.
+
+\begin{algorithm}
+   \caption{Advanced Composition for RDP Mechanisms}
+   \label{alg:gaussianaggregation}
+   \begin{algorithmic}[1]
+      \State{\bfseries Input: } Dataset $Z$; functions $F_1,\dots,F_T$ with sensitivity $\Delta_1,\ldots,\Delta_T$; $(V,\alpha)$-RDP distribution $\calD$; privacy constants $\rho_1,\ldots,\rho_T$.
+      \State Sample random $\zeta_1\sim \calD$ and compute $\sigma_1^2 \geq \Delta_1^2/\rho_1^2$.
+      \State Set $f_1 = F_1(Z)$ and $\hat f_ 1 = f_1 + \sigma_1\zeta_1$
+      \For{$t=2,\dots,T$}
+      \State Sample random $\zeta_t\sim \calD$ and compute $\sigma_t^2\geq \Delta_t(\hat{f}_{1:t-1})^2/\rho_t^2$.
+      \State Set $f_t =F_t(Z, \hat f_{1:t-1})$ and $\hat f_t = f_t + \sigma_t\zeta_t$.
+      \EndFor
+      \State \textbf{Return} $\hat f_1,\dots,\hat f_T$.
+   \end{algorithmic}
+\end{algorithm}
+
+By definition of RDP distribution, each $\hat{f}_t$ is $(\alpha,\alpha\rho^2/2)$-RDP. We will also show that the composition $(\hat{f}_1,\ldots,\hat{f}_T)$ is also RDP.
+
+\begin{theorem}\label{thm:renyiaggregation}
+% Let $V$ to be the maximum over all $q\in\{1,\dots, N\}$ of the total number of sets $S_i$ such that $q\in S_i$ (i.e. $V=\sup_q |\IN(q)|$). Then Algorithm \ref{alg:gaussianaggregation} is $(\alpha, V \alpha\rho^2/2)$ Renyi differentially private for all $\alpha$.
+We define $\IN(q)=\{t:q\in S_t\}$ and $\OUT(q)=\{t:q\not\in S_t\}$.
+% , and define $V=\max_q |\IN(q)|$. 
+If $F_1,\ldots,F_T$ satisfy Assumption \ref{as:data-dependence}, then
+Algorithm \ref{alg:gaussianaggregation} is 
+$(\alpha, S)$-RDP, where
+\begin{align*}
+    S = \max_{q\in[T]} \sum_{t\in \IN(q)} \alpha\rho_t^2/2.
+\end{align*}
+% $(\alpha, V\alpha\rho^2/2)$-RDP.
+\end{theorem}
+
+As an immediate corollary, if we set $\rho_t=\rho$ for all $t$ and define $U=\max_q |\IN(q)|$, then Algorithm \ref{alg:gaussianaggregation} is $(\alpha, U\alpha\rho^2/2)$-RDP.
+
+\begin{proof}
+Let $Z,Z'$ be any neighboring datasets and assume they differ at $q$, and we denote $\hat f_t = F_t(Z,\hat f_{1:t-1})+\sigma_t(\hat f_{1:t-1})\zeta_t$ and $\hat f'_t = F_t(Z',\hat f'_{1:t-1})+\sigma_t(\hat f'_{1:t-1})\zeta_t$. In this proof, we use the notation $\sigma_t(\hat f_{1:t-1})$ to emphasize that $\sigma_t$ satisfying $\sigma_t^2\geq \Delta_t(\hat f_{1:t-1})^2/\rho_t^2$ is a function of $\hat f_{1:t-1}$.
+% We abbreviate sequence of random variables $V_1,\ldots,V_n$ as $V_{1:n}$ and sequence of constants $x_1,\ldots,x_n$ as $x_{1:n}$. 
+% Recall that $\hat{f}_t\sim \calD(f_t,\sigma_t^2)$. 
+% Consider a fixed sequence of outputs $x_{1:T}$.
+
+The probability density of the joint distribution of $\hat{f}_{1:T}$, say $P$, and the density of $\hat f'_{1:T}$, say $Q$, are:
+\begin{align*}
+    P(x_{1:T}) = \prod_{t=1}^T P_t(x_t|x_{1:t-1}), \quad Q(x_{1:T}) = \prod_{t=1}^T Q_t(x_t|x_{1:t-1}),
+\end{align*}
+% \begin{align*}
+    % P(x_{1:T})
+    % &= \P\{\hat f_1=r_1\}\P\{\hat f_2=r_2|\hat f_1=r_1\} \dotsm \P\{\hat f_T=r_T|\hat f_{1:T-1} = r_{1:T-1}\} \\
+    % &= \prod_{t=1}^T \P\{ \hat f_t=x_t | \hat f_{1:t-1} = x_{1:t-1} \}.
+    % \intertext{Recall that $\hat f_t = F_t(Z,\hat f_{1:t-1})+\sigma_t(\hat f_{1:t-1})\zeta_t$, and $\zeta_t\sim \calD$. Therefore,}
+    % &= \prod_{t=1}^T \calD(f_t,\sigma_t^2|\hat f_{1:t-1}=x_{1:t-1})(x_t) = \prod_{t=1}^T \calD(F_t(Z,x_{1:t-1}), \sigma_t^2)(x_t).
+    % &= \prod_{t=1}^T \P\{ F_t(Z,x_{1:t-1})+\sigma_t(\hat f_{1:t-1})\zeta_t = x_t \}.
+    % =\prod_{t=1}^T \P\left\{ \zeta_t = \frac{x_t-F_t(Z,x_{1:t-1})}{\sigma_t(x_{1:t-1})} \right\}.
+% \end{align*}
+where $P_t(\cdot|x_{1:t-1})$ is the density of $(\hat f_t | \hat f_{1:t-1}=x_{1:t-1}) = F_t(Z,x_{1:t-1})+\sigma_t(x_{1:t-1})\zeta_t$ and $Q_t(\cdot|x_{1:t-1})$ is the density of $F_t(Z',x_{1:t-1})+\sigma_t(x_{1:t-1})\zeta_t$. Note that $\sigma_t$ is the same for $P_t$ and $Q_t$.
+% \begin{align*}
+%     P(x_{1:T}) = \prod_{t=1}^T P_t(x_t|x_{1:t-1}), \quad Q(x_{1:T}) = \prod_{t=1}^T Q_t(x_t|x_{1:t-1}).
+% \end{align*}
+
+By definition of R\'enyi divergence,
+\begin{align}
+    D_\alpha(P\|Q) = \frac{1}{\alpha-1}\log \int P(x_{1:T})^\alpha Q(x_{1:T})^{1-\alpha}\, dx_{1:T}. \label{eq:RDP-renyi-divergence-defn}
+\end{align}
+Previous multiplication rule implies that:
+\begin{align*}
+    P(x_{1:T})^\alpha Q(x_{1:T})^{1-\alpha}
+    = \prod_{t\in \IN(q)\sqcup \OUT(q)} \left( P_t(x_t|x_{1:t-1})^\alpha Q_t(x_t|x_{1:t-1})^{1-\alpha}\right) 
+\end{align*}
+For all $t\in\OUT(q)$ (i.e., $q\not\in S_t$), Assumption \ref{as:data-dependence} implies that $F_t(Z,x_{1:t-1})=F_t(Z',x_{1:t-1})$, so $P_t(\cdot|x_{1:t-1}) = Q_t(\cdot|x_{1:t-1})$ and
+\begin{align}
+    \int P_t(x_t|x_{1:t-1})^\alpha Q_t(x_t|x_{1:t-1})^{1-\alpha}\, dx_t
+    = \int P_t(x_t|x_{1:t-1}) \, dx_t = 1.
+    \label{eq:RDP-composition-1}
+\end{align}
+The second inequality holds because $P_t(\cdot|x_{1:t-1})$ is a probability density. 
+
+On the other hand, for all $t\in \IN(q)$,
+\begin{align*}
+    \sigma_t(x_{1:t-1})^2
+    &\geq \Delta_t(x_{1:t-1})^2/\rho_t^2 \\
+    &\geq \|F_t(Z,x_{1:t-1})-F_t(Z',x_{1:t-1})\|_*^2/\rho_t^2,
+\end{align*}
+so by Definition \ref{def:RDP-dist},
+\begin{align*}
+    D_\alpha(P_t\|Q_t)
+    % &= D_\alpha(\calD(F_t(Z,x_{1:t-1}),\sigma_t^2)\|\calD(F_t(Z',x_{1:t-1}),\sigma_t^2)) \\
+    &= \frac{1}{\alpha-1}\log\int P_t(x|x_{1:t-1})^\alpha Q_t(x|x_{1:t-1})^{1-\alpha} \, dx
+    \leq \alpha\rho_t^2/2.
+\end{align*}
+Equivalently,
+\begin{align}
+    \int P_t(x|x_{1:t-1})^\alpha Q_t(x|x_{1:t-1})^{1-\alpha} \, dx \leq \exp((\alpha-1)\alpha\rho_t^2/2).
+    \label{eq:RDP-composition-2}
+\end{align}
+
+Note that $P_t,Q_t$ only depend on $x_{1:t-1}$ and \textit{not} on $x_{t:T}$, so we can rearrange the integral in \eqref{eq:RDP-renyi-divergence-defn} as:
+\begin{align*}
+    &\int P(x_{1:T})^\alpha Q(x_{1:T})^{1-\alpha} \, dx_{1:T} \\
+    = &\int P_T(x_T|x_{1:T-1})^\alpha Q_T(x_T|x_{1:T-1})^{1-\alpha} \dotsm \left(\int P_1(x_1)^\alpha Q_1(x_1)^{1-\alpha} \, dx_1\right) \dotsm dx_T \\
+    \intertext{Evaluating the composite integral from inside to outside with \eqref{eq:RDP-composition-1} and \eqref{eq:RDP-composition-2} gives:}
+    \leq & \exp\left(\sum_{t\in\IN(q)} (\alpha-1)\alpha\rho_t^2/2\right).
+\end{align*}
+In conclusion, for all $|Z-Z'|=1$,
+\begin{align*}
+    D_\alpha(P\|Q) = \frac{1}{\alpha-1} \log \int P(x_{1:T})^\alpha Q(x_{1:T})^{1-\alpha}\, dx_{1:T} \leq \max_q \sum_{t\in \IN(q)}\alpha\rho_t^2/2 = S.
+\end{align*}
+\end{proof}
+
+
+\subsection{Algorithm \ref{alg:DP-OTB} is RDP}
+
+Now we are ready to prove the tree aggregation in Algorithm \ref{alg:DP-OTB}. 
+
+% \TreeRDP*
+
+\begin{proof}
+Recall the definition of $I_t$ in Algorithm \ref{alg:DP-OTB}: we define $s_0=0$, and $s_i=\max_k\{s_{i-1}+2^k:2^k|t-s_{i-1}\}$ until $s_n=t$ for some $n$, and we define $I_t=\{s_1,\ldots,s_n\}$. For example, $I_4=\{4\}$ and $I_7=\{4,6,7\}$. We then define $S_t=\{s_{n-1}+1,s_{n-1}+2,\ldots, t\}$ (e.g., $S_4=\{1,2,3,4\}$ and $S_7=\{7\}$). Observe that $\{S_i:i\in I_t\}$ is a partition of $[t]$.
+
+Let $Z,Z'$ be neighboring datasets that differ at the $q$-th element. 
+Define $F_t:\calZ^T\times W^{t-1}\to W$ as:
+\begin{align*}
+    F_t(Z,\hat f_{1:t-1}) 
+    &= \sum_{i\in S_t} \delta_i(Z, \hat f_{1:t-1}) \\
+    &= \sum_{i\in S_t} \weight_i\nabla\ell\left(x_i,z_i\right)-\weight_{i-1}\nabla\ell\left(x_{i-1},z_i\right),
+\end{align*}
+where $x_i$'s are the parameters as defined in Algorithm \ref{alg:DP-OTB}, and $z_i$ is the $i$-th data in $Z$. We then define $\hat f_t = F_t(Z,\hat f_{1:t-1}) + \sigma_t(\hat f_{1:t-1})\tilde R_t$ and $\hat f_t' = F_t(Z',\hat f'_{1:t-1}) + \sigma_t(\hat f'_{1:t-1})\tilde R_t$, where $\tilde R_t\sim\calD$. 
+
+For simplicity, we denote $\delta_t=\delta_t(Z,\hat f_{1:t-1})$ and $\sigma_t=\sigma_t(\hat f_{1:t-1})$ (and $\delta_t',\sigma_t'$ respectively). We also denote $x_i,w_i$ and $x_i',w_i'$ as parameters w.r.t. $Z,Z'$ respectively.
+% We need to verify that $F_t$ is well-defined, i.e., we prove that $x_{1:t}$ (defined as in Algorithm \ref{alg:DP-OTB}) are deterministic functions of $\hat f_{1:t-1}$ by induction. 
+% We can prove by induction that function $x_i(Z,\hat f_{1:t-1})$ is well-defined for all $i\in[t]$. For the base case, $x_1=w_1$, which is a fixed initial point. Now assume $x_{1:t}$ are deterministic functions of $\hat{f}_{1:t-1}$ and thus $\hat{f}_{1:t}$ are well-defined. Then 
+Since $\{S_i:i\in I_t\}$ partitions $[t]$,
+\begin{align*}
+    g_t+\gamma_t = \sum_{i=1}^t \delta_i + \sum_{i\in I_t} R_i
+    = \sum_{i\in I_t} \left(\sum_{j\in S_i} \delta_j + \sigma_i \tilde R_i\right)
+    = \sum_{i\in I_t} \hat f_i.
+\end{align*}
+By construction of Algorithm \ref{alg:DP-OTB}, $x_1,\ldots,x_t$ are determined by $\{g_i+\gamma_i\}_{i=1}^{t-1}$ and equivalently by $\hat f_{1:t-1}$. In particular, they do not depend on $f_{t:T}$. Consequently, this implies that (i) if $\hat f_{1:t-1}=\hat f'_{1:t-1}$ then $x_{1:t}=x'_{1:t}$ and $w_{1:t}=w'_{1:t}$ and (ii) if in addition $z_i=z_i'$ then $\delta_i=\delta_i'$.
+
+This implies that $F_t$'s satisfy Assumption \ref{as:data-dependence}: if $q\not\in S_t$ (i.e., $z_i=z_i'$ for all $i\in S_t$), then for any fixed $f_{1:t-1}\in W^{t-1}$, $F_t(Z, f_{1:t-1}) = F_t(Z', f_{1:t-1})$ because $\delta_i=\delta_i'$ for all $i\in S_t$. Consequently, Theorem \ref{thm:renyiaggregation} can be applied, which states that if $\sigma_t(\hat f_{1:t-1})^2\geq \Delta_t(\hat f_{1:t-1})^2/\rho^2$, then $(\hat f_1,\ldots, \hat f_T)$ is $(\alpha, U\alpha\rho^2/2)$-RDP where $U=\max_q|\IN(q)|$ and $\IN(q)=\{t:q\in S_t\}$. Note that $U\leq \log_2(2T)$.
+
+The sensitivity of $F_t$ at fixed $f_{1:t-1}\in W^{t-1}$ is bounded by:
+\begin{align*}
+    \Delta_t(f_{1:t-1})
+    &= \sup_{\substack{|Z-Z'|=1}} \|F_t(Z, f_{1:t-1}) - F_t(Z', f_{1:t-1})\|_* \\
+    &= \sup_{q\in S_t}\|\delta_q - \delta_q'\|_*
+    \leq \sup_{q\in S_t} \|\delta_q\|_* + \sup_{q\in S_t}\|\delta_q'\|_*
+    \intertext{We proved that $\|\delta_i\|_*\leq (k+1)i^{k-1}(G+H\|w_i-x_{i-1}\|)$ and $\|\delta_i'\|_*\leq (k+1)i^{k-1}(G+H\|w_i'-x'_{i-1}\|)$ (Lemma \ref{lem:variance-expectation-bound}). Note that $w_i=w_i'$ and $x_i=x_i'$ for all $i\leq t$. Also note that $i\leq t$ for all $i\in S_t$, so:}
+    &\leq 2(k+1)t^{k-1}(G+H\max_{i\in[t]}\|w_i-x_{i-1}\|).
+\end{align*}
+Since $U\leq \log_2(2T)$ and $\sigma_t^2$ as defined in \eqref{eq:RDP-noise} satisfies the condition $\sigma_t^2 \geq \Delta_t(\hat f_{1:t-1})\log_2(2T)/\rho^2$, Theorem \ref{thm:renyiaggregation} and post-processing imply that $\{g_t+\gamma_t\}_{t=1}^T$ is $(\alpha,\alpha\rho^2/2)$-RDP (so is Algorithm \ref{alg:DP-OTB}).
+\end{proof}
+
+% To convert the above result to ordinary differential privacy, we observe that $(\alpha,\epsilon)$-RDP implies $(\epsilon + \frac{\log(1/\delta)}{\alpha-1},\delta)$-DP for all $\delta$. Thus, supposing $\rho\le \sqrt{\frac{\log(1/\delta)}{V}}$, we then set $\alpha=1+\frac{\sqrt{\log(1/\delta)}}{\rho\sqrt{V}}$ to get $(V\rho^2 + \rho\sqrt{V\log(1/\delta)},\delta)\le (2\rho\sqrt{V\log(1/\delta)},\delta)$ differential privacy.
+
+% ======= ALTERNATIVE PROOF ========
+
+% \highlight{Definition \ref{def:RDP-dist} now doesn't assume $\alpha$-RDP for all $\alpha$ (but instead for some specific $\alpha$).}
+
+% \begin{proof}[Alternative proof of Theorem \ref{thm:renyiaggregation}]
+% Let us write $\hat f_i$ for the outputs with input dataset $D$, and $\hat f'_i$ for the outputs with input dataset $D'$. Let $q$ be the index such that $Z_q\ne Z'_q$.
+
+% Then, we can express the joint density of the random variable $\hat f_1,\dots,\hat f_K$:
+% \begin{align*}
+%     p(\hat f_1=r_1,\dots,\hat f_k=r_k)&=\prod_{i=1}^Kp(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})\\
+%     &=\prod_{i\in \IN(q)}p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})\prod_{i\in \OUT(q)}p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})
+% \end{align*}
+% Similar expressions hold for $\hat f'_i$:
+% \begin{align*}
+%     p(\hat f'_1=r_1,\dots,\hat f'_k=r_k)&=\prod_{i\in \IN(q)}p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})\prod_{i\in \OUT(q)}p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})
+% \end{align*}
+% For any $i\in \OUT(q)$:
+% \begin{align*}
+%     p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})&=p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})
+% \end{align*}
+
+
+% Now, for the rest of the proof, we mimic the proof of composition for Renyi differential privacy: let $P$ and  $P'$ be the distributions of the ouputs under $D$ and $D'$. Then:
+
+% \begin{align*}
+%     D_\alpha(P'||P)&=\frac{1}{\alpha-1}\log\left[\int_{r}\prod_{i\in \IN(q)}p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})^{1-\alpha}\right.\\
+%     &\quad\quad\quad\quad\prod_{i\in \OUT(q)}p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})^{1-\alpha}\\
+%     &\quad\quad\quad\quad\left.\prod_{i\in \IN(q)}p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})^\alpha\prod_{i\in \OUT(q)}p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})^\alpha\ dr\right]\\
+%     &=\frac{1}{\alpha-1}\log\left[\int_{r}\prod_{i\in \IN(q)}p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})^{1-\alpha}p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})^\alpha\right.\\
+%     &\left.\quad\quad\quad\quad\prod_{i\in \OUT(q)}p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})^{1-\alpha}p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})^\alpha\ dr\right]
+% \end{align*}
+% To make notation a little more precise, let us write $dr_{\IN}$ to indicate $\wedge_{i\in \IN(q)} dr_i$ and $dr_{\OUT}=\wedge_{i\in \OUT(q)} dr_i$. Similarly, $\int_{r_{IN}}$ indicates integration over only $r_i$ such that $i\in \IN(q)$.
+% Now, recall that for $i\in \OUT(q)$, we have 
+% \begin{align*}
+%     p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})=p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})
+% \end{align*}
+% so that:
+% \begin{align*}
+%     D_\alpha(P'||P)&=\frac{1}{\alpha-1}\log\left[\int_{r}\prod_{i\in \IN(q)}p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})^{1-\alpha}p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})^\alpha\right.\\
+%     &\left.\quad\quad\quad\quad\prod_{i\in \OUT(q)}p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})\ dr_{\OUT}dr_{\IN}\right]
+%     \intertext{so, we can integrate over $r_i$ for $i\in \OUT(q)$:}
+%     &=\frac{1}{\alpha-1}\log\left[\int_{r_{\IN}}\prod_{i\in \IN(q)}p(\hat f_i=r_i|\hat f_1=r_1,\dots,\hat f_{i-1}=r_{i-1})^{1-\alpha}p(\hat f'_i=r_i|\hat f'_1=r_1,\dots,\hat f'_{i-1}=r_{i-1})^\alpha\ dr_{\IN}\right]\\
+% \end{align*}
+% Now, let the indices in $\IN(q)$ be (in order): $i_1,\dots,i_n$. Then we have:
+% \begin{align*}
+%     D_\alpha(P'||P)&=\frac{1}{\alpha-1}\log\left[\left(\prod_{j=1}^n\int_{r_{i_j}}p(\hat f_{i_j}=r_{i_j}|\hat f_1=r_1,\dots,\hat f_{i_j-1}=r_{i_j-1})^{1-\alpha}p(\hat f'_{i_j}=r_{i_j}|\hat f'_1=r_1,\dots,\hat f'_{i_j-1}=r_{i_j-1})^\alpha\right)dr_{\IN}\right]
+%     \intertext{Now, let's compress the density notation a bit to save space:}
+%     &=\frac{1}{\alpha-1}\log\left[\left(\prod_{j=1}^n\int_{r_{i_j}}p(\hat f_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^{1-\alpha}p(\hat f'_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^\alpha\right)dr_{i_1}\dots dr_{i_n}\right]
+% \end{align*}
+% Now, let's focus on just one integral:
+% \begin{align*}
+% &\int_{r_{i_j}}p(\hat f_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^{1-\alpha}p(\hat f'_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^\alpha dr_{i_j} \\
+% &=\int_{r_{i_j}}p( \zeta_{i_j}=r_{i_j}-F_{i_j}(D,r_1,\dots,r_{i_j-1}))^{1-\alpha}p(\zeta'_{i_j}=r_{i_j}-F_{i_j}(D',r_1,\dots,r_{i_j-1}))^\alpha\ dr_{i_j}\\
+% &=\frac{1}{(\sigma \sqrt{2\pi})^d}\int_{\R^d}\exp\left(-\frac{(1-\alpha)\|x-F_{i_j}(D,r_1,\dots,r_{i_j}-1)\|^2}{\Delta_{i_j}^2/\rho^2}\right)\exp\left(-\frac{\alpha\|x-F_{i_j}(D',r_1,\dots,r_{i_j}-1)\|^2}{\Delta_{i_j}^2/\rho^2}\right)\ dx
+% \intertext{using a change of variables $z=x-F_{i_j}(D',r_1,\dots,r_{i_j}-1)$:}
+% &=\frac{1}{(\sigma \sqrt{2\pi})^d}\int_{\R^d}\exp\left(-\frac{(1-\alpha)\|z-(F_{i_j}(D,r_1,\dots,r_{i_j}-1) -F_{i_j}(D',r_1,\dots,r_{i_j}-1))\|^2}{\Delta_{i_j}^2/\rho^2}\right)\exp\left(-\frac{\alpha\|z\|^2}{\Delta_{i_j}^2/\rho^2}\right)\ dz\\
+% &=\exp((\alpha-1)D_\alpha(\calN(0,\Delta_{i_j}^2/\rho^2), \calN(F_{i_j}(D,r_1,\dots,r_{i_j}-1) -F_{i_j}(D',r_1,\dots,r_{i_j}-1),\Delta_{i_j}^2/\rho^2)))
+% \intertext{Applying Lemma \ref{lemma:renyigaussian}:}
+% &= \exp\left((\alpha-1)\alpha \rho^2\|F_{i_j}(D,r_1,\dots,r_{i_j}-1) -F_{i_j}(D',r_1,\dots,r_{i_j}-1)\|^2/2\Delta_{i_j}^2\right)\\
+% &\le \exp\left((\alpha-1) \alpha\rho^2/2\right)
+% \end{align*}
+
+% Now, returning to our bound on the divergence:
+% \begin{align*}
+%     D_\alpha(P'||P)&=\frac{1}{\alpha-1}\log\left[\left(\prod_{j=1}^n\int_{r_{i_j}}p(\hat f_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^{1-\alpha}p(\hat f'_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^\alpha\right)dr_{i_1}\dots dr_{i_n}\right]
+%     \intertext{rewrite a bit for clarity:}
+%     &=\frac{1}{\alpha-1}\log\left[\left(\prod_{j=1}^{n-1}\int_{r_{i_j}}p(\hat f_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^{1-\alpha}p(\hat f'_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^\alpha\right.\right.\\
+%     &\left.\left.\qquad\qquad\qquad\qquad\qquad \int_{r_{i_n}}p(\hat f_{i_n}=r_{i_n}|r_1,\dots,r_{i_n-1})^{1-\alpha}p(\hat f'_{i_n}=r_{i_n}|r_1,\dots,r_{i_n-1})^\alpha \right)dr_{i_1}\dots dr_{i_n}\right]
+%     \intertext{integrate out $r_{i_n}$:}
+%     &=\frac{1}{\alpha-1}\log\left[\exp\left((\alpha-1)\alpha\rho^2/2\right)\left(\prod_{j=1}^{n-1}\int_{r_{i_j}}p(\hat f_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^{1-\alpha}p(\hat f'_{i_j}=r_{i_j}|r_1,\dots,r_{i_j-1})^\alpha\right)\right.\\
+%     &\left.\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad \qquad\qquad\qquad\qquad\qquad \qquad\qquad\qquad dr_{i_1}\dots dr_{i_{n-1}}\right]
+%     \intertext{now integrate out all the other variables one by one:}
+%     &\le \frac{1}{\alpha-1}\log\left[\prod_{j=1}^n \exp\left((\alpha-1)\alpha\rho^2/2\right)\right]\\
+%     &=n\alpha\rho^2/2\\
+%     &\le V\alpha\rho^2/2
+% \end{align*}
+% \end{proof}
+
+
+% \section{Example: Gaussian Mechanism}
+% \label{app:Gaussian-mechanism}
+
+% \begin{theorem}
+% \label{thm:privacy}
+% Assume $W$ has diameter $D_2$ and $\ell$ is $G_2$-Lipschitz and $H_2$ smooth w.r.t. $\|\cdot\|_2$. Algorithm~\ref{alg:DP-OTB} with $\weight_t = t$, $R_t \sim N\left(0, 2(2G_2+4D_2H_2)^2\log T\sigma^2I\right) $ is $\left(\alpha, \tfrac{\alpha}{2\sigma^2}\right)$ Renyi-differentially private for all $\alpha$. Consequentially, if $\delta\le \exp(-\epsilon)$, then with $\sigma\ge \frac{2\sqrt{\log(1/\delta)}}{\epsilon}$, Algorithm~\ref{alg:DP-OTB} is $(\epsilon,\delta)$-differentially private.
+% \end{theorem}
+% \begin{proof}
+% We will prove this result by direct application of Theorem~\ref{thm:renyiaggregation}. To set up the
+% notation, consider the set of subsets 
+% \begin{align*}
+%     I=\{(a2^b,(a+1)2^b]|a\in \calZ, b\in\{0,\dots,R\}, (a2^b,(a+1)2^b]\subset\{1,\dots,T\}\}
+% \end{align*}
+% Next, define subsets of $\{1,\dots, T\}$, $S_1,\dots, S_{|I|}$, by $S_k= \{j\mod T| j\in I[k]\}$. We will occasionally refer to $S_k$ as $S_{(x,y]}$ where $(x,y]=I[k]$ when we wish to emphasize the interval $S_k$ is formed from rather than the ordering of the $S_k$.
+
+% We mildly abuse notation to indicate interval just before $(x,y]$ in our ordering as $(x,y]-1$. For any $S_i=(x,y]$, define:
+% \begin{align*}
+%      F_i(D, x_1,...,x_{(x,y]-1}) &= \sum_{t= x+1}^y \delta_t
+% \end{align*}
+% Let us compute the sensitivity of $F_i$. We define the sensitivity of each $F_i$ as follows:
+% \begin{align*}
+%     \Delta_i &= \sup_{|D - D'| =1}\|F_i(D, w_1,...,w_{i-1}) - F_i(D', w_1,...,w_{i-1})\| 
+% \end{align*}
+% For $S_1 = (0,1]$, we have:
+% \begin{align*}
+%     \|F_1(D) - F_i(D')\| &= \|a_1\nabla l(x_1,z_1) - a_1\nabla l(x_1,z'_1)\|\\
+%     &= \|\nabla l(x_1,z_1) - \nabla l(x_1,z'_1)\|\\
+%     &\le 2G_2
+% \end{align*}
+% For any other $S_i$, let $z_j$ be the data point in D and $z'_j$ be the data point in D ,  :
+% \begin{align*}
+%     &\|F_{[x,y)}(D, w_1,...,w_{[x,y)-1}) - F_{[x,y)}(D', w_1,...,w_{[x,y)-1})\| \\
+%     &= \|a_j \nabla f(x_j,z_j) - a_{j-1} \nabla f(x_{j-1},z_j) - (a_j \nabla f(x_j,z'_j) - a_{j-1} \nabla f(x_{j-1},z'_j))\|\\
+%     &= \|j \nabla f(x_j,z_j) - (j-1) \nabla f(x_{j-1},z_j) - (j \nabla f(x_j,z'_j) - (j-1) \nabla f(x_{j-1},z'_j))\|\\
+%     &\le  \|j (\nabla f(x_j,z_j) - \nabla f(x_{j-1},z_j)) +\nabla f(x_{j-1},z_j) \|  + \|j (\nabla f(x_j,z'_j) - \nabla f(x_{j-1},z'_j)) +\nabla f(x_{j-1},z'_j)\|\\
+%     &\le \frac{2j^2D_2H_2}{\sum_{r=1}^jr} + 2G_2\\
+%     &\le 4D_2H_2 + 2G_2
+% \end{align*}
+% Either way, $ \|F_i(D, w_1,...,w_{i-1}) - F_i(D', w_1,...,w_{i-1})\| \le  4D_2H_2+2G_2$. Thus the sensitivity of $F_i$ is $4D_2H_2+2G_2$. Therefore, Algorithm \ref{alg:DP-OTB} is providing output distributed in the same way as the aggregation mechanism in Algorithm \ref{alg:gaussianaggregation}. Finally, for any $q\in\{1,\dots,N\}$, there are at most $\lfloor\log T\rfloor +1\le 2\log T$ interval that contains q $\Rightarrow$ $V = 2\log T$.  Now applying Theorem \ref{thm:renyiaggregation}, Algorithm \ref{alg:DP-OTB} is $\left(\alpha, \frac{\alpha}{2\sigma^2}\right)-RDP$. This implies that Algorithm \ref{alg:DP-OTB} is $(\tfrac{\alpha}{2\sigma^2} + \frac{\log(1/\delta)}{\alpha-1},\delta)$-DP for all $\delta$. Then we can optimize over $\alpha$ to conclude the result.
+% \end{proof}

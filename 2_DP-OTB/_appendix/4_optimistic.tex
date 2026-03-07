@@ -1,0 +1,35 @@
+\section{Proofs for the Optimistic Case (Section \ref{sec:optimistic})}
+\label{app:optimistic}
+
+\input{2_DP-OTB/_theorems/thm_optimistic_regret}
+
+\begin{proof}
+Recall that $g_t=\sum_{i=1}^t \delta_i$, then
+\begin{align*}
+    \|\Bar{g}_t - \hat{g}_t\|_*^2
+    &= \|\delta_t + \gamma_t - \gamma_{t-1}\|_*^2
+    \leq 3\|\delta_t\|_*^2 + 3\|\gamma_t\|_*^2 + 3\|\gamma_{t-1}\|_*^2.
+\end{align*}
+We showed (Lemma \ref{lem:variance-expectation-bound}) that
+\begin{align*}
+    \|\delta_t\|_* 
+    % &\leq kt^{k-1}G+(k+1)t^{k-1}DH \\
+    \leq (k+1)(G+H\|w_t-x_{t-1}\|)t^{k-1}
+    \leq (k+1)(G+DH)t^{k-1}.
+\end{align*}
+Also recall the bound of $\E[\|\gamma_t\|_*^2]$ in \eqref{eq:gamma-bound}, so:
+\begin{align*}
+    \E[\|\bar{g}_t-\hat{g}_t\|_*^2]
+    &\leq 3(k+1)^2(G+DH)^2t^{2k-2} + \frac{48(k+1)^2V(G+DH)^2}{\lambda\rho^2}\log_2^2(2T)t^{2k-2} \\
+    &= 3(k+1)^2(G+DH)^2t^{2k-2}\left(1+\frac{16V\log_2^2(2T)}{\lambda\rho^2}\right).
+\end{align*}
+Recall that $\E[\regret_T(x^*)] \leq O(\E[D\sqrt{\sum_{t=1}^T\|\bar g_t-\hat g_t\|_*^2}])$. By Jensen's inequality,
+\begin{align*}
+    \E\left[D\sqrt{\sum_{t=1}^T\|\Bar{g}_{t}-\hat{g}_t\|_*^2}\right] 
+    &\leq D\sqrt{\sum_{t=1}^T \E[\|\Bar{g}_t-\hat{g}_t\|_*^2]} \\
+    &\leq \sqrt{3}(k+1)D(G+DH)\left(1+\frac{4\sqrt{V}\log_2(2T)}{\sqrt{\lambda}\rho}\right)T^{k-1/2}.
+\end{align*}
+% For the second part, observe that $\sigma_G\leq G, \sigma_H\leq H$, and thus $\frac{(k+1)\E[R_T(x^*)]}{T^{k+1}}$ is dominated by the other terms in Theorem \ref{thm:DP-OTB-general-norm}.
+% \highlight{use big-O notation or put the whole thing (inequality is not true for small $T$}
+Finally, dividing this bound by $\weight_{1:T}\geq T^{k+1}/(k+1)$ completes the proof.
+\end{proof}

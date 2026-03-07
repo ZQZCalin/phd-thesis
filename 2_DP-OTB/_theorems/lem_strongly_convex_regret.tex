@@ -1,0 +1,9 @@
+\begin{lemma}
+\label{lem:strongly-convex-regularized-loss}
+Suppose $f$ is $\mu$-strongly convex w.r.t. $\|\cdot\|$. If we replace $\ell_t(w)=\langle g_t+\gamma_t,w\rangle$ with $\bar \ell_t(w)=\ell_t(w)+\frac{\weight_t\mu}{4}\|w-x_t\|^2$ in Algorithm \ref{alg:DP-OTB}, and denote the associated regret by $\overline \regret_T$, then
+\begin{align*}
+    \weight_{1:T} ( f(x_T) -  f(x^*))
+    &\leq \overline\regret _T(x^*) +\sum_{t=1}^T \langle \weight_t\nabla f(x_t)-g_t-\gamma_t, w_t-x^*\rangle - \frac{\weight_t\mu}{8}\|w_t-x^*\|^2 \\
+    &\leq \overline\regret_T(x^*) + \sum_{t=1}^T \frac{2\|\weight_t\nabla f(x_t)-g_t-\gamma_t\|_*^2}{\weight_t \mu}.
+\end{align*}
+\end{lemma}

@@ -1,0 +1,12 @@
+\begin{algorithm}[t]
+\caption{Naive private gradient oracle}
+\label{alg:oracle-standard}
+\begin{algorithmic}[1]
+    \Statex \textbf{Input:} dataset $\calZ$, constant $B$, noise $\sigma$
+    \Statex \textbf{Initialize:} Partition $\calZ$ into $KT$ subsets $Z_t^k$ of size $B$. The data size is $|\calZ|=M=BKT$.
+    \State Upon receiving round index $k,t$ and parameter $\vecw_t^k$:
+    \State Sample $\vecu_1,\ldots,\vecu_B\sim\mathrm{Uniform}(\bfS)$ i.i.d.
+    \State $\vecg_t^k \gets \frac{1}{B}\sum_{i=1}^B \frac{d}{2\delta}(f(\vecw_t^k+\delta\vecu_i,z_i) - f(\vecw_t^k-\delta\vecu_i,z_i))\vecu_i$ where $z_i$ is the $i$-th data in $Z_t^k$.
+    \State Return $\tilde\vecg_t^k \gets \vecg_t^k + \xi_t^k$ where $\xi_t^k \sim \calN(0,\sigma^2I)$ i.i.d.
+\end{algorithmic}
+\end{algorithm}

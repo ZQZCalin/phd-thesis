@@ -1,0 +1,5 @@
+\section{Conclusion}
+
+This paper presents a novel zeroth-order algorithm for private nonsmooth nonconvex optimization. We prove that, given a dataset of size $M$, our algorithm finds a $(\delta,\epsilon)$-stationary point while achieving $(\alpha,\alpha\rho^2/2)$-RDP privacy guarantee so long as $M=\tilde\Omega \left( d(\frac{F^*L^2}{\delta\epsilon^3} + \frac{L^3}{\epsilon^3}) + d^{3/2}(\frac{F^*L}{\rho\delta\epsilon^2} + \frac{L^2}{\rho\epsilon^2}) \right)$. Notably, this is the first algorithm for the private nonsmooth nonconvex optimization problem.
+
+For future research, there are several intriguing directions. First, we are interested in exploring methods that could eliminate the need to sample $d$ uniform vectors per data point, a limitation we delve into in Section \ref{sec:estimator}. Additionally, the design of efficient first-order private algorithms for nonsmooth nonconvex optimization stands out as an area of potential exploration. Finally, the optimality of the current rate is still uncertain, and finding the lower bounds remains an open problem.

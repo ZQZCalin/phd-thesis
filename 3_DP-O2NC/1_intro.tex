@@ -1,0 +1,74 @@
+\section{Introduction}
+\label{ch3:sec:intro}
+
+
+We study the stochastic optimization problem of the form
+\begin{equation*}
+    \min_{\vecx\in\RR^d} F(\vecx) = \E_z[f(\vecx,z)],
+\end{equation*}
+where the stochastic function $f(\vecx,z)$ might be both non-convex and non-smooth with respect to $\vecx$. Our focus is on zeroth-order algorithms, often referred to as gradient-free algorithms. Unlike first-order algorithms that have access to the stochastic gradient $\nabla f(\vecx,z)$, zeroth-order algorithms can access only the function value $f(\vecx,z)$.
+
+
+Non-convex stochastic optimization is fundamental to modern machine learning. For example, in deep learning, $\vecx$ is the weight of some neural network model, $z$ is a datapoint, and $f(\vecx,z)$ represents the loss of the model evaluated on $\vecx$ and $z$.
+% For example, we can think of $\vecx$ as the weights of a neural network model and $z$ as the data. In this case, $f(\vecx,z)$ represents the loss of the model with weight $\vecx$ on data $z$. 
+Consequently, training the machine learning model equates to minimizing the non-convex objective $F(\vecx)$.
+Given its significant role, there has been a marked increase in research focusing on non-convex optimization in recent years \citep{ghadimi2013stochastic, arjevani2019lower, arjevani2020second, carmon2019lower, fang2018spider, cutkosky2019momentum}. 
+Since finding a global minimum of non-convex $F(\vecx)$ is intractable, many previous works assume that $F$ is smooth, and their goal is to find an $\epsilon$-stationary point $\vecx$ where $\|\nabla F(\vecx)\| \le \epsilon$. 
+% It is well-known that SGD finds an $\epsilon$-stationary point in $O(\epsilon^{-4})$ iterations, which is proven optimal \citep{arjevani2019lower}. Moreover, if the stochastic function $f$ is smooth, variance reduction algorithms require only $O(\epsilon^{-3}$) iterations \citep{fang2018spider, cutkosky2019momentum, arjevani2022lower}. 
+However, objectives are not always smooth, especially with the ever-increasing complexity of modern machine learning models.
+% , thus making the problem of finding $\epsilon-$stationary point even more difficult \citep{zhang2020complexity, kornowski2022oracle}.
+Making the problem even more difficult, 
+recent research shows that 
+finding an $\epsilon$-stationary point of a non-smooth objective might be intractable \citep{zhang2020complexity, kornowski2022oracle}.
+
+To address this issue, \cite{zhang2020complexity} introduces an alternative objective for the convergence analysis of non-smooth non-convex optimization. Specifically, they propose the notion of Goldstein stationary point \citep{goldstein1977optimization}: $\vecx$ is said to be an $(\delta,\epsilon)$-stationary point of $F$ if there exists a subset $S$ in the ball of radius $\delta$ centered at $\vecx$ such that $\left\|\E\left[\nabla F(\vecy)\right]\right\| \le \epsilon$ where $\vecy$ is uniformly distributed over $S$.
+Recently, there have been many works on first-order algorithms using this framework \citep{zhang2020complexity, tian2022finite, cutkosky2023optimal}. Notably, \cite{cutkosky2023optimal} designs an ``Online-to-non-convex Conversion'' algorithm that finds a $(\delta,\epsilon)$-stationary point with $O(\delta^{-1}\epsilon^{-3})$ samples, which is proven to be the optimal rate.
+However, first-order algorithms have their own limitations. 
+For many applications, computing first-order gradients can be computationally expensive or even impossible \citep{nelson2010optimization,mania2018simple}.
+% \todo{rephrase + cite some evidence}
+% For example, in deep learning tasks, computing the stochastic gradients can be computationally expensive and susceptible to numerical errors. 
+% Yet, as a practical limitation of first-order algorithms, computing the stochastic gradients can be computationally expensive and can induce numerical errors. 
+Hence, there are many recent results focusing on designing efficient zeroth-order algorithms for non-smooth non-convex optimization \citep{lin2022gradientfree, chen2023faster, kornowski2023algorithm}. Recently, \cite{kornowski2023algorithm} proposes a zeroth-order algorithm that requires only $O(d\delta^{-1}\epsilon^{-3})$ samples, which is the current state-of-the-art rate for zeroth-order optimization on non-smooth non-convex objectives. The additional dimension dependence is an inevitable cost of zeroth-order algorithms even when the objective is smooth or convex \citep{duchi2015optimal}.
+
+
+In this paper, we study zeroth-order stochastic optimization on non-convex and non-smooth objectives. Zeroth-order optimization is particularly important in cases where memory is constrained or the model is excessively large so that computing a backwards pass is forbiddingly expensive.
+In addition, we also aim to protect the privacy of user's data. For example, consider the practical problem of training a recommendation model or a chat response model. At each step the algorithm is given a set of different users who report the model's performance in the form of ``upvotes'' or ``downvotes''. It's important to make updates using such zeroth-order feedback while preserving the privacy of feedback from the individual users.
+
+To this end, we require our algorithm to be \textit{differentially private} (DP) \citep{dwork2006calibrating}, which means with high probability, the output of our algorithm operating on any particular dataset is \textit{almost} indistinguishable from the output when one datapoint in the dataset is perturbed.
+
+The primary objective of private stochastic optimization is to minimize the dataset size required to solve the optimization problem while maintaining differential privacy guarantees. 
+% \todo{introduce problem objective: minimize data complexity (since each data is only used once in most cases, data complexity is equivalent to computation complexity)}
+% There have been extensive efforts on differentially private optimization. 
+This area has seen extensive research efforts.
+While problems with convex objectives have been well-studied 
+over the past decade 
+\citep{chaudhuri2011differentially, jain2012differentially, kifer2012private, bassily2014private, talwar2014private, jain2014near, bassily2019private, feldman2020private, bassily2021noneuclidean, zhang2022differentially}, more recent efforts have focused on private non-convex optimization
+\citep{wang2017differentially, wang2019differentially, tran2022momentum, wang2019efficient, zhou2020private, bassily2021differentially, arora2023faster}. 
+Recently, \cite{arora2023faster} designs an algorithm that, assuming the objective is smooth, finds an $\epsilon$-stationary point and satisfies $(\rho,\gamma)$-DP with $\tilde O(\epsilon^{-3} + \sqrt{d}\rho^{-1}\epsilon^{-2})$ data complexity.
+While private non-convex optimization has seen rapid advancements, certain challenges remain. Many previous studies hinge on the assumption of smooth objectives since their methods are essentially extensions of non-private non-convex optimization algorithms. 
+In fact, this limitation emerges even in situations where the objective is convex, in which case smoothness provides a critical tool for reducing sensitivity.
+% Given recent results on non-smooth non-convex optimization, differentially private non-smooth non-convex optimization still remains largely unexplored.
+Since the results in non-smooth non-convex optimization are recent, its differentially private counterpart remains largely unexplored.
+
+\subsection{Our Contributions}
+
+The main contribution of this paper is the introduction of a zeroth-order algorithm for differentially private stochastic optimization on non-convex and non-smooth objectives. 
+To our knowledge, this is the first work under this framework.
+Our algorithm satisfies $(\alpha,\alpha\rho^2/2)$-R\'enyi differential privacy (RDP) \citep{mironov2017renyi} (which is approximately $(\rho,\gamma)$-DP) 
+% for $\gamma\ge \exp(-\rho^2)$) 
+and finds a $(\delta,\epsilon)$-stationary point with 
+% $\tilde O(\frac{d}{\delta\epsilon^3} + \frac{d^{3/2}}{\rho\delta\epsilon^2})$ 
+$\tilde O(d\delta^{-1}\epsilon^{-3} + d^{3/2}\rho^{-1}\delta^{-1}\epsilon^{-2})$
+data complexity. 
+Notably, the non-private term $O(d\delta^{-1}\epsilon^{-3})$ matches the state-of-the-art complexity found in its non-private counterpart. Moreover, when $\rho \ge \sqrt{d}\epsilon$, the non-private term is dominating, suggesting that privacy can be attained without additional cost. This is consistent with the observations when the objective is smooth \citep{arora2023faster}.
+
+% Building upon the non-private Online-to-non-convex Conversion (O2NC) framework by \cite{cutkosky2023optimal}, we design our private algorithm with a different approach. Unlike previous variants of O2NC that implement the gradient oracle with stochastic gradients or their zeroth-order estimators \citep{cutkosky2023optimal, kornowski2023algorithm}, our method introduces a carefully designed zeroth-order oracle. This involves defining two zeroth-order estimators, one for the gradient and the other for the gradient difference at two points. 
+% % Both estimators exhibit reduced sensitivity.
+% We further construct a variance-reduced gradient oracle using these estimators and incorporate the tree mechanism to reduce the amount of noise required to achieve the desired privacy guarantees. This design yields an optimal privacy guarantee. A detailed explanation of the intuition and challenges associated with our algorithm can be found in Section \ref{sec:algorithm}.
+
+Our algorithm incorporates four essential components, each crucial for achieving the optimal rate. We leverage the non-private Online-to-non-convex Conversion (O2NC) framework by \cite{cutkosky2023optimal}, which finds a $(\delta,\epsilon)$-stationary point of a non-smooth objective using a first-order oracle. We then build an approximate first-order oracle (i.e. a gradient estimator) with a zeroth-order oracle. Although this high-level strategy is a common technique, our approach distinguishes itself through its gradient oracle design. 
+In contrast to prior non-private approaches that directly approximate the gradient with a standard zeroth-order estimator \citep{kornowski2023algorithm}, we introduce a variance-reduced gradient oracle. Our approach incorporates two zeroth-order estimators: one for the gradient and another for its difference between two points. Our gradient oracle also differs subtly from the standard zeroth-order estimator by sampling $d$ i.i.d. estimators for each data point, which is required to achieve the optimal dimension dependence. Both estimators exhibit reduced sensitivity. We reduce the privacy cost of our variance-reduced estimators by using the ``tree mechanism'' \citep{dwork2010differential, chan2011private}, yielding a new state-of-the-art privacy guarantee.
+
+Omitting any component from our algorithm significantly impacts the results. Neither utilizing the O2NC technique nor sampling $d$ i.i.d. estimators results in an additional dimension dependence of $\sqrt{d}$. 
+Moreover, the combination of the variance-reduced oracle and the tree mechanism is crucial for optimal privacy. A naive approach might directly make O2NC private adding noise to classical zeroth-order gradient estimators, but this yields a sub-optimal rate with an extra factor of $\epsilon^{-1}$.
+More details about the intuitions and challenges of our algorithm can be found in Section \ref{sec:algorithm}.

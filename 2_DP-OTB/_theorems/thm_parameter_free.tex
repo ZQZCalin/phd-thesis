@@ -1,0 +1,15 @@
+\begin{theorem}
+\label{thm:parameter-free-2-norm-step-1}
+Suppose w.r.t. 2-norm, $W$ is bounded by $D$ and $\ell$ is $G$-Lipschitz and $H$-smooth. Suppose $\calD$ is $(V,\alpha)$-RDP distribution and is $\sigma_\calD$-sub-Gaussian. If we set $\weight_t=t^3$ (i.e. $k=3$) and set $\sigma_t^2$ as defined in \eqref{eq:RDP-noise}, then with probability at least $1-\delta$,
+\begin{align*}
+    f(x_T)-f(x^*) \leq \frac{4}{T^4}\left( \regret_T(x^*) + \sum_{t=1}^T \xi_t(\|w_t\|_2+\|x^*\|_2) + \nu_t(\|w_t\|_2^2+\|x^*\|_2^2) \right).
+\end{align*}
+where $C$ is a universal constant, $A=8\sqrt{2}C^2, A'=8\sqrt{d}\sigma_\calD C^2, \kappa=1+DH/G$, 
+% $\Phi=\sqrt{\log(16dT\log(2\kappa T)/\delta)}$, 
+and
+\begin{align*}
+    &\xi_t = AG\Phi t^{5/2} + A'(G+DH)\frac{\Phi\log_2(2T)t^2}{\rho} , \
+    \nu_t = 28AH\Phi t^{5/2}, \ 
+    \Phi = \sqrt{\log\frac{20dT\log(2\kappa T)}{\delta}}.
+\end{align*}
+\end{theorem}

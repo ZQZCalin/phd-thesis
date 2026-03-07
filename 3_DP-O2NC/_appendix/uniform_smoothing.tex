@@ -1,0 +1,137 @@
+\section{Proofs in Section \ref{sec:pre}}
+\label{app:pre}
+
+\subsection{Proof of Lemma \ref{lem:uniform-smoothing}}
+\label{app:uniform-smoothing}
+
+% \UniformSmoothing*
+
+\begin{proof}
+For simplicity, we drop the subscript $\delta$ of $\hat h_\delta$. By Jensen's inequality and Lipschitzness,
+\begin{align*}
+    &\|\hat h(\vecx) - \hat h(\vecy)\| \le \E_\vecv\|h(\vecx+\delta\vecv) - h(\vecy+\delta\vecv)\| \le L\|\vecx-\vecy\|, \tag{i} \\
+    &\|\hat h(\vecx) - h(\vecx)\| \le \E_\vecv\|h(\vecx+\delta\vecv)-h(\vecx)\| \le L\|\delta\vecv\| \le L\delta. \tag{ii}
+\end{align*}
+
+Next, since $h$ is Lipschitz, $h$ is almost every differentiable by Rademacher's theorem and the uniform smoothing $\hat h$ is also almost everywhere differentiable by \citep[Proposition 2.4]{bertsekas1973stochastic}. Moreover, it holds that $\nabla\hat h(\vecx) = \E_\vecv[\nabla h(\vecx+\delta\vecv)]$.
+% Next, observe that $\nabla\hat h(\vecx) = \E_\vecv[\nabla h(\vecx+\delta\vecv)]$. Since $h$ is differentiable, so is $\hat h$. 
+Denote $\triangle$ as the symmetric difference, i.e., 
+$A\triangle B = (A\setminus B)\cup (B\setminus A)$, and let 
+% $B(\vecx,\delta)=\{\vecx':\|\vecx'-\vecx\| \le \delta\}$ and 
+$S = B(\vecx,\delta)\triangle B(\vecy,\delta)$. Then
+\begin{align*}
+    \|\nabla\hat h(\vecx) - \nabla\hat h(\vecy)\|
+    &= \|\E_{\vecv\sim\calU_\bfB}[ \nabla h(\vecx+\delta\vecv) - \nabla h(\vecy+\delta\vecv) ]\| \\
+    &= \left\| \int_{B(\vecx,\delta)} \frac{\nabla h(\vecv)}{\vol(B(\vecx,\delta))} \, d\vecv - \int_{B(\vecy,\delta)} \frac{\nabla h(\vecv)}{\vol(B(\vecy,\delta))} \, d\vecv \right\| \\
+    &= \left\| \int_S
+    % \int_{B_\delta(\vecx)\triangle B_\delta(\vecy)} 
+    \frac{\nabla h(\vecv)}{\vol(\delta\bfB)} \, d\vecv \right\|
+    \le \int_S \frac{\|\nabla h(\vecv)\|}{\vol(\delta\bfB)} \, d\vecv
+    \le \frac{\vol(S)L}{\vol(\delta\bfB)}
+    \le \frac{\sqrt{d}L}{\delta}\|\vecx-\vecy\|,
+\end{align*}
+where the second last inequality follows from $\|\nabla h(\vecv)\| \le L$, and the last follows from Lemma \ref{lem-aux:volume}. 
+% Smoothness then follows from Lemma \ref{lem-aux:volume}.
+
+Finally, by definition of expectation,
+\begin{align*}
+    &\E_{\vecv\sim\calU_\bfB}[\nabla h(\vecx+\delta\vecv)] = \frac{\int_{\bfB}\nabla_\vecx f(\vecx+\delta\vecv) \, d\vecv}{\vol(\bfB)}, \\
+    &\E_{\vecu\sim\calU_\bfS}[h(\vecx+\delta\vecu)\vecu] = \frac{\int_{\bfS} f(\vecx+\delta\vecu) \vecu \, d\vecu}{\vol(\bfS)}.
+\end{align*}
+By Stokes' theorem,
+\begin{align*}
+    % \nabla_\vecx \int_{\bfB} f(\vecx+\delta\vecv) \, d\vecv 
+    \int_{\bfB} \nabla_\vecx f(\vecx+\delta\vecv) \, d\vecv 
+    = \int_{\bfS} f(\vecx+\delta\vecu)\vecu \, d\vecu 
+\end{align*}
+We then establish the first equality in (iv) by $\vol(\bfB)/\vol(\bfS) = \delta/d$. Next, let $p$ be a Rademacher random variable and $\vecu'=\vecu/p$. Observe that $\vecu'\sim\calU_\bfS$ as well. Therefore,
+\begin{align*}
+    \E_{\vecu\sim\calU_\bfS}[ \tfrac{d}{\delta} h(\vecx+\delta\vecu)\vecu ] 
+    &= \E_{p,\vecu'}[ \tfrac{d}{\delta} h(\vecx+\delta p\vecu')p\vecu' ] \\
+    &= \tfrac{1}{2} \E_{\vecu'}[ \tfrac{d}{\delta} h(\vecx+\delta\vecu)\vecu + \tfrac{d}{\delta} h(\vecx-\delta\vecu)(-\vecu) ].
+\end{align*}
+This proves the second equality in (iv).
+\end{proof}
+
+\begin{lemma}
+\label{lem-aux:volume}
+Let $\vecx,\vecy\in\RR^d$ and $S=B(\vecx,\delta)\triangle B(\vecy,\delta)$, then $\frac{\vol(S)}{\vol(\delta\bfB)} \le \frac{\sqrt{d}}{\delta}\|\vecx-\vecy\|$.
+\end{lemma}
+
+\begin{proof}
+Let $D=\|\vecx-\vecy\|$, $V_d(r)$ be the volume of an $d$-ball in $\RR^d$, and $U_d(h,r)$ be the volume of the cap of an $d$-ball of height $h$. Observe that for $D\le 2\delta$,
+\begin{equation*}
+    \frac{\vol(S)}{\vol(\delta\bfB)} = 2\cdot \frac{U_d(\delta+\frac{D}{2},\delta) - U_d(\delta-\frac{D}{2},\delta)}{V_d(\delta)}.
+\end{equation*}
+Next, we compute the value of $U_d(h,r)$.
+\begin{equation*}
+    U_d(h,r) = \int_0^h V_{d-1}(\sqrt{r^2-(r-t)^2}) \, dt.
+\end{equation*}
+Recall that the volume of an $d$-ball is $V_d(r) = \frac{\pi^{d/2}}{\Gamma(d/2+1)}r^n$. Therefore,
+\begin{align*}
+    \frac{\vol(S)}{\vol(\delta\bfB)}
+    &= \frac{\frac{\pi^{(d-1)/2}}{\Gamma((d-1)/2+1)} \int_{\delta-\frac{D}{2}}^{\delta+\frac{D}{2}} (2\delta t - t^2)^{\frac{d-1}{2}} \, dt}{\frac{\pi^{d/2}}{\Gamma(d/2+1)} \delta^d} \\
+    &= \frac{\Gamma(\frac{d}{2}+1)}{\sqrt{\pi}\Gamma(\frac{d-1}{2}+1)} \int_{\delta-\frac{D}{2}}^{\delta+\frac{D}{2}} \left(\frac{2t}{\delta} - \frac{t^2}{\delta^2} \right)^{\frac{d-1}{2}} \frac{1}{\delta} \, dt \\
+    &= \frac{\Gamma(\frac{d}{2}+1)}{\sqrt{\pi}\Gamma(\frac{d-1}{2}+1)} \int_{1-\frac{D}{2\delta}}^{1+\frac{D}{2\delta}} (2u-u^2)^{\frac{d-1}{2}} \, du  \tag{$t=\delta u$}.
+\end{align*}
+Note that $2u-u^2 \le 1$ for all $u\in\RR$, so the integral is bounded by $\int_{1-\frac{D}{2\delta}}^{1+\frac{D}{2\delta}} 1 \, du = \frac{D}{\delta}$. The proof then follows from the fact that $\Gamma(\frac{d}{2}+1)/\Gamma(\frac{d-1}{2}+1) \le \sqrt{2d}$ (proved in Lemma \ref{lem-aux:Gamma} for completeness).
+% and the volume of an $n$-sphere is $S_{n-1}(r) = \frac{2\pi^{n/2}}{\Gamma(n/2)}r^{n-1}$. 
+% Observe that $\vol(S) \le \vol((\delta+D)\bfB) - \vol(\delta\bfB) \le D\vol((\delta+D)\bfS)$. Therefore,
+% \begin{align*}
+%     \frac{\vol(S)}{\vol(\delta\bfB)} 
+%     \le \frac{D\frac{2\pi^{d/2}}{\Gamma(d/2)}(\delta+D)^{d-1}}{\frac{\pi^{d/2}}{\Gamma(d/2+1)}\delta^d}
+%     = \frac{2D\Gamma(d/2+1)}{\delta\Gamma(d/2)} (1+D/\delta)^{d-1}.
+% \end{align*}
+\end{proof}
+
+\begin{lemma}
+\label{lem-aux:Gamma}
+For all $n\in\NN$, $\Gamma(\frac{n}{2}+1)/\Gamma(\frac{n-1}{2}+1) \le \sqrt{2n}$.
+\end{lemma}
+
+\begin{proof}
+Let $n!! = n(n-2)(n-4)\dotsm = \prod_{k=0}^{\lceil\frac{n}{2}\rceil-1} (n-2k)$, then by definition of $\Gamma(n+1)=n\gamma(n)$ and $\Gamma(\frac{1}{2})=\sqrt{\pi}$, we have
+\begin{equation*}
+    \Gamma(\tfrac{n}{2}+1) = 
+    \left\{
+    \begin{array}{ll}
+        \frac{n!!}{2^{n/2}}, & \text{$n$ is even} \\
+        \frac{\sqrt{\pi}n!!}{2^{(n+1)/2}}, & \text{$n$ is odd}
+    \end{array}
+    \right.
+\end{equation*}
+Consequently, we have
+\begin{equation*}
+    \frac{\Gamma(\tfrac{n}{2}+1)}{\Gamma(\frac{n-1}{2}+1)} = 
+    \left\{
+    \begin{array}{ll}
+        \frac{n!!}{\sqrt{\pi}(n-1)!!}, & \text{$n$ is even} \\
+        \frac{\sqrt{\pi}n!!}{2(n-1)!!}, & \text{$n$ is odd}
+    \end{array}
+    \right.
+    \le \frac{n!!}{(n-1)!!}.
+\end{equation*}
+We finish the proof by induction. For $n=1$, $\frac{1!!}{0!!} = 1 \le \sqrt{2\cdot 1}$. For $n=2$, $\frac{2!!}{1!!}=2 \le \sqrt{2\cdot 2}$. Now assume $\frac{m!!}{(m-1)!!} \le \sqrt{2m}$ for all $m\le n$. Then
+\begin{align*}
+    \frac{(n+1)!!}{n!!} = \frac{n+1}{n} \frac{(n-1)!!}{(n-2)!!}
+    \le \frac{n+1}{n} \sqrt{2(n-1)} = \sqrt{2(n+1)}\frac{\sqrt{(n+1)(n-1)}}{n} \le \sqrt{2(n+1)}.
+\end{align*}
+This concludes the proof by induction.
+\end{proof}
+
+
+\subsection{Proof of Corollary \ref{cor:smooth-reduction}}
+
+% \SmoothReduction*
+
+\begin{proof}
+Recall that the $\delta$-subdifferential of $\hat F_\delta$ is defined as $\partial_\delta \hat F_\delta(\vecx) = \conv(\cup_{\vecy \in B(\vecx,\delta)} \nabla \hat F_\delta (\vecy))$. In other words, for each $\vecg\in \partial_\delta \hat F_\delta(\vecx)$, $\vecg$ is of form of $\vecg=\sum \lambda_i \nabla \hat F_\delta(\vecy_i)$ where $\lambda_i$’s are convex coefficients and $\vecy_i\in B(\vecx,\delta)$. \citep[Theorem 10]{lin2022gradientfree} has proved that $\nabla \hat F_\delta(\vecy_i) \in \partial_\delta F(\vecy_i)$. In addition, since $\|\vecy_i-\vecx\| \le \delta$, we have $\partial_\delta F(\vecy_i) \subset \partial_{2\delta} F(\vecx)$. Consequently, we have 
+\begin{equation*}
+    \nabla \hat F_\delta(\vecy_i) \in \partial_\delta F(\vecy_i) \subset \partial_{2\delta}F(\vecx)
+\end{equation*}
+and thus $\vecg \in \partial_{2\delta} F(\vecx)$ for all $\vecg\in\partial_\delta\hat F_\delta(\vecx)$. We conclude the proof by recalling Definition \ref{def:stationary} that 
+\begin{equation*}
+    \|\nabla \hat F_\delta (\vecx)\|_\delta = \inf \{\|\vecg\|: \vecg\in \partial_\delta \hat F_\delta(\vecx)\}, \quad \|\nabla F(\vecx)\|_{2\delta} = \inf \{\|\vecg\|: \vecg\in \partial_{2\delta} F(\vecx)\}
+\end{equation*}
+and the previous result that $\|\partial_\delta \hat F_\delta(\vecx) \subset \partial_{2\delta} F(\vecx)$.
+\end{proof}

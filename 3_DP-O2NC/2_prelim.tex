@@ -1,0 +1,91 @@
+\section{Preliminary}
+\label{ch3:sec:pre}
+
+\paragraph{Notation}
+
+We use bold font $\vecx$ to denote a vector $\vecx\in\RR^d$, and denote the Euclidean norm of $\vecx$ by $\|\vecx\|$. We denote the unit ball and unit sphere in $\RR^d$ by $\bfB$ and $\bfS$, and denote the uniform distribution on $\bfB$ and $\bfS$ by $\calU_\bfB$ and $\calU_\bfS$ respectively. We denote an open ball in $\RR^d$ centered at $\vecx$ of radius $r$ by $B(\vecx,r)=\{\vecy:\|\vecx-\vecy\|<r\}$. For $n\in\NN$, we denote the set $\{1,\ldots,n\}$ by $[n]$, and we denote a sequence $a_1,\ldots,a_n$ by $a_{1:n}$. We use the standard big-O notation, and use $\tilde O$ to hide additional logarithmic factors. We interchangeably use $f(x)\lesssim g(x)$ to denote $f(x) = \tilde O(g(x))$.
+
+
+\paragraph{Non-smooth Optimization}
+
+A function $h:\RR^d\to\RR$ is $L$-Lipschitz if $|h(\vecx)-h(\vecy)| \le L\|\vecx-\vecy\|$ for all $\vecx,\vecy\in\RR^d$; $h$ is $H$-smooth if it is differentiable and $\|\nabla h(\vecx) - \nabla h(\vecy)\| \le H\|\vecx-\vecy\|$ for all $\vecx,\vecy\in\RR^d$. A point $\vecx^*\in\RR^d$ is an $\epsilon$-stationary point of $h$ if $\|\nabla h(\vecx^*)\| \le \epsilon$. 
+% When $h$ is non-smooth, finding an $\epsilon$-stationary point may be computationally intractable \citep{kornowski2022oracle, zhang2020complexity}. Instead, we aim to find a Goldstein stationary point \citep{goldstein1977optimization}.
+
+\begin{definition}
+\label{def:stationary}
+Let $\delta>0$ and $h:\RR^d\to\RR$ be differentiable. The Goldstein $\delta$-subdifferential of $h$ at $\vecx$ is $\partial_\delta h(\vecx) = \conv(\cup_{y\in B(\vecx,\delta)} \nabla h(\vecy))$. We define $\|\nabla h(\vecx)\|_\delta = \inf \{\|\vecg\|: \vecg\in\partial_\delta h(\vecx)\}$. 
+Then $\vecx^*$ is said to be a Goldstein $(\delta,\epsilon)$-stationary point of $h$ if $\|\nabla h(\vecx^*)\|_\delta \le \epsilon$. Note that
+\begin{equation*}
+    \textstyle
+    \|\nabla h(\vecx)\|_\delta \le 
+    \inf_{S\subset B(\vecx,\delta)} \left\| \frac{1}{|S|} \sum_{\vecy\in S} \nabla h(\vecy) \right\|.
+    % \inf_{\substack{S\subset B(\vecx,\delta), |S|<\infty, \\ \frac{1}{|S|}\sum_{\vecy\in S}\vecy = \vecx}} \left\| \frac{1}{|S|}\sum_{\vecy\in S} \nabla F(\vecy) \right\|.
+\end{equation*}
+\end{definition}
+
+
+\paragraph{Differential Privacy}
+
+A stochastic optimization algorithm can be considered as a randomized algorithm that takes a dataset $Z$ (a collection of data points $z_1,\ldots,z_M$) and outputs an output $\overline \vecw$. Throughout this paper, we denote $\calZ$ as the set of all possible datasets of size $M$.
+Two datasets $Z,Z'\in\calZ$ are neighboring if they differ only in one data point. A randomized algorithm $\calA:\calZ\to\calR$ is said to be $(\epsilon,\delta)$-differentially private ($(\epsilon,\delta)$-DP) for $\epsilon,\delta>0$ if for all neighboring datasets $Z,Z'$ and measurable $E\subseteq \calR$, we have $\P\{\calA(Z) \in E\} \le e^\epsilon\P\{\calA(Z') \in E\} + \delta$ \citep{dwork2006calibrating}. 
+
+Another common privacy measure is R\'enyi differential privacy (RDP). Algorithm $\calA$ is $(\alpha,\rho)$-RDP for $\alpha>1,\rho>0$ if for all neighboring $Z,Z'$, $D_\alpha(\calA(Z)\|\calA(Z')) \le \rho$ \citep{mironov2017renyi}, where $D_\alpha(\mu\|\nu)$ is the R\'enyi divergence of distributions $\mu,\nu$. 
+RDP can be converted to $(\epsilon,\delta)$-DP as follows: if an algorithm is $(\alpha,\alpha\rho^2/2)$-RDP for all $\alpha>1$, then it is also $(2\rho\ln(1/\delta)^{1/2}, \delta)$-DP for all $\delta\ge \exp(-\rho^2)$ \citep[Proposition 3]{mironov2017renyi}. Therefore, we use $(\alpha,\alpha\rho^2/2)$-RDP as a measure of differential privacy in our paper.
+
+If $\|\calA(Z)-\calA(Z')\| \le s$ for any neighboring $Z,Z'$, we say the sensitivity of $\calA$ is bounded by $s$. It is well known that in this case, adding a Gaussian noise $\calN(0,\sigma^2I)$ to the output of $\calA$, where $\sigma=s/\rho$, ensures that $\calA$ is $(\alpha,\alpha\rho^2/2)$-RDP \citep{mironov2017renyi}.
+
+We also make use of the ``tree mechanism'' \cite{dwork2010differential, chan2011private}, which is a technique that allows for private release of \emph{running sums} of potentially sensitive data (Algorithm~\ref{alg:tree}).
+
+
+\paragraph{Online Learning}
+
+Our algorithm builds on the Online-to-non-convex algorithm by \cite{cutkosky2023optimal}, so we briefly introduce the setting of online convex optimization (OCO) \citep{cesa2006prediction, hazan2019introduction, orabona2019modern}. An OCO algorithm proceeds in rounds. In each round $t$, it outputs $\vecx_t$, receives a convex loss function $\ell_t(\vecx)$, and suffers loss $\ell_t(\vecx_t)$. It is common to use a linear loss $\ell_t(\vecx) = \langle \vecv_t,\vecx \rangle$. An OCO algorithm has domain bounded by $D$ if $\|\vecx_t\|\le D$ for all $t$.
+
+The goal of online learning is to minimize the \textit{static regret} defined as
+\begin{equation*}
+    \textstyle
+    \regret_T(\vecu) = \sum_{t=1}^T \ell_t(\vecx_t) - \ell_t(\vecu) = \sum_{t=1}^T \langle \vecv_t,\vecx_t-\vecu \rangle,
+\end{equation*}
+where $\vecu$ is some comparator vector (often, $\vecu=\argmin \sum_{t=1}^T \ell_t(\vecx)$). 
+There are many OCO algorithms that achieve the minimax optimal $O(\sqrt{T})$ regret. For example, projected Online Subgradient Descent (OSD) \citep{zinkevich2003online} with domain bounded by $D$ satisfies
+\begin{equation*}
+    \textstyle
+    \E[\regret_T(\vecx)] \le D\sqrt{\sum_{t=1}^T \E\|\vecv_t\|^2}.
+\end{equation*}
+
+
+\paragraph{Uniform Smoothing}
+
+Randomized smoothing is a well known technique that converts a possibly non-smooth function to a smooth approximation \citep{flaxman2005online, duchi2012randomized, lin2022gradientfree}.
+Given a Lipschitz function $h:\RR^d\to\RR$ and $\delta>0$, we define the \textit{uniform smoothing} of $h$ as $\hat h_\delta(\vecx) = \E_{\vecv\sim\calU_\bfB}[h(\vecx+\delta\vecv)]$. In later sections, we denote $\hat F_\delta(\vecx)$ and $\hat f_\delta(\vecx,z)$ as the uniform smoothing of the objective $F(\vecx)$ and $f(\vecx,z)$ respectively. 
+% Uniform smoothing has the following properties.
+As shown in prior works (see \citep{yousefian2012stochastic} and \citet[Section E]{duchi2012randomized}), uniform smoothing is a smooth approximation whose gradient can be estimated by finite differentiation. We rephrase the key properties in the following lemma, whose proof is presented in the appendix for completeness.
+
+\begin{lemma}
+\label{lem:uniform-smoothing}
+Suppose $h:\RR^d\to\RR$ is $L$-Lipschitz.
+Then (i) $\hat h_\delta$ is $L$-Lipschitz; (ii) $\|\hat h_\delta(\vecx) - h(\vecx)\| \le L\delta$; (iii) $\hat h_\delta$ is differentiable and $\frac{\sqrt{d}L}{\delta}$-smooth; (iv) 
+% with gradient 
+\begin{equation*}
+    \nabla \hat h_\delta(\vecx) 
+    = \E_{\vecu\sim\calU_\bfS}[\tfrac{d}{\delta} h(\vecx+\delta\vecu)\vecu]
+    = \E_{\vecu\sim\calU_\bfS}[\tfrac{d}{2\delta} (h(\vecx+\delta\vecu) - h(\vecx-\delta\vecu)) \vecu ];
+\end{equation*}
+% (iv) $\hat h_\delta$ is $\frac{\sqrt{d}L}{\delta}$-smooth.
+\end{lemma}
+
+% We defer the proof to Appendix \ref{app:uniform-smoothing}. 
+As a corollary, finding an $(\delta,\epsilon)$-stationary point of $\hat F_\delta$ is sufficient to find an $(2\delta,\epsilon)$-stationary point of $F$. The formal statement is as follows (\citet[Lemma 4]{kornowski2023algorithm}; proof is presented in Appendix \ref{app:pre} for completeness). 
+
+\begin{corollary}
+\label{cor:smooth-reduction}
+% Let $F:\RR^d\to\RR$ be differentiable and $L$-Lipschitz, and define $\hat F_\delta(\vecx) = \E_\vecv[F(\vecx+\delta\vecv)]$ where $\vecv\sim\mathrm{Uniform}(\bfB)$. 
+Suppose $F:\RR^d\to\RR$ is $L$-Lipschitz.
+Then for any $\epsilon, \delta > 0$, $\|\nabla \hat F_\delta(\vecx)\|_\delta \le \epsilon$ implies that $\|\nabla F(\vecx)\|_{2\delta} \le \epsilon$.
+\end{corollary}
+
+\subsection{Analysis Organization}
+
+As a brief overview, our algorithm leverages O2NC to privately optimize the uniform smoothing of the objective. Note that O2NC does not require any smoothness itself - we employ uniform smoothing because it allows us to construct a low-sensitivity gradient oracle from a zeroth-order oracle. The smoothness property is tangential. We construct a variance-reduced gradient oracle for O2NC and incorporate the tree mechanism for enhanced privacy. This oracle is based on two zeroth-order estimators: one for the stochastic gradient of the uniform smoothing and another for the gradient difference.
+
+This paper is organized in the following order. In Section \ref{sec:estimator}, we introduce the zeroth-order estimators. In Section \ref{sec:algorithm}, we present the O2NC algorithm combined with the private variance-reduced gradient oracle. In Section \ref{sec:privacy}, we demonstrate the improved privacy guarantee provided by the tree mechanism. We conclude with the convergence analysis in Section \ref{sec:convergence}.

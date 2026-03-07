@@ -1,0 +1,93 @@
+\section{Further Discussions about Differential Privacy}
+\label{app:further-DP}
+
+\subsection{Example of RDP Distribution}
+
+In this subsection, we prove that the multivariate Gaussian distribution $\calN(0,I)$ is a $(d,\alpha)$-RDP distribution w.r.t. 2-norm on $\RR^d$ for all $\alpha>0$ (Definition \ref{def:RDP-dist}). Namely, $\calN(0,I)$ satisfies the following three properties: let $R\sim \calN(0,I)$, then (i) $\E[R]=0$, (ii) $\E[\|R\|_2^2] \leq d$, and (iii) for all $\rho>0$ and $\mu,\mu'\in\RR^d$, if $\sigma^2 \geq \|\mu-\mu'\|_2^2/\rho^2$ then $D_\alpha(P\|Q) \leq \alpha\rho^2/2$, where $P,Q$ denote the distribution of $\sigma R+\mu$ and $\sigma R+\mu'$ respectively.
+
+The first property follows immediately from the definition of $\calN(0,I)$. For the second property, $R=(r_1,\ldots,r_d)$ where $r_i\sim N(0,1)$ iid., so $\E[\|R\|_2^2]=\sum_{i=1}^d \E[r_i^2]=d$. To check the third property, we need the following lemma:
+
+\begin{lemma}\label{lemma:renyigaussian}
+$D_\alpha(\calN(\mu,\sigma^2I)\| \calN(\mu',\sigma^2I))=\alpha \|\mu-\mu'\|^2/2\sigma^2$.
+\end{lemma}
+
+Consequently, for all $\sigma^2 \geq \|\mu-\mu'\|_2^2/\rho^2$, $D_\alpha(\calN(0,\sigma^2I)\| \calN(\mu, \sigma^2 I)) \leq \alpha\rho^2/2$. This proves that $\calN(0,I)$ is indeed a $(d,\alpha)$-RDP distribution.
+
+\begin{proof}[Proof of Lemma \ref{lemma:renyigaussian}]
+The density of $\calN(\mu,\sigma^2 I)$ is $(2\pi\sigma^2)^{-d/2}\exp(-\|x-\mu\|_2^2/2\sigma^2)$. For short we denote $A=(2\pi\sigma^2)^{-d/2}$ and $B=1/2\sigma^2$. Then
+\begin{align*}
+    &D_\alpha(\calN(\mu,\sigma^2 I)\|\calN(\mu',\sigma^2 I))\\
+    &=\frac{1}{\alpha-1}\log\left(\int_{\RR^d} A^\alpha\exp(-B\alpha\|x-\mu\|_2^2) A^{1-\alpha}\exp(-B(1-\alpha)\|x-\mu'\|_2^2)\ dx\right) \\
+    &= \frac{1}{\alpha-1}\log \left( \int_{\RR^d} A\exp \left(-B(\alpha\|x-\mu\|_2^2+(1-\alpha)\|x-\mu'\|_2^2) \right) dx \right).
+\end{align*}
+Next, observe that
+\begin{align*}
+    & x-\mu= (x - \alpha\mu - (1-\alpha)\mu') -(1-\alpha)(\mu-\mu'), \\
+    & x-\mu' = (x-\alpha\mu-(1-\alpha)\mu')+\alpha(\mu-\mu').
+\end{align*}
+Consequently, upon expanding out $\|x-\mu\|_2^2, \|x-\mu'\|_2^2$, we get:
+\begin{align*}
+    \alpha\|x-\mu\|_2^2 + (1-\alpha)\|x-\mu'\|_2^2
+    = \|x-\alpha\mu-(1-\alpha)\mu'\|_2^2 + \alpha(1-\alpha)\|\mu-\mu'\|_2^2.
+\end{align*}
+Note that $A\exp(-B\|x-\alpha\mu-(1-\alpha)\mu'\|_2^2)$ is the density of $\calN(\alpha\mu+(1-\alpha)\mu', \sigma^2I)$, so it integrates to $1$. Therefore,
+\begin{align*}
+    &D_\alpha(\calN(\mu,\sigma^2 I)\|\calN(\mu',\sigma^2 I)) \\
+    &= \frac{1}{\alpha-1}\log\left( \int_{\RR^d} A\exp(-B\|x-\alpha\mu-(1-\alpha)\mu'\|_2^2) \exp(-B\alpha(1-\alpha)\|\mu-\mu'\|_2^2) \ dx \right) \\
+    &= \frac{1}{\alpha-1}\log\left( \exp(-B\alpha(1-\alpha)\|\mu-\mu'\|_2^2) \right)
+    = B\alpha\|\mu-\mu'\|_2^2.
+\end{align*}
+Recall that $B=1/2\sigma^2$, and this completes the proof.
+\end{proof}
+
+
+\subsection{Extension to Pure-DP Mechanisms}
+
+In the main text, we focus on Renyi differential privacy, and we defined RDP-distribution (Definition \ref{def:RDP-dist}) accordingly. We can always extend our result in a pure differential privacy setting.
+
+\newcommand{\DPnorm}{\text{$(K,\calD)$-DP-able}}
+\begin{definition}[$V$-DP distribution]
+\label{def:DP-dist}
+A distribution $\calD$ on $\RR^d$ is said to be a \textit{DP distribution on norm $\|\cdot\|$ with variance constant $V$} (or simply $\calD$ is $V$-DP on $\|\cdot\|$) if it satisfies that for $R\sim\calD$ (i) $\E[R]=0$, (ii) $\E[\|R\|_*^2]\leq V$, and (iii) for all $\epsilon>0$ and $\mu,\mu'\in\RR^d$, if $\sigma^2\geq \|\mu-\mu'\|_*^2/\epsilon^2$, then $p((x-\mu)/\sigma)/p((x-\mu')/\sigma) \leq \exp(\epsilon)$ for all $x\in\RR^d$, where $p(x)$ is the density of $\calD$.
+\end{definition}
+
+The tree aggregation described in Appendix \ref{app:tree-aggregation-RDP} also works for pure DP mechanisms as well. Therefore, if we assume $\calD$ in Algorithm \ref{alg:DP-OTB} with a $V$-DP distribution and change the definition of $\sigma_t^2$ in \eqref{eq:RDP-noise} correspondingly, Algorithm \ref{alg:DP-OTB} can be modified to an purely $\epsilon$-DP mechanism.
+
+Next, we can show that exponential mechanism in general norm satisfies this definition:
+
+\begin{lemma}
+\label{thm:exponential-mechanism-general-norm}
+Consider a probability density $p(x) = A\exp(-\|x\|_*)$ on $(\RR^d,\|\cdot\|)$, where $A$ is some normalization constant. Also define $V=\int_{\RR^d} \|x\|_*^2 A\exp(-\|x\|_*)\, dx$. Then distribution $\calD$ with density $p$ is a $\calK$-DP distribution.
+\end{lemma}
+
+\begin{proof}
+Let $R\sim \calD, \mu,\mu'\in \RR^d$, and $\sigma^2\geq 0$. Since the density $p$ is symmetric, $\E[R]=0$; and by definition, $\E[\|R\|_*^2]=V$. For the third property,
+\begin{align*}
+    \frac{p((x-\mu)/\sigma)}{p((x-\mu')/\sigma)} 
+    = \frac{A\exp(-\|x-\mu\|_*/\sigma)}{A\exp(-\|x-\mu'\|_*/\sigma)}
+    &= \exp\left( \frac{-\|x-\mu\|_*+\|x-\mu'\|_*}{\sigma} \right) \\
+    \intertext{By triangular inequality, $-\|x-\mu\|_*+\|x-\mu'\|_*\leq \|\mu-\mu'\|_*$, so:}
+    &\leq \exp\left(\frac{\|\mu-\mu'\|_*}{\sigma}\right).
+\end{align*}
+Hence, for all $\sigma \geq \|\mu-\mu'\|_*/\epsilon$, this is further bounded by $\exp(\epsilon)$.
+% For the second part, we quote \cite{folland1999real} Corollary 2.51: if $f$ is measurable on $\RR^d$ and integrable such that $f(x)=g(\|x\|_2)$ for some function $g$ on $(0,\infty)$, then 
+% \[
+% \int_{\RR^d} f(x) \, dx = A(S^{d-1}) \int_0^\infty g(r)r^{d-1} \, dr.
+% \]
+% Therefore, 
+% \begin{align*}
+%     1 &= \int_{\RR^d} C\exp\left(-\frac{\|x-f(D)\|}{\Delta/\epsilon}\right) \, dx \\
+%     &= A(S^{d-1})\int_0^\infty Cr^{d-1}\exp\left(-\frac{r}{\Delta/\epsilon}\right) \, dx \\
+%     &= A(S^{d-1}) C (\Delta/\epsilon)^d\Gamma(d).
+% \end{align*}
+% Similarly,
+% \begin{align*}
+%     \E[\|\hat{f}(D)-f(D)\|_*^2]
+%     &= \int_{\RR^d} \|x-f(D)\|_*^2 C\exp\left(-\frac{\|x-f(D)\|_*}{\Delta/\epsilon}\right) \, dx \\
+%     &= A(S^{d-1}) \int_0^\infty C r^{d+1}\exp\left(-\frac{r}{\Delta/\epsilon}\right) \, dr \\
+%     &= A(S^{d-1}) C(\Delta/\epsilon)^{d+2}\Gamma(d+2) \\
+%     &= \frac{(\Delta/\epsilon)^2\Gamma(d+2)}{\Gamma(d)} 
+%     = \frac{d(d+1)\Delta^2}{\epsilon^2}.
+% \end{align*}
+% \highlight{issue: change of variable w.r.t. $\|\cdot\|$.}
+\end{proof}

@@ -1,0 +1,97 @@
+% Anytime Online-to-Batch
+@InProceedings{cutkosky19a_anytime_otb,
+  title = 	 {Anytime Online-to-Batch, Optimism and Acceleration},
+  author =       {Cutkosky, Ashok},
+  booktitle = 	 {Proceedings of the 36th International Conference on Machine Learning},
+  pages = 	 {1446--1454},
+  year = 	 {2019},
+  editor = 	 {Chaudhuri, Kamalika and Salakhutdinov, Ruslan},
+  volume = 	 {97},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {09--15 Jun},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v97/cutkosky19a/cutkosky19a.pdf},
+  url = 	 {https://proceedings.mlr.press/v97/cutkosky19a.html},
+  abstract = 	 {A standard way to obtain convergence guarantees in stochastic convex optimization is to run an online learning algorithm and then output the average of its iterates: the actual iterates of the online learning algorithm do not come with individual guarantees. We close this gap by introducing a black-box modification to any online learning algorithm whose iterates converge to the optimum in stochastic scenarios. We then consider the case of smooth losses, and show that combining our approach with optimistic online learning algorithms immediately yields a fast convergence rate of $O(L/T^{3/2}+\sigma/\sqrt{T})$ on $L$-smooth problems with $\sigma^2$ variance in the gradients. Finally, we provide a reduction that converts any adaptive online algorithm into one that obtains the optimal accelerated rate of $\tilde O(L/T^2 + \sigma/\sqrt{T})$, while still maintaining $\tilde O(1/\sqrt{T})$ convergence in the non-smooth setting. Importantly, our algorithms adapt to $L$ and $\sigma$ automatically: they do not need to know either to obtain these rates.}
+}
+
+% Renyi DP
+@INPROCEEDINGS{mironov_Renyi_DP,  author={Mironov, Ilya},  booktitle={2017 IEEE 30th Computer Security Foundations Symposium (CSF)},   title={Rényi Differential Privacy},   year={2017},  volume={},  number={},  pages={263-275},  doi={10.1109/CSF.2017.11}}
+
+% Folland analysis textbook
+@book{folland1999real,
+  title={Real Analysis: Modern Techniques and Their Applications},
+  author={Folland, Gerald B.},
+  isbn={9780471317166},
+  lccn={98037260},
+  series={A Wiley-Interscience publication},
+  url={https://books.google.com/books?id=uPkYAQAAIAAJ},
+  year={1999},
+  publisher={Wiley}
+}
+
+% Rakhlin and Sridharan, Optimistic OMD
+@InProceedings{rakhlin_optimistic_omd,
+  title = 	 {Online Learning with Predictable Sequences},
+  author = 	 {Rakhlin, Alexander and Sridharan, Karthik},
+  booktitle = 	 {Proceedings of the 26th Annual Conference on Learning Theory},
+  pages = 	 {993--1019},
+  year = 	 {2013},
+  editor = 	 {Shalev-Shwartz, Shai and Steinwart, Ingo},
+  volume = 	 {30},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {Princeton, NJ, USA},
+  month = 	 {12--14 Jun},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v30/Rakhlin13.pdf},
+  url = 	 {https://proceedings.mlr.press/v30/Rakhlin13.html},
+  abstract = 	 {We present methods for online linear optimization that take advantage of benign (as opposed to worst-case) sequences. Specifically if the sequence encountered by the learner is described well by a known “predictable process”, the algorithms presented enjoy tighter bounds as compared to the typical worst case bounds. Additionally, the methods achieve the usual worst-case regret bounds if the sequence is not benign. Our approach can be seen as a way of adding \emphprior knowledge about the sequence within the paradigm of online learning. The setting is shown to encompass partial and side information. Variance and path-length bounds can be seen as particular examples of online learning with simple predictable sequences.We further extend our methods to include competing with a set of possible predictable processes (models), that is “learning” the predictable process itself concurrently with using it to obtain better regret guarantees. We show that such model selection is possible under various assumptions on the available feedback. }
+}
+
+% Bauschke and Combettes, convex analysis
+@book{convex_analysis,
+author = {Bauschke, Heinz H. and Combettes, Patrick L.},
+title = {Convex Analysis and Monotone Operator Theory in Hilbert Spaces},
+year = {2011},
+isbn = {1441994661},
+publisher = {Springer Publishing Company, Incorporated},
+edition = {1st},
+abstract = {This book provides a largely self-contained account of the main results of convex analysis and optimization in Hilbert space. A concise exposition of related constructive fixed point theory is presented, that allows for a wide range of algorithms to construct solutions to problems in optimization, equilibrium theory, monotone inclusions, variational inequalities, best approximation theory, and convex feasibility. The book is accessible to a broad audience, and reaches out in particular to applied scientists and engineers, to whom these tools have become indispensable.}
+}
+
+% orabona, OCO with sub-exponential noise
+
+@InProceedings{orabona_sub-exponential_OCO,
+  title = 	 {Parameter-Free Online Convex Optimization with Sub-Exponential Noise},
+  author =       {Jun, Kwang-Sung and Orabona, Francesco},
+  booktitle = 	 {Proceedings of the Thirty-Second Conference on Learning Theory},
+  pages = 	 {1802--1823},
+  year = 	 {2019},
+  editor = 	 {Beygelzimer, Alina and Hsu, Daniel},
+  volume = 	 {99},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {25--28 Jun},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v99/jun19a/jun19a.pdf},
+  url = 	 {https://proceedings.mlr.press/v99/jun19a.html},
+  abstract = 	 { We consider the problem of unconstrained online convex optimization (OCO) with sub-exponential noise, a strictly more general problem than the standard OCO. In this setting, the learner receives a subgradient of the loss functions corrupted by sub-exponential noise and strives to achieve optimal regret guarantee, without knowledge of the competitor norm, i.e., in a parameter-free way. Recently, Cutkosky and Boahen (COLT 2017) proved that, given unbounded subgradients, it is impossible to guarantee a sublinear regret due to an exponential penalty. This paper shows that it is possible to go around the lower bound by allowing the observed subgradients to be unbounded via stochastic noise. However, the presence of unbounded noise in unconstrained OCO is challenging; existing algorithms do not provide near-optimal regret bounds or fail to have a guarantee. So, we design a novel parameter-free OCO algorithm for Banach space, which we call BANCO, via a reduction to betting on noisy coins. We show that BANCO achieves the optimal regret rate in our problem. Finally, we show the application of our results to obtain a parameter-free locally private stochastic subgradient descent algorithm, and the connection to the law of iterated logarithms.  }
+}
+
+% short note on norm-sub-Gaussian
+@misc{normSG_note,
+  doi = {10.48550/ARXIV.1902.03736},
+  
+  url = {https://arxiv.org/abs/1902.03736},
+  
+  author = {Jin, Chi and Netrapalli, Praneeth and Ge, Rong and Kakade, Sham M. and Jordan, Michael I.},
+  
+  keywords = {Probability (math.PR), Machine Learning (cs.LG), Machine Learning (stat.ML), FOS: Mathematics, FOS: Mathematics, FOS: Computer and information sciences, FOS: Computer and information sciences},
+  
+  title = {A Short Note on Concentration Inequalities for Random Vectors with SubGaussian Norm},
+  
+  publisher = {arXiv},
+  
+  year = {2019},
+  
+  copyright = {arXiv.org perpetual, non-exclusive license}
+}

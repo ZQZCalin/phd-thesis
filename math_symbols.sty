@@ -1,0 +1,163 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Math Symbols
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% any other user-defined macros
+
+\newcommand{\one}{\mathbbm{1}}
+\newcommand{\regret}{\mathrm{Regret}}
+
+% distributions
+\newcommand{\Unif}{\mathrm{Unif}}
+\newcommand{\Expo}{\mathrm{Exp}}
+\newcommand{\Lap}{\mathrm{Lap}}
+\newcommand{\op}{\mathrm{op}}
+
+% for temporarily chunks of text
+\newcommand{\ignore}[1]{}
+
+% Probability/expectation operators.  The ones ending in x should be used if you want subscripts that go below and to the right; no x means the subscripts go directly *below* the operator (in math mode).
+\renewcommand{\P}{\mathop{\mathbb{P}}}
+\newcommand{\Px}{\mathbb{P}}
+\newcommand{\E}{\mathop{\mathbb{E}}}
+\newcommand{\Ex}{\mathbb{E}}
+\newcommand{\Var}{\mathop{\operatorname{Var}}}
+\newcommand{\Varx}{\operatorname{Var}}
+\newcommand{\Cov}{\mathop{\operatorname{Cov}}}
+\newcommand{\Covx}{\operatorname{Cov}}
+
+% shortcuts for symbol names that are too long to type
+\newcommand{\eps}{\epsilon}
+\newcommand{\lam}{\lambda}
+\newcommand{\la}{\langle}
+\newcommand{\ra}{\rangle}
+\newcommand{\wh}{\widehat}
+\newcommand{\wt}{\widetilde}
+
+% "blackboard-fonted" letters for the reals, naturals etc.
+\newcommand{\RR}{\mathbb R}
+\newcommand{\NN}{\mathbb N}
+\newcommand{\ZZ}{\mathbb Z}
+\newcommand{\FF}{\mathbb F}
+\newcommand{\QQ}{\mathbb Q}
+\newcommand{\CC}{\mathbb C}
+
+% operators that should be typeset in Roman font
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\sgn}{\mathrm{sgn}}
+\newcommand{\avg}{\mathop{\mathrm{avg}}}
+\newcommand{\val}{{\mathrm{val}}}
+
+% complexity classes
+% \renewcommand{\P}{\mathrm{P}}
+% \newcommand{\NP}{\mathrm{NP}}
+% \newcommand{\BPP}{\mathrm{BPP}}
+% \newcommand{\DTIME}{\mathrm{DTIME}}
+% \newcommand{\ZPTIME}{\mathrm{ZPTIME}}
+% \newcommand{\BPTIME}{\mathrm{BPTIME}}
+% \newcommand{\NTIME}{\mathrm{NTIME}}
+
+% values associated to optimization algorithm instances
+\newcommand{\Opt}{{\mathsf{Opt}}}
+\newcommand{\Alg}{{\mathsf{Alg}}}
+\newcommand{\Lp}{{\mathsf{Lp}}}
+\newcommand{\Sdp}{{\mathsf{Sdp}}}
+\newcommand{\Exp}{{\mathsf{Exp}}}
+
+% additional math operators
+\newcommand{\argmax}{\mathop{\operatorname{arg\,max}}}
+\newcommand{\argmin}{\mathop{\operatorname{arg\,min}}}
+
+% if you think the sum and product signs are too big in your math mode; x convention
+% as in the probability operators
+\newcommand{\littlesum}{{\textstyle \sum}}
+\newcommand{\littlesumx}{\mathop{{\textstyle \sum}}}
+\newcommand{\littleprod}{{\textstyle \prod}}
+\newcommand{\littleprodx}{\mathop{{\textstyle \prod}}}
+
+% calligraphic letters
+\newcommand{\calA}{{\cal A}}
+\newcommand{\calB}{{\cal B}}
+\newcommand{\calC}{{\cal C}}
+\newcommand{\calD}{{\cal D}}
+\newcommand{\calE}{{\cal E}}
+\newcommand{\calF}{{\cal F}}
+\newcommand{\calG}{{\cal G}}
+\newcommand{\calH}{{\cal H}}
+\newcommand{\calI}{{\cal I}}
+\newcommand{\calJ}{{\cal J}}
+\newcommand{\calK}{{\cal K}}
+\newcommand{\calL}{{\cal L}}
+\newcommand{\calM}{{\cal M}}
+\newcommand{\calN}{{\cal N}}
+\newcommand{\calO}{{\cal O}}
+\newcommand{\calP}{{\cal P}}
+\newcommand{\calQ}{{\cal Q}}
+\newcommand{\calR}{{\cal R}}
+\newcommand{\calS}{{\cal S}}
+\newcommand{\calT}{{\cal T}}
+\newcommand{\calU}{{\cal U}}
+\newcommand{\calV}{{\cal V}}
+\newcommand{\calW}{{\cal W}}
+\newcommand{\calX}{{\cal X}}
+\newcommand{\calY}{{\cal Y}}
+\newcommand{\calZ}{{\cal Z}}
+
+% bold letters for vectors
+\newcommand{\boldvector}[1]{{\boldsymbol{#1}}}
+\newcommand{\veca}{\boldvector{a}}
+\newcommand{\vecb}{\boldvector{b}}
+\newcommand{\vecc}{\boldvector{c}}
+\newcommand{\vecd}{\boldvector{d}}
+\newcommand{\vece}{\boldvector{e}}
+\newcommand{\vecf}{\boldvector{f}}
+\newcommand{\vecg}{\boldvector{g}}
+\newcommand{\vech}{\boldvector{h}}
+\newcommand{\veci}{\boldvector{i}}
+\newcommand{\vecj}{\boldvector{j}}
+\newcommand{\veck}{\boldvector{k}}
+\newcommand{\vecl}{\boldvector{l}}
+\newcommand{\vecm}{\boldvector{m}}
+\newcommand{\vecn}{\boldvector{n}}
+\newcommand{\veco}{\boldvector{o}}
+\newcommand{\vecp}{\boldvector{p}}
+\newcommand{\vecq}{\boldvector{q}}
+\newcommand{\vecr}{\boldvector{r}}
+\newcommand{\vecs}{\boldvector{s}}
+\newcommand{\vect}{\boldvector{t}}
+\newcommand{\vecu}{\boldvector{u}}
+\newcommand{\vecv}{\boldvector{v}}
+\newcommand{\vecw}{\boldvector{w}}
+\newcommand{\vecx}{\boldvector{x}}
+\newcommand{\vecy}{\boldvector{y}}
+\newcommand{\vecz}{\boldvector{z}}
+
+% bold capitals for matrices
+\newcommand{\boldcapital}[1]{{\mathbf{#1}}}
+\newcommand{\bfA}{\boldcapital{A}}
+\newcommand{\bfB}{\boldcapital{B}}
+\newcommand{\bfC}{\boldcapital{C}}
+\newcommand{\bfD}{\boldcapital{D}}
+\newcommand{\bfE}{\boldcapital{E}}
+\newcommand{\bfF}{\boldcapital{F}}
+\newcommand{\bfG}{\boldcapital{G}}
+\newcommand{\bfH}{\boldcapital{H}}
+\newcommand{\bfI}{\boldcapital{I}}
+\newcommand{\bfJ}{\boldcapital{J}}
+\newcommand{\bfK}{\boldcapital{K}}
+\newcommand{\bfL}{\boldcapital{L}}
+\newcommand{\bfM}{\boldcapital{M}}
+\newcommand{\bfN}{\boldcapital{N}}
+\newcommand{\bfO}{\boldcapital{O}}
+\newcommand{\bfP}{\boldcapital{P}}
+\newcommand{\bfQ}{\boldcapital{Q}}
+\newcommand{\bfR}{\boldcapital{R}}
+\newcommand{\bfS}{\boldcapital{S}}
+\newcommand{\bfT}{\boldcapital{T}}
+\newcommand{\bfU}{\boldcapital{U}}
+\newcommand{\bfV}{\boldcapital{V}}
+\newcommand{\bfW}{\boldcapital{W}}
+\newcommand{\bfX}{\boldcapital{X}}
+\newcommand{\bfY}{\boldcapital{Y}}
+\newcommand{\bfZ}{\boldcapital{Z}}

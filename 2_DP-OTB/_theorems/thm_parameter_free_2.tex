@@ -1,0 +1,13 @@
+\begin{theorem}
+\label{thm:parameter-free-main}
+Following the assumptions and notations in Theorem \ref{thm:parameter-free-2-norm-step-1}, if we replace $\ell_t(w)$ in Algorithm \ref{alg:DP-OTB} with regularized loss $\bar \ell_t(w) = \ell_t(w) + \xi_t\|w\|_2 + \nu_t\|w\|_2^2$ and denote the associated regret as $\overline \regret_t$, then with probability at least $1-\delta$, $\L(x_T)-\L(x^*)$ is bounded by:
+\begin{align*}
+    % \L(x_T)-\L(x^*) 
+    % &\leq 
+    \frac{4\overline \regret_T(x^*)}{T^4} + \frac{8A\|x^*\|(G+28\|x^*\|H)\Phi}{\sqrt{T}} + \frac{8A'\|x^*\|(G+DH)\Phi\log_2(2T)}{\rho T}.
+\end{align*}
+Moreover, with probability at least $1-\delta$, for all $t$ and for all $w\in W, \bar g_t \in \partial \bar \ell_t(w)$,
+\begin{align*}
+    \|\bar g_t\|_2 \leq Gt^3 + A(2G+57DH)\Phi t^{5/2} + 2A'(G+DH)\frac{\Phi\log_2(2T)t^2}{\rho}.
+\end{align*}
+\end{theorem}

@@ -1,0 +1,16 @@
+\begin{theorem}
+\label{thm:optimistic}
+% Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex, $W$ is bounded by $D$, and $\ell$ is $G$-Lipschitz and $H$-smooth. 
+Suppose Assumption \ref{as:sc-norm} - \ref{as:smooth} hold, and $\calD$ is a $(V,\alpha)$-RDP distribution. Set $\weight_t=t^k$ and $\sigma_t^2$ as defined in \eqref{eq:RDP-noise},
+If the online learner is optimistic (satisfying \eqref{eq:optimistic-OL}) with $t$-th gradient $\bar{g}_t=g_t+\gamma_t$ and $t$-th hint $\hat{g}_t=\bar{g}_{t-1}$, then
+\begin{align*}
+    \frac{\E[\regret_T(x^*)]}{\weight_{1:T}} 
+    % \leq \sqrt{3}(k+1)^2D(G+DH)\left(1+\frac{4\sqrt{V}\log_2(2T)}{\sqrt{\lambda}\rho}\right)\frac{1}{T^{3/2}}.
+    \leq O\left( D(G+DH)\left(1+\frac{\sqrt{V}\log T}{\sqrt{\lambda}\rho}\right)\frac{1}{T^{3/2}} \right).
+\end{align*}
+% Consequently, if we further assume Assumption \ref{as:sigma-G} and \ref{as:sigma-H}, then
+% \begin{align*}
+%     \E[f(x_T) - f(x^*)]
+%     &\leq \frac{2(k+1)^2D}{\sqrt{\lambda}}\left(\frac{\sigma_G+D\sigma_H}{\sqrt{T}}+\frac{2\sqrt{K}(G+DH)\log_2^{3/2}T}{\rho T}\right).
+% \end{align*}
+\end{theorem}

@@ -1,0 +1,15 @@
+\chapter{Differentially Private Online-to-Non-Convex}
+\label{chapter:dp-o2nc}
+\thispagestyle{myheadings}
+
+\paragraph{Abstract}
+We introduce a new zeroth-order algorithm for private stochastic optimization on nonconvex and nonsmooth objectives.
+Given a dataset of size $M$, our algorithm ensures $(\alpha,\alpha\rho^2/2)$-R\'enyi differential privacy and finds a $(\delta,\epsilon)$-stationary point so long as $M=\tilde\Omega\left(\frac{d}{\delta\epsilon^3} + \frac{d^{3/2}}{\rho\delta\epsilon^2}\right)$.
+This matches the optimal complexity of its non-private zeroth-order analog. 
+Notably, although the objective is not smooth, we have privacy ``for free'' whenever $\rho \ge \sqrt{d}\epsilon$.
+
+\input{3_DP-O2NC/1_intro}
+\input{3_DP-O2NC/2_prelim}
+\input{3_DP-O2NC/3_estimator}
+\input{3_DP-O2NC/4_result}
+\input{3_DP-O2NC/5_conclusion}

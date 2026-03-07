@@ -1,0 +1,29 @@
+\begin{algorithm}[]
+\begin{algorithmic}[1]
+    \State \textbf{Input:} OCO algorithm $\calA$ with domain $W$, positive sequence $\{\weight_t\}$, 
+    % and sequence of \textit{independent} and \textit{mean-zero} random vector $\{R_t\}$.
+    distribution $\calD$, dataset $Z$.
+    \State \textbf{Initialize:} Set $\weight_0 = 0, x_0 = 0$ and $g_0 = 0$. Set global variable $\mathcal{R}=\{\}$.
+    % Set random matrix $R$ such that $R_{ij}\sim \calN(0,\sigma^2)$.
+    \For{$t=1,\ldots,T$}
+        \State Get $w_t$ from $\calA$ and compute $x_t = (\weight_{1:t-1}x_{t-1}+\weight_tw_t)/\weight_{1:t}$.
+        \State Compute gradient difference $\delta_t = \weight_t\nabla\ell(x_t,z_t)-\weight_{t-1}\nabla\ell(x_{t-1},z_t)$.
+        \State Update $g_t = g_{t-1}+\delta_t$ and generate noise $\gamma_t=\textsc{Noise}(t)$.
+        \State Send $\ell_t(w) = \langle g_t+\gamma_t, w\rangle$ to $\calA$ as the $t$-th loss.
+    \EndFor
+    
+    \vspace{0.5em}
+    
+    \Function{Noise}{$t$}
+        \State \textbf{Initialize: } Set $k=0$, $I_t=\{\}$, $\mathrm{bin}(t)$ be the binary encoding of $t$, and $n=\lfloor \log_2 t\rfloor+1$.
+        \For{$i=1,\ldots,n$}
+            \State If $\mathrm{bin}(t)[i] = 1$, update $k = k+2^{n-i}$ and $I_t=I_t\cup\{k\}$.
+        \EndFor 
+        \State Generate noise $\tilde R_t\sim \calD$, compute $R_t=\sigma_t\tilde R_t$, and update $\mathcal{R}=\mathcal{R}\cup\{R_t\}$.
+        % \State Compute $\sigma_t^2$ and $R_t=\sigma_t \tilde R_t$, and update $\mathcal{R}=\mathcal{R}\cup\{R_t\}$.
+        \State \textbf{Return} $\gamma_t = \sum_{i\in I_t} R_i$.
+    \EndFunction
+\end{algorithmic}
+\caption{Differentially-Private Online-to-Batch}
+\label{alg:DP-OTB}
+\end{algorithm}

@@ -1,0 +1,125 @@
+% BU ECE template for MS thesis and PhD dissertation.
+%
+%==========================================================================%
+% MAIN PREAMBLE 
+%==========================================================================%
+\documentclass[12pt,letterpaper]{report}          % Single-sided printing for the library
+%\documentclass[12pt,twoside]{report} % Double-sided printing
+\usepackage[intlimits]{amsmath}
+\usepackage{amsfonts,amssymb,amsthm}
+\DeclareSymbolFontAlphabet{\mathbb}{AMSb}
+\usepackage{natbib}
+\usepackage{apalike}
+\usepackage{float}
+\usepackage[bf]{caption}       
+\usepackage{fancyhdr}
+%\usepackage{fancyheadings}
+\usepackage{fancybox}
+\usepackage{ifthen}
+\usepackage{bu_ece_thesis}
+\usepackage{url}
+\usepackage{lscape,afterpage}
+\usepackage{xspace}
+\usepackage{epstopdf} 
+\usepackage{subfig}
+\usepackage{math_symbols}
+\usepackage{math_environments}
+%==========================================================================%
+%%% graphicx and pdf creation
+\usepackage{graphicx}
+\usepackage{appendix}
+%\usepackage{psfrag}
+%\DeclareGraphicsExtensions{.eps}   % extension for included graphics
+%\usepackage{thumbpdf}              % thumbnails for ps2pdf
+%\usepackage[ps2pdf,                % hyper-references for ps2pdf
+%bookmarks=true,%                   % generate bookmarks ...
+%bookmarksnumbered=true,%           % ... with numbers
+%hypertexnames=false,%              % needed for correct links to figures !!!
+%breaklinks=true,%                  % breaks lines, but links are very small
+%linkbordercolor={0 0 1},%          % blue frames around links
+%pdfborder={0 0 112.0}]{hyperref}%  % border-width of frames 
+%                                   % will be multiplied with 0.009 by ps2pdf
+%\hypersetup{
+%  pdfauthor   = {Joe Graduate <joe.graduate@bu.edu>},
+%  pdftitle    = {dissertation.pdf},
+%  pdfsubject  = {doctoral dissertations},
+%  pdfkeywords = {mathematics, science, technology},
+%  pdfcreator  = {LaTeX with hyperref package},
+%  pdfproducer = {dvips + ps2pdf}
+%}
+%==========================================================================%
+% customized commands can be placed here
+%\newcommand{\figref}[1]{Figure~\ref{#1}}
+%\newcommand{\chapref}[1]{Chapter~\ref{#1}}
+%\newcommand{\latex}{\LaTeX\xspace}
+
+% chapter 2
+\newcommand{\weight}{\omega}
+\newcommand{\nSG}{\mathrm{nSG}}
+\newcommand{\IN}{\mathrm{IN}}
+\newcommand{\OUT}{\mathrm{OUT}}
+
+% chapter 3
+\newcommand{\conv}{\operatorname{conv}}
+\newcommand{\vol}{\operatorname{vol}}
+\newcommand{\grad}{\textsc{Grad}}
+\newcommand{\diff}{\textsc{Diff}}
+\newcommand{\tree}{\textsc{Tree}}
+\newcommand{\node}{\textsc{Node}}
+\newcommand{\sT}{\mathbb{T}}
+
+%==========================================================================%
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\hypersetup{breaklinks=true,colorlinks=true,linkcolor=blue,urlcolor=magenta,citecolor=cyan}
+\usepackage{breakurl}
+\usepackage{algorithm, algpseudocode}
+
+%==========================================================================%
+% BEGIN
+%==========================================================================%
+\begin{document}
+
+% The preliminary pages
+\include{0_Prelim/prelim}        
+\cleardoublepage
+
+% -------------------------------------
+% CHAPTER 1: INTRODUCTION
+% -------------------------------------
+\include{1_Intro/_main}
+\cleardoublepage
+
+% -------------------------------------
+% CHAPTER 2: NeurIPS'22 Differentially Private Online-To-Batch
+% -------------------------------------
+\include{2_DP-OTB/_main}
+\cleardoublepage
+
+% -------------------------------------
+% CHAPTER 3: ICLR'24 Differentially Private Online-To-Non-Convex
+% -------------------------------------
+\include{3_DP-O2NC/_main}
+\cleardoublepage
+
+
+%\appendix
+\begin{appendices}
+\include{Appendix/Appendix}
+\end{appendices}
+%==========================================================================%
+% Bibliography
+\newpage
+\singlespace
+\bibliographystyle{apalike}
+
+% each subdirectory can have its own BiBTeX file
+\bibliography{thesis}
+\cleardoublepage
+
+%==========================================================================%
+% Curriculum Vitae
+\include{0_Prelim/cv} 
+
+%==========================================================================%
+\end{document}

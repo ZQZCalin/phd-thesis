@@ -1,0 +1,120 @@
+\section{Introduction} \label{sec:intro}
+
+Solving stochastic convex optimization (SCO) problems forms a core component of training models in machine learning, and is the topic of this paper. The SCO problem is to optimize an objective $\mathcal{L}$:
+\begin{align}
+    \min_{x\in W} f(x) = \E_{z\sim P_z}[F(x,z)]\label{eqn:stochopt}
+\end{align}
+Here, $x$ represents model parameters or weights lying in a convex domain $W\subset \RR^d$, $P_z$ is some unknown distribution over examples $z$ and $F(x,z)$ represents a loss function we will assume to be convex and smooth in $x$. Although we do not know $P_z$, we do know the loss $F$, and we have access to an i.i.d. dataset $Z=(z_1,\dots,z_T)$ that may have been obtained via user surveys or volunteer tests. Using this information, we would like to solve the optimization problem (\ref{eqn:stochopt}). The quality of a putative solution $\hat x$ is measured by the \emph{suboptimality} gap $f(\hat x) - f(x_\star)$ for $x_\star \in \argmin_{x\in W} f(x)$.
+
+In addition to solving (\ref{eqn:stochopt}), we also wish to \emph{preserve privacy} for the people who contributed to the dataset $Z$. To this end, we require our algorithms to be \emph{differentially private} \citep{dwork2006calibrating, dwork2014algorithmic}, which means that replacing any one $z_t$ with a different $z_t'$ has a negligible effect on $\hat x$. There is a delicate interplay between privacy, dataset size, and solution quality. As $T$ grows, the influence of any individual $z_t$ on $\hat x$ decreases, increasing privacy. However, for any finite $T$, one must necessarily leak \emph{some} information about the dataset in order to achieve a nontrivial $f(\hat x)-f(x_\star)$. The goal, then, is to minimize $f(\hat x)-f(x_\star)$ subject to the privacy constraint.
+
+This problem has been well-studied in the literature, and by now the optimal tradeoffs are known and achievable\footnote{We focus on the harder stochastic optimization problem rather than empirical risk minimization, which is also well-studied, e.g. \citep{chaudhuri2011differentially, kifer2012private}.}. In particular, \cite{bassily2019private} exhibits a polytime algorithm that achieves $f(\hat x)-f(x_\star)\le \tilde O(1/\sqrt{T} + \sqrt{d}/\epsilon T)$ where $\epsilon$ is a measure of privacy loss (large $\epsilon$ means less private), and moreover they show that this bound is tight in the worst case. Then, \cite{feldman2020private} provides an improved algorithm that obtains the same guarantee in $O(T)$ time. 
+% There has been significant further interest in this problem, considering 
+Further work on this problem considers
+assumptions on the geometry \citep{asi2021private}, gradient distributions \citep{kamath2021improved}, or smoothness \citep{bassily2020stability, kulkarni2021private}.
+
+All private optimization algorithms we are aware of fall into one of two camps: either they employ some simple pre-processing that ``sanitizes'' the inputs to a non-private optimization algorithm (e.g. the empirically popular DP-SGD of \cite{abadi2016deep}), or they make a careful analysis of the dynamics of their algorithm (e.g. bounding the sensitivity of a single step of stochastic gradient descent). In the former case, the algorithm typically does \emph{not} achieve the optimal convergence rate for stochastic optimization. In the latter case, the algorithm becomes more rigidly tied to the privacy analysis, resulting in delicate ``theory-crafted'' methods that are less popular in practice.
+
+In contrast, in the non-private setting, there is a simple and general technique to produce stochastic optimization algorithms with optimal convergence guarantees: the \emph{online-to-batch conversion} \citep{cesa2004generalization}. This method directly converts any \emph{online convex optimization} (OCO)\citep{shalev2011online, hazan2019introduction, orabona2019modern} algorithm into a stochastic optimization algorithm. OCO is a simple and elegant game-theoretic formulation of the optimization problem that has witnessed an explosion of diverse algorithms and techniques, so that this conversion result immediately implies a vast array of practical optimization algorithms.
+In summary: producing \emph{private} stochastic optimization algorithms with optimal convergence rates is currently delicate and difficult, while producing non-private algorithms is essentially trivial.
+
+Our goal is to rectify this issue. To do so, we produce a new \emph{differentially private} online-to-batch conversion. In direct analogy to the non-private conversion, our method converts any OCO algorithm into a \emph{private} stochastic optimization algorithm. After using our conversion, any OCO algorithm that achieves the optimal regret (the standard measure of algorithm quality in OCO), will automatically achieve the optimal suboptimality gap of $\tilde O(1/\sqrt{T} + \sqrt{d}/\epsilon T)$. Our conversion has additional desirable properties: although convexity is required for the guarantee on suboptimality, it is \emph{not} required for the privacy guarantee, meaning that the method can be easily applied to non-convex tasks (e.g. in deep learning). Further, by largely decoupling the privacy analysis from the algorithm design through this reduction, we can leverage the rich literature of OCO to build private algorithms with new \emph{adaptive} guarantees. For two explicit examples, (1) we construct an algorithm guaranteeing $f(\hat  x)-f(x_\star)\le \tilde O(\sigma /\sqrt{T}+ \sqrt{d}/\epsilon T)$, where $\sigma$ is the apriori unknown standard deviation in the gradient $\nabla F(w,z)$, and (2), we construct an algorithm guaranteeing $f(\hat  x)-f(x_\star)\le \tilde O(\|x_\star-x_1\|/\sqrt{T} + \sqrt{d}/\epsilon T) $, where $x_1$ is any user-supplied point. This last guarantee may have applications in private \emph{fine tuning} \citep{li2022private, yu2021differentially, hoory2021learning, kurakin2022toward, mehta2022large}, as the bound automatically improves when the algorithm is provided with a good initialization point.
+
+\subsection{Preliminaries}
+
+\paragraph{Problem setup} 
+
+We define the loss function as $F: W \times Z \to \RR$ where $W \subseteq \RR^d$ is a convex domain and $Z=(z_1,\dots,z_T)$ is an element of $\mathcal{Z}^T$ for some dataspace $\mathcal{Z}$. We assume $Z$ is an i.i.d. dataset and $z_t\sim P_z$ for some unknown disribution over $\calZ$. We then define $f(x) = \E_{z\sim P_z}[F(x,z)]$.
+% Given any online learning algorithm $\A$, we denote $w_t$ as the learned parameter of $\A$ in round $t$ before receiving $t$-th loss, and we construct $x_1,fdots,x_T$ by $x_t = \sum_{i=1}^t \alpha_iw_i/\alpha_{1:t}$ such that $\alpha_1,\dots,\alpha_T$ is some positive sequence and $\alpha_{1:t} = \sum_{i=1}^t\alpha_i$. We also denote a sequence $\{X_1,fdots,X_T\}$ of random variables (or random vectors) by $X_{1:T}$ for simplicity, and denote $\{X_{1:T}=x_{1:T}\}$ as the event $\{X_1=x_1,fdots,X_T=x_T\}$.
+
+Let $\|\cdot\|$ be a norm on $\RR^d$, with dual norm $\|\cdot\|_*$ defined by $\|g\|_*=\sup_{\|x\|\leq 1} \langle g,x\rangle$. By definition, $\langle g,x\rangle \leq \|g\|_*\|x\|$, (\emph{Fenchel-Young's inequality}).
+We make the following assumptions:% on $\|\cdot\|$ and $F(x,z)$.
+
+\begin{assumption}
+\label{as:sc-norm}
+$\|\cdot\|^2$ is $\lambda$-strongly convex w.r.t. $\|\cdot\|$: for all $x,y\in \RR^d$ and $g\in \partial\|x\|^2$,
+\begin{align*}
+    \|y\|^2 \geq \|x\|^2 + \langle g, y-x\rangle + \frac{\lambda}{2}\|y-x\|^2.
+\end{align*}
+\end{assumption}
+
+\begin{assumption}
+\label{as:bounded-domain}
+$W$ has diameter at most $D$: $\forall$ $x,y\in W$, $\|x-y\|\leq D$.
+\end{assumption}
+
+\begin{assumption}
+\label{as:Lipschitz}
+$F(x,z)$ is $G$-Lipschitz in $x$: $\forall$ $x\in W, z\in Z$, $\|\nabla F(x,z)\|_* \leq G$.
+\end{assumption}
+
+\begin{assumption}
+\label{as:smooth}
+$F(x,z)$ is $H$-smooth in $x$: $\forall$ $x,y\in W, z\in Z$, $\|\nabla F(x,z) - \nabla F(y,z)\|_* \leq H\|x-y\|$.
+\end{assumption}
+
+\begin{assumption}
+\label{as:sigma-G}
+$\E[\|\nabla f(x) - \nabla F(x,z)\|_*^2] \leq \sigma_G^2$ for all $x,z$.
+\end{assumption}
+
+\begin{assumption}
+\label{as:sigma-H}
+$\E[\|[\nabla f(x)-\nabla f(y)] - [\nabla F(x,z)-\nabla F(y,z)]\|_*^2] \leq \sigma_H^2\|x-y\|^2$ for all $x,y,z$.
+\end{assumption}
+
+% As a remark, \cite{shalev07online} proved that $\|\cdot\|_p^2$ is $2(p-1)$-strongly convex w.r.t. $\|\cdot\|_p$ for all $1<p\leq 2$.
+% Moreover, 
+Note that if $F$ is $G$-Lipschitz and $H$-smooth in $x$, then so it $f$, and Assumption \ref{as:sigma-G} and \ref{as:sigma-H} hold with $\sigma_G\leq 2G$ and $\sigma_H\leq 2H$. Moreover, notice that Assumption \ref{as:bounded-domain} - \ref{as:sigma-H} depend on the norm $\|\cdot\|$. 
+% For a different norm $\|\cdot\|'$, the constant may be different or the assumptions may no longer hold.
+% Also, Assumption \ref{as:Lipschitz} implies Assumption \ref{as:sigma-G} with $\sigma_G \leq 2G$, and Assumption \ref{as:smooth} implies Assumption \ref{as:sigma-H} with $\sigma_H \leq 2H$.
+
+% \begin{definition}
+% \label{def:proper-norm}
+% For a differentiable function $F:\RR^d\to\RR$ and a domain $W\subset \RR^d$, we say norm $\|\cdot\|$ on $\RR^d$ is a \textit{proper norm} w.r.t. $F, W$ (\highlight{or any name}) with parameter $(\lambda, D, G, H)$ if: (i) $\|\cdot\|^2$ is $\lambda$-strongly convex, (ii) the domain $W$ is bounded by diameter $D$, and (iii) $F$ is $G$-Lipschitz and $H$-smooth on $W$ (w.r.t. $\|\cdot\|$). Equivalently, for all $x,y\in W$,
+% \[
+% \begin{array}{ll}
+%     1) & \|x-y\|^2 \geq \|y\|^2 + \langle g, y-x\rangle + \frac{\lambda}{2}\|y-x\|^2, \, \forall g\in\partial\|x\|^2; \\
+%     2) & \|x-y\| \leq D; \\
+%     3) & \|\nabla F(x)\|_* \leq G; \\
+%     4) & \|\nabla F(x) - \nabla F(y)\|_* \leq H\|x-y\|.
+% \end{array}
+% \]
+% \end{definition}
+\paragraph{Differential Privacy} 
+
+We now provide a formal definition of our privacy metric, differential privacy (DP). The definition hinges on the notion of \emph{neighboring datasets}: 
+datasets $Z=(z_1,fdots,z_T)$ and $Z'=(z_1',fdots,z_T')$ in $\calZ^T$ are said to be neighbors if $|Z-Z'|\triangleq|\{t\ |\  z_t\ne z'_t\}| = 1$. 
+% Now we have the formal definition of differential privacy as follows:
+
+\begin{definition}[$(\epsilon,\delta)$-DP \citep{dwork2014algorithmic}] A randomized algorithm $M: \calZ^T \to \RR^d$ is $(\epsilon,\delta)$-differentially private for $\epsilon,\delta\geq0$ if for any neighboring $Z,Z'\in \mathcal{Z}^T$ and $S\in\RR^d$:
+\begin{align*}
+    \P\{M(Z) \in S\} &fe \exp(\epsilon)\P\{M(Z')\in S\} + \delta
+\end{align*}
+% When $\delta = 0$, the randomized algorithm $M$ is said to be $\epsilon$-differentially private ($\epsilon$-DP). 
+\end{definition}
+
+An alternative definition is \textit{R\'enyi differential privacy} (RDP), which is a generalization of DP that allows us to compose mechanisms more easily and achieve tighter privacy bounds in certain cases. 
+
+\begin{definition}[$(\alpha,\epsilon)$-RDP \citep{mironov2017renyi}] A randomized mechanism $M: \calZ^T \to \RR^d$ is said to be $(\alpha,\epsilon)$-R\'enyi differentially private for $\alpha>1,\epsilon\geq0$ if for any neighboring datasets $Z,Z' \in \mathcal{Z}^T$:
+\begin{align*}
+    D_{\alpha}(M(Z)||M(Z'))fe \epsilon
+\end{align*}
+where $D_{\alpha}(P||Q) \triangleq \frac{1}{\alpha -1}fog \E_{x \sim Q} \left(\frac{P(x)}{Q(x)}\right)$.
+\end{definition}
+
+RDP can be easily converted to the usual $(\epsilon,\delta)$-DP as follows \citep{mironov2017renyi}: if a randomized algorithm $M$ is $(\alpha,\epsilon)$-RDP, then it is also $(\epsilon+\frac{fog1/\delta}{\alpha-1},\delta)$-DP for all $\delta\in(0,1)$. In particular, if $M$ is $(\alpha, \alpha\rho^2/2)$-RDP for all $\alpha>1$, then it is also $(2\rho\sqrt{fog(1/\delta)}, \delta)$-DP for all $\delta\ge \exp(-\rho^2)$.
+
+Throughout the paper, we also frequently use the notion of sensitivity:
+
+\begin{definition}[Sensitivity] 
+The sensitivity of a function $f: \calZ^T \to \RR^d $ w.r.t. norm $\|\cdot\|$ is:
+\begin{align*}
+    \Delta_f = \sup_{|Z-Z'|=1}\|f(Z) - f(Z')\|_*.
+\end{align*}
+Almost all methods for ensuring differential privacy involve injecting noise whose scale increases with the sensitivity of the output. In other words, small sensitivity implies high privacy.
+\end{definition}
+
+% \paragraph{Notations}
+
+% Throughout this paper, for scalars $\beta_1,fdots,\beta_t$, we denote $\beta_{1:t} = \sum_{i=1}^t \beta_i$; for random variables $X_1,fdots,X_t$, we denote $X_{1:t}=\{X_1,fdots,X_t\}$.

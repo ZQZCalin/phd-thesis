@@ -1,0 +1,108 @@
+\section{Proofs in Section \ref{sec:estimator}}
+\label{app:diff-estimator}
+
+% \GradEstimator*
+
+\begin{proof}
+For simplicity, let $\vecg_{ij} = \frac{d}{2\delta}(f(\vecx+\delta\vecu_{ij},z_i)-f(\vecx-\delta\vecu_{ij},z_i))\vecu_{ij}$ so that $\grad_{f,\delta}(\vecx,z_{1:b}) = \frac{1}{b}\sum_{i=1}^b\frac{1}{d}\sum_{j=1}^d \vecg_{ij}$. Since $f$ is $L$-Lipschitz, it follows that $\|\vecg_{ij}\| \le dL$.
+
+First, by $F(\vecx)=\E_z[f(\vecx,z)]$ and Lemma \ref{lem:uniform-smoothing} (iv),
+\begin{align*}
+    \E_{\vecu,z}[ \vecg_{ij} ] 
+    = \E_{\vecu}[ \tfrac{d}{2\delta}(F(\vecx+\delta\vecu_{ij})-F(\vecx-\delta\vecu_{ij}))\vecu_{ij} ] 
+    = \nabla\hat F_\delta(\vecx).
+\end{align*}
+Taking the average over $i,j$ gives $\E[\grad_{f,\delta}(\vecx,z_{1:b})] = \nabla\hat F_\delta(\vecx)$.
+
+Next, let $\overline\vecg_i = \frac{1}{d}\sum_{j=1}^d \vecg_{ij}$ and observe that $\E[\overline\vecg_i] = \nabla\hat F_\delta(\vecx)$. 
+Since $\overline\vecg_i - \nabla\hat F_\delta(\vecx)$ are mean-zero and independent for all $i$, we have 
+\begin{align*}
+    \E[\langle \overline\vecg_i-\nabla\hat F_\delta(\vecx), \overline\vecg_{i'}-\nabla\hat F_\delta(\vecx) \rangle]
+    &= \E_{z_{i'}}[ \langle \E_{z_i}[ \overline\vecg_i-\nabla\hat F_\delta(\vecx) ], \overline\vecg_{i'}-\nabla\hat F_\delta(\vecx) \rangle | z_{i'} ] = 0.
+\end{align*}
+% ===== empty line for formatting only =====
+In other words, all cross-terms are $0$. Therefore,
+\begin{align}
+    &\E\|\grad_{f,\delta}(\vecx,z_{1:b}) - \nabla\hat F_\delta(\vecx)\|^2 \notag\\
+    &= \textstyle \frac{1}{b^2}\sum_{i=1}^b \E\| \overline\vecg_i - \nabla\hat F_\delta(\vecx) \|^2 \notag\\
+    &\le \textstyle \frac{1}{b^2}\sum_{i=1}^b 2\E\|\overline\vecg_i - \nabla\hat f_\delta(\vecx,z_i)\|^2 + 2\E\|\nabla\hat f(\vecx,z_i) - \nabla\hat F_\delta(\vecx)\|^2.
+    \label{eq:grad-est-1}
+\end{align}
+We first evaluate the second term.
+By Lemma \ref{lem:uniform-smoothing} (i), $\hat f_\delta(\cdot,z_i)$ and $F_\delta$ are $L$-Lipschitz, which implies that $\|\nabla\hat f_\delta(\vecx,z_i)\|\le L$ and $\|\nabla\hat F_\delta(\vecx)\| \le L$. Consequently, $\E\|\nabla\hat f(\vecx,z_i) - \nabla\hat F_\delta(\vecx)\|^2 \le (2L)^2$. 
+Next, note that $\vecg_{ij}-\nabla\hat f_\delta(\vecx,z_i)|z_i$ are mean-zero and independent for all $j$. Therefore,
+\begin{align*}
+    \E\|\overline\vecg_i - \nabla\hat f_\delta(\vecx,z_i)\|^2 
+    &= \textstyle \frac{1}{d^2}\sum_{j=1}^d \E\|\vecg_{ij} - \nabla\hat f_\delta(\vecx,z_i)\|^2 
+    \le \frac{(d+1)^2L^2}{d}.
+\end{align*}
+The last inequality follows from $\|\vecg_{ij} - \nabla\hat f_\delta(\vecx,z_i)\| \le \|\vecg_{ij}\| + \|\nabla\hat f_\delta(\vecx,z_i)\| \le (d+1)L$.
+Upon substituting back into \eqref{eq:grad-est-1}, we have
+\begin{equation*}
+    \textstyle
+    \E\|\grad_{f,\delta}(\vecx,z_{1:b}) - \nabla\hat F_\delta(\vecx)\|^2
+    \le \frac{2}{b} \left( \frac{(d+1)^2L^2}{d} + (2L)^2 \right) 
+    \le \frac{16dL^2}{b}. 
+\end{equation*}
+
+Finally, let $\vecg'_{ij},\overline\vecg'_i$ be defined in the same way as $\vecg_{ij},\overline\vecg_i$ but using $z'_{1:b}$. Since $z_{1:b},z'_{1:b}$ are neighboring, $\overline\vecg_i - \overline\vecg_i' = 0$ for all but one $i$. Let $k$ be the index of the different data point. Then
+\begin{equation*}
+    \textstyle
+    \|\grad_{f,\delta}(\vecx,z_{1:b}) - \grad_{f,\delta}(\vecx,z'_{1:b})\| 
+    = \frac{1}{b}\|\overline\vecg_k - \overline\vecg_k'\| 
+    \le \frac{1}{bd}\sum_{j=1}^d \| \vecg_{kj} - \vecg_{kj}' \| 
+    \le \frac{2dL}{b}. 
+    \qedhere
+\end{equation*}
+\end{proof}
+
+
+% \DiffEstimator*
+
+\begin{proof}
+Let $\vecd_{ij} = \tfrac{d}{\delta}(f(\vecx+\delta\vecu_{ij},z_i)-f(\vecy+\delta\vecu_{ij},z_i))\vecu_{ij}$. Then it follows that $\diff_{f,\delta}(\vecx,\vecy,z_{1:b}) = \frac{1}{b}\sum_{i=1}^b\frac{1}{d}\sum_{j=1}^d\vecd_{ij}$. Since $f$ is $L$-Lipschitz, it also holds that $\|\vecd_{ij}\| \le \frac{dL}{\delta}\|\vecx-\vecy\|$.
+
+First, by $F(\vecx)=\E_z[f(\vecx,z)]$ and Lemma \ref{lem:uniform-smoothing} (iv),
+\begin{align*}
+    % \E_{\vecu,z}[\diff_(\vecx,\vecy,z;b)]
+    % &= \frac{1}{b}\sum_{i=1}^b
+    % &\E_{\vecu_i,z}[ \tfrac{d}{\delta}(f(\vecx+\delta\vecu_i,z)-f(\vecy+\delta\vecu_i,z))\vecu_i | \vecx,\vecy ] \\
+    % &= \frac{1}{b}\sum_{i=1}^b 
+    \E_{\vecu,z}[\vecd_{ij}]
+    = \E_{\vecu}[\tfrac{d}{\delta}(F(\vecx+\delta\vecu_{ij})-F(\vecy+\delta\vecu_{ij})\vecu_{ij}]
+    = \nabla\hat F_\delta(\vecx) - \nabla\hat F_\delta(\vecy).
+\end{align*}
+Taking the average over $i,j$ gives $\E_{\vecu,z}[ \diff_{f,\delta}(\vecx,\vecy,z_{1:b})] = \nabla\hat F_\delta(\vecx) - \nabla\hat F_\delta(\vecy)$.
+
+Next, let $\overline\vecd_i = \frac{1}{k}\sum_{j=1}^k\vecd_{ij}$, $\Delta_F = \nabla\hat F_\delta(\vecx) - \nabla\hat F_\delta(\vecy)$, and $\Delta_{f}(z_i) = \nabla\hat f_\delta(\vecx,z_i)-\nabla\hat f_\delta(\vecy,z_i)$. Observe that $\E[\overline\vecd_i] = \Delta_F$ and $\E[\vecd_{ij}|z_i] = \Delta_f(z_i)$.
+Since $\overline\vecd_i - \Delta_F$ are independent and mean-zero for all $i$, we have
+\begin{align}
+    &\E\| \diff_{f,\delta}(\vecx,\vecy,z_{1:b}) - [\nabla\hat F_\delta(\vecx) - \nabla\hat F_\delta(\vecy)] \|^2 \notag\\
+    &= \textstyle \frac{1}{b^2}\sum_{i=1}^b \E\| \overline\vecd_i - \Delta_F \|^2 \notag\\
+    &\le \textstyle \frac{1}{b^2}\sum_{i=1}^b 2\E\|\overline\vecd_i - \Delta_f(z_i)\|^2 + 2\E\|\Delta_f(z_i) - \Delta_F\|^2. 
+    \label{eq:diff-est-1}
+\end{align}
+We first evaluate the second term.
+By Lemma \ref{lem:uniform-smoothing} (iii), $\hat f_\delta, F_\delta$ are $\frac{\sqrt{d}L}{\delta}$-smooth, which implies that $\|\Delta_f(z_i)\|, \|\Delta_F\| \le \frac{\sqrt{d}L}{\delta}\|\vecx-\vecy\|$. Consequently, $\E\|\Delta_f(z_i)-\Delta_F\|^2 \le (\frac{2\sqrt{d}L}{\delta}\|\vecx-\vecy\|)^2$. 
+Next, since $\vecd_{ij}-\Delta_f(z_i)|z_i$ are mean-zero and independent for all $j$,
+\begin{align*}
+    \E\|\overline\vecd_i - \Delta_f(z_i)\|^2 
+    &\le \textstyle \frac{1}{d^2}\sum_{j=1}^d \E\|\vecd_{ij} - \Delta_f(z_i)\|^2 \le \frac{(2d^2+2d)L^2}{d\delta^2}\|\vecx-\vecy\|^2.
+\end{align*}
+The last inequality follows from $\|\vecd_{ij}\| \le \frac{dL}{b}\|\vecx-\vecy\|$ and $\|\Delta_f(z_i)\| \le \frac{\sqrt{d}L}{\delta}\|\vecx-\vecy\|$.
+% $\|\vecd_{ij} - \Delta_f(z_i)\| \le \|\vecd_{ij}\| + \|\Delta_f(z_i)\| \le (d+1)L$.
+Therefore, upon substituting back into \eqref{eq:diff-est-1}, we have
+\begin{equation*}
+    \textstyle
+    \E\| \diff_{f,\delta}(\vecx,\vecy,z_{1:b}) - [\nabla\hat F_\delta(\vecx) - \nabla\hat F_\delta(\vecy)] \|^2
+    % \le \frac{2}{b} \left( \frac{(d+1)^2L^2}{d} + (2L)^2 \right) \|\vecx-\vecy\|^2
+    \le \frac{16dL^2}{b\delta^2}\|\vecx-\vecy\|^2. 
+\end{equation*}
+
+Finally, let $\vecd'_{ij},\overline\vecd'_i$ be defined in the same way as $\vecd_{ij}, \overline\vecd_i$ but using $z'_{1:b}$. Since $z_{1:b},z'_{1:b}$ are neighboring, $\overline\vecd_i-\overline\vecd_i' = 0$ for all but one $i$. Let $k$ be the index of the different data point. Then 
+\begin{equation*}
+    \textstyle
+    \|\diff_f(\vecx,\vecy,z_{1:b}) - \diff_f(\vecx,\vecy,z_{1:b}')\|
+    = \frac{1}{b}\|\overline\vecd_k - \overline\vecd_k'\| \le \frac{2dL}{b\delta}\|\vecx-\vecy\|. \qedhere
+\end{equation*}
+\end{proof}

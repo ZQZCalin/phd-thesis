@@ -1,0 +1,257 @@
+% \section{Private Online-to-non-convex Conversion}
+\section{Our Algorithm and Results}
+\label{ch3:sec:result}
+
+\begin{algorithm}[t]
+\caption{Online-to-Nonconvex Conversion}
+\label{alg:PONC}
+\begin{algorithmic}[1]
+    \Statex \textbf{Input:} OCO algorithm $\calA$ with domain $D$, gradient oracle $\calO$, initial state $\vecx_1$.
+    \For {$k=1,2,\ldots,K$}
+    \For {$t=1,2,\ldots,T$}
+        \State Receive $\Delta_t^k$ from $\calA$. (For example, $\Delta_1^k\gets 0$ and $\Delta_t^k\gets\Pi_D(\Delta_{t-1}^k-\eta\tilde\vecg_{t-1}^k), t\ge 2$.)
+        \State Update $\vecx_{t+1}^k \gets \vecx_t^k + \Delta_t^k$ and $\vecw_t^k \gets \vecx_t^k + s_t^k\Delta_t^k$, where $s_t^k\sim \mathrm{Uniform}([0,1])$.
+        % \State Query $\vecg_t \gets G(\vecw_t, z_t; b)$ and set $\tilde\vecg_t \gets \vecg_t + \xi_t$, where $\xi_t\sim \calN(0,\sigma^2I)$.
+        \State Query gradient estimator $\tilde\vecg_t^k$ from $\calO$.
+        \State Send $\ell_t^k(\cdot) = \langle \tilde\vecg_t^k, \cdot\rangle$ to $\calA$ and $\calA$ updates $\Delta_{t+1}^k$.
+    \EndFor
+    \State Compute $\overline \vecw^k \gets \frac{1}{T}\sum_{t=1}^T \vecw_t^k$.
+    \State Reset $\vecx_1^{k+1}\gets \vecx_{T+1}^k$ and restart $\calA$.
+    \EndFor
+    \State Output $\overline\vecw \sim \mathrm{Uniform}(\{\overline\vecw^1,\ldots, \overline\vecw^K\})$.
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Private Online-to-Non-Convex Conversion}
+\label{sec:algorithm}
+
+Our algorithm builds on the Online-to-Nonconvex Conversion (O2NC) by \citep{cutkosky2023optimal}, which is a general framework that converts any OCO algorithm with $O(\sqrt{T})$ regret into a nonsmooth nonconvex optimization algorithm that finds a $(\delta,\epsilon)$-stationary point in $O(\delta^{-1}\epsilon^{-3})$ iterations. The pseudo-code of this framework is presented in Algorithm \ref{alg:PONC}. 
+Specifically, our algorithm chooses projected Online Subgradient Descent (OSD) as the OCO algorithm, which updates $\Delta_t^k$ in line 3 of Algorithm \ref{alg:PONC} following the explicit update rule: $\Delta_1^k \gets 0$ and $\Delta_t^k \gets \Pi_D(\Delta_{t-1}^k-\eta \tilde\vecg_{t-1}^k)$ for $t\ge 2$. Here $\Pi_D(\vecx) = \argmin_{\|\vecy\|\le D} \|\vecx-\vecy\|$ denotes the projection operator and $\eta$ is the stepsize tuned by OSD.
+Regarding notations in Algorithm \ref{alg:PONC}, there are two round indices $t$ and $k$, and we use the subscript $t$ and superscript $k$, namely $\vecx_t^k$, to denote a variable $\vecx$ in outer loop $k$ and inner loop $t$.
+
+The selection of O2NC as our base non-private algorithm is deliberate and influenced by the literature of non-private zeroth-order algorithms in nonsmooth nonconvex optimization. Intuitively, in the realm of privacy, a variance-reduction algorithm is more appealing due to its inherently low sensitivity. However, a straightforward application of variance-reduced SGD paired with zeroth-order estimators only achieves a sub-optimal dimension dependence of $O(d^{3/2}\delta^{-1}\epsilon^{-3})$, as shown in \citep{chen2023faster}. 
+A recent advancement by \cite{kornowski2023algorithm} has improved the rate to $O(d\delta^{-1}\epsilon^{-3})$. Central to their achievement is the observation that finding a $(2\delta,\epsilon)$-stationary point of a nonsmooth objective $F$ is equivalent to finding a $(\delta,\epsilon)$-stationary point of its uniform smoothing $\hat F_\delta$. 
+Previous zeroth-order algorithms aim to find an $\epsilon$-stationary point of $\hat F_\delta$ via smooth optimization algorithms such as variance-reduced SGD, resulting in an additional smoothness cost of order $O(\sqrt{d})$. In contrast, the algorithm proposed by \cite{kornowski2023algorithm} leverages O2NC to find a $(\delta,\epsilon)$-stationary point, achieving a linear dimension dependence. 
+
+Informed by the insights of \citep{kornowski2023algorithm}, we adopt O2NC as our foundational non-private algorithm. Specifically, we adapt Algorithm \ref{alg:PONC} for privacy by substituting the gradient oracle $\calO$ in line 5 with a more carefully designed private oracle. A main challenge in this design is to minimize \emph{sensitivity}, which is required to ensure privacy. In the algorithm proposed by \cite{kornowski2023algorithm}, the gradient oracle is simply the zeroth-order gradient estimator, $\tilde\vecg_t^k = \frac{d}{2\delta}(f(\vecw_t^k+\delta\vecu, z_t^k) - f(\vecw_t^k+\delta\vecu, z_t^k))\vecu$, whose sensitivity is $O(dL)$. 
+A straightforward method to ensure privacy for this algorithm is by directly adding Gaussian noise with variance $O(d^2L^2/\rho^2)$. While this might seem intuitive, it leads to significantly worse data complexity. Specifically, the resulting rate is $O(d^{3/2}\rho^{-1}\delta^{-1}\epsilon^{-3})$, which is worse by a factor of $\epsilon^{-1}$ when compared to our proposed algorithm - and importantly \emph{does not} admit any value of $\rho$ for which we obtain the non-private convergence rate. For interested readers, we include the detailed analysis of this naive approach in Appendix \ref{app:comparison}.
+% Naively, we can add gaussian noise to make the algorithm private,
+% Recall that by introducing Gaussian noise with variance ${s^2}/{\rho^2}$, where $s$ represents the algorithm's sensitivity, we can achieve $(\alpha,\alpha\rho^2/2)$-RDP. 
+% Given this, the straightforward zeroth-order gradient estimator demands a variance of order $O(d^2L^2/\rho^2)$.
+% this will lead to a siginificantly worse convergence rate of O(...)
+
+
+In contrast, we designed a more refined private gradient oracle in Algorithm \ref{alg:oracle-variance-reduced}. According to Lemma \ref{lem:grad-estimator} and \ref{lem:diff-estimator}, the sensitivity of $\vecg_1^k$ is $O(dL/B_1)$, while that of $\vecd_t^k$ is $O(dL\|\vecw_t^k-\vecw_{t-1}^k\|/B_2\delta)$. Setting $B_1=T,B_2=1$, and using Remark \ref{rmk:w-distance} with $D=\delta/T$, both $\vecg_1^l$ and $\vecd_t^k$ have sensitivity $O(dL/T)$.
+With these settings, we can apply the tree mechanism, a useful technique to release sums of private algorithms, ensuring that the variance-reduced gradient $\tilde\vecg_t^k$ achieves $(\alpha,\alpha\rho^2/2)$-RDP. Specifically, the tree mechanism  adds noise of order $\tilde O(d^2L^2/\rho^2T^2)$ to each $\tilde\vecg_t^k$. Compared to the aforementioned naive approach, our refined approach reduces noise by a factor of $T^2$, thus resulting in the desired data complexity. 
+% $\tilde O(d\delta^{-1}\epsilon^{-3} + d^{3/2}\rho^{-1}\delta^{-1}\epsilon^{-2})$. 
+% A more rigorous proof is presented in the next section.
+
+\begin{remark}
+\label{rmk:w-distance}
+Note that $\vecw_{t+1}^k = \vecx_{t+1}^k + s_{t+1}^k\Delta_{t+1}^k = \vecw_t^k + (1-s_t^k)\Delta_t^k + s_{t+1}^k\Delta_{t+1}^k$. Therefore, if the OCO algorithm has domain bounded by $D$ (i.e., $\|\Delta_t^k\| \le D$ for all $t,k$), then $\|\vecw_{t+1}^k-\vecw_t^k\| \le 2D$. In general, for all $t,t'\in[T]$, $\|\vecw_t^k - \vecw_{t'}^k\| \le 2|t-t'|D$.
+\end{remark}
+
+
+\begin{algorithm}[t]
+\caption{Private variance-reduced gradient oracle $\calO$}
+\label{alg:oracle-variance-reduced}
+\begin{algorithmic}[1]
+    \Statex \textbf{Input:} dataset $\calZ$, constants $B_1, B_2$
+    \Statex \textbf{Initialize:} Partition $\calZ$ into $KT$ subsets: $Z_1^k$ of size $B_1$ for $k\in[K]$ and $Z_t^k$ of size $B_2$ for $t=[2,K],k\in[K]$. The total data size is $|\calZ| = M = K(B_1+B_2(T-1))$.
+    \State Upon receiving round index $k,t$ and parameters $\vecw_t^k$:
+    \If{$t=1$}
+        \State Query $\vecg_1^k \gets \grad_{f,\delta}(\vecw_1^k,Z_1^k)$.
+    \Else
+        \State Query $\vecd_t^k \gets \diff_{f,\delta}(\vecw_t^k,\vecw_{t-1}^k,Z_t^k)$ and compute $\vecg_t^k \gets \vecg_{t-1}^k + \vecd_t^k$.
+    \EndIf
+    \State Return $\tilde\vecg_t^k \gets \vecg_t^k + \textsc{Tree}(t)$.
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\begin{algorithmic}[1]
+    \Statex \textbf{Input:} Index $t\in[T]$, global variables $\sigma_1,\ldots,\sigma_T$.
+    % \If {$r = 1$}
+    %     \State Reset $\textsc{Noise} = \{\}$.
+    % \EndIf
+    \State If $t=1$, set $\textsc{Noise}\gets\{\}$.
+    \State Sample $\xi_t \sim N(0,\sigma_t^2 I)$ and store $\xi_t$ in $\textsc{Noise}$.
+    % $\textsc{Noise} \gets \textsc{Noise}\cup\{\xi_t\}$.
+    \State Return $\sum_{(\cdot,i)\in \textsc{Node}(t)} \xi_i$.
+
+    \vspace{1em}
+
+    \Function{Node}{t}
+        % \State Set $k\gets 0$, $S\gets$ binary expression of $r$, $L\gets |S|=\lfloor \log_2(r)\rfloor + 1$, and $\textsc{Node}=\{\}$.
+        % \For {$i=1,\ldots,L$ such that $S[i]=1$}
+        %     \State Set $k' \gets k+2^{L-i}$, store $\textsc{Node}\gets \textsc{Node}\cup\{(k+1,k')\}$, and update $k\gets k'$.
+        % \EndFor
+        % \State Return $\textsc{Node}$.
+        \State \textbf{Initialize:} Set $k\gets 0$ and $S\gets\{\}$.
+        \For {$i=0,\ldots,\lceil\log_2(t)\rceil$ while $k<t$}
+            \State Set $k'\gets k+2^{\lceil\log_2(t)\rceil-i}$. If $k' \le t$, store $S\gets S\cup\{(k+1),k'\}$ and update $k\gets k'$.
+        \EndFor
+        \State Return $S$.
+    \EndFunction
+\end{algorithmic}
+\caption{Tree Mechanism}
+\label{alg:tree}
+\end{algorithm}
+
+
+
+\subsection{Privacy Guarantee}
+\label{sec:privacy}
+
+To ensure the privacy of the Online-to-Nonconvex conversion, we use a variant of the tree mechanism, as defined in Algorithm \ref{alg:tree}, to privately aggregate the sum of $\vecg_1^k$ and $\vecd_t^k$. The privacy guarantee of the tree mechanism is presented in Theorem \ref{thm:tree}, and the proof is presented in Append \ref{app:tree}. Intuitively, the tree mechanism says if each of the algorithms $\calM_1,\ldots,\calM_n$ requires $\sigma^2$ noise for privacy, then the sum $\sum_{i=1}^n\calM_i$ only needs $O(\ln(n)\sigma^2)$ noise for the same level of privacy. With Theorem \ref{thm:tree}, we determine the minimal noise required to ensure privacy for Algorithm \ref{alg:PONC} in Corollary \ref{cor:privacy}, and we evaluate the total noise added by the tree mechanism in Corollary \ref{cor:tree-noise}.
+
+\begin{remark}
+\label{rmk:tree}
+To better understand the \textsc{Node} function in Algorithm \ref{alg:tree}, consider a binary tree of depth $\lceil\log_2(t)\rceil$. $\textsc{Node}(t)$ returns the largest node $n_i$ in each layer $i$, if exists, such that $n_j<n_i\le t$ starting from the top level. As an example, $\textsc{Node}(7)=\{(1,4),(5,6),(7,7)\}$ and $\textsc{Node}(8)=\{(1,8)\}$. In particular, note that $|\textsc{node}(t)| \le \lceil\log_2(t)\rceil \le 2\ln(t)$.
+% Note that $\sum_{(i,j)\in\textsc{Node}(t)}\sum_{k=i}^j = \sum_{k=1}^t$.
+\end{remark}
+
+Next, we present the main privacy theorem for the tree mechanism as presented in Algorithm \ref{alg:tree}. 
+% Let $\calX$ be a state space and $\calZ^{(1)},\ldots,\calZ^{(n)}$ be dataset spaces. In our case, $\calX$ is the collection of weights $\vecx$ for $f(\vecx,z)$, $\calZ^{(1)}$ is the collection of all possible batches $Z_1^k$ of size $B_1$ defined in Algorithm \ref{alg:PONC} and $\calZ^{(i)}$ for $i\ge 2$ is the collection of all possible batches $Z_i^k$ of size $B_2$. 
+% We would like to highlight that Theorem \ref{thm:tree} holds for any arbitrary $\calX, \calZ, \calM$.
+
+\begin{theorem}
+\label{thm:tree}
+Let $\calX$ be state space and $\calZ^{(1)},\ldots,\calZ^{(n)}$ be dataset spaces, and denote $\calZ^{(1:i)}=\calZ^{(1)}\times\dotsm\times\calZ^{(i)}$. Let $\calM^{(i)}:\calX^{i-1}\times\calZ^{(i)} \to \calX$ be a sequence of algorithms for $i\in[n]$, and let $\calA:\calZ^{(1:n)} \to \calX^n$ be the algorithm that, given a dataset $Z_{1:n} \in \calZ^{(1:n)}$, sequentially computes $\vecx_i = \sum_{j=1}^i\calM^{(j)}(\vecx_{1:j-1},Z_i)+\textsc{Tree}(i)$ for $i\in[n]$ and then outputs $\vecx_{1:n}$.
+Suppose for all $i\in[n]$ and neighboring $Z_{1:n},Z_{1:n}'\in\calZ^{(1:n)}$, $\|\calM^{(i)}(\vecx_{1:i-1},Z_i)-\calM^{(i)}(\vecx_{1:i-1},Z_i')\| \le s_i$ for all auxiliary inputs $\vecx_{1:i-1}\in\calX^{i-1}$.
+Then for all $\alpha>1$, $\calA$ is $(\alpha, \alpha\rho^2/2)$-RDP where
+\begin{equation*}
+    \rho \le \sqrt{2\ln n} \cdot \max_{b\in[n], i\le b} \frac{s_i}{\sigma_b}.
+\end{equation*}
+% $\delta\in(0,1)$, $\calA$ is $(\epsilon, \delta)$-DP where
+% \begin{equation*}
+%     \epsilon \le \sqrt{\log_2(2n)\log 1/\delta} \sup_{b\in[n],i\le b} \frac{\gamma_i}{\sigma_b}.
+% \end{equation*}
+\end{theorem}
+
+In our case, $\calX$ is the collection of weights $\vecx$ for $f(\vecx,z)$, $\calZ^{(1)}$ is the collection of all possible batches $Z_1^k$ of size $B_1$ defined in Algorithm \ref{alg:PONC} and $\calZ^{(t)}$ for $t\ge 2$ is the collection of all possible batches $Z_t^k$ of size $B_2$. Moreover, $\calM^{(1)}$ corresponds to $\grad$ that computes $\vecg_1^k$ and $\calM^{(t)}$ corresponds to $\diff$ that computes $\vecd_t^k$. Upon substituting these specific definition into Theorem \ref{thm:tree}, we have the following privacy guarantees.
+
+\begin{lemma}
+\label{cor:privacy}
+Suppose $f(\vecx,z)$ is differentiable and $L$-Lipschitz in $\vecx$ and the domain of $\calA$ is bounded by $D={\delta}/{T}$. Let $B_1,B_2$ satisfies $B_1\ge TB_2/2$. Then for any $\alpha>1, \rho>0$, Algorithm \ref{alg:PONC} is $(\alpha,\alpha\rho^2/2)$-RDP if we set the noises $\sigma_{1:T}$ in the tree mechanism as
+\begin{equation*}
+    % \sigma_1 = \frac{\sqrt{2\ln T}2L}{B_1\rho}, \quad 
+    \sigma_t = \sigma := \frac{\sqrt{2\ln T}4dL}{B_2T\rho}.
+    % , t=2,\ldots,T.
+\end{equation*}
+\end{lemma}
+
+\begin{corollary}
+\label{cor:tree-noise}
+Following the assumptions and definitions in Corollary \ref{cor:privacy}, for all $t\in [T]$,
+\begin{equation*}
+    \E\|\textsc{Tree}(t)\|^2 \le 2\ln(t) d\sigma^2 \le \left( \frac{8\ln(T) d^{3/2}L}{B_2T\rho} \right)^2.
+\end{equation*}
+\end{corollary}
+
+
+\subsection{Convergence Analysis}
+\label{sec:convergence}
+
+To start the convergence analysis, we revisit the convergence result of the non-private O2NC algorithm as presented in Lemma \ref{lem:O2NC-base} whose proof is included in Appendix \ref{app:base-lemma} for completeness. Building upon the observation in Corollary \ref{cor:smooth-reduction}, our objective shifts to finding a $(\delta,\epsilon)$-stationary point of the uniform smoothing $\hat F_\delta$, as opposed to directly optimizing $F$. This approach leads to the formulation of Corollary \ref{cor:O2NC-smoothing}. Missing proofs in this section are deferred to Appendix \ref{app:base-lemma}.
+
+\begin{lemma}
+\label{lem:O2NC-base}
+For any function $F:\RR^d\to\RR$ that is differentiable and $F(\vecx_1)-\inf_{\vecx} F(\vecx) \le F^*$, if the domain of the OCO algorithm $\calA$ is bounded by $D=\delta/T$, then 
+% the output of O2NC (Algorithm \ref{alg:PONC}) with $N=KT$ iterations satisfies
+\begin{equation*}
+    \E\|\nabla F(\overline\vecw)\|_\delta 
+    \le \frac{F^*}{DKT} + \sum_{k=1}^K \frac{\E\regret_T(\vecu^k)}{DKT} + \sum_{k=1}^K\sum_{t=1}^T \frac{ \E\langle \nabla F(\vecw_t^k) - \tilde\vecg_t^k, \Delta_t^k - \vecu^k \rangle }{DKT}.
+    % \frac{1}{DKT} \sum_{k=1}^K\sum_{t=1}^T \E\langle \nabla F(\vecw_t^k) - \tilde\vecg_t^k, \Delta_t^k - \vecu^k \rangle.
+\end{equation*}
+where $\vecu^k = -D\frac{\sum_{t=1}^T \nabla F(\vecw_t^k)}{\|\sum_{t=1}^T \nabla F(\vecw_t^k)\|}$.
+\end{lemma}
+
+\begin{lemma}
+\label{cor:O2NC-smoothing}
+Suppose $F:\RR^d\to\RR$ is differentiable, $L$-Lipschitz, and $F(\vecx_1)-\inf_\vecx F(\vecx)\le F^*$, and suppose the domain of $\calA$ is bounded by $D=\delta/T$. Then
+\begin{equation*}
+    \E\|\nabla F(\overline \vecw)\|_{2\delta} \le \frac{F^*+2L\delta}{DKT} + \sum_{k=1}^K\frac{\E\regret_T(\hat\vecu^k)}{DKT} + \sum_{k=1}^K\sum_{t=1}^T \frac{ \E\langle \nabla\hat F_\delta(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\hat\vecu^k\rangle }{DKT}.
+\end{equation*}
+where $\hat\vecu^k = -D\frac{\sum_{t=1}^T\nabla\hat F_\delta(\vecw_t^k)}{\|\sum_{t=1}^T\nabla\hat F_\delta(\vecw_t^k)\|}$.
+\end{lemma}
+
+% \begin{proof}
+% By Lemma \ref{lem:uniform-smoothing}, $\hat F_\delta$ is differentiable. Next, since $\|\hat F_\delta - F\| \le L\delta$, $\inf \hat F_\delta$ is finite and
+% \begin{equation*}
+%     \hat F_\delta(\vecx_1) - \inf_\vecx \hat F_\delta(\vecx)
+%     \le F(\vecx_1) + \inf_\vecx F(\vecx) + 2L\delta \le F^* + 2L\delta.
+% \end{equation*}
+% Hence, upon apply Lemma \ref{lem:O2NC-base} on the smoothed loss $\hat F_\delta$, we have
+% \begin{equation*}
+%     \E\|\hat F_\delta(\overline\vecw)\|_\delta \le 
+%     \frac{F^*+2L\delta}{DKT} + \sum_{k=1}^K\frac{\E\regret_T(\hat\vecu^k)}{DKT} + \sum_{k=1}^K\sum_{t=1}^T \frac{ \E\langle \nabla\hat F_\delta(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\hat\vecu^k\rangle }{DKT}.
+%     % \frac{F^*+2L\delta}{DN} + \frac{\sum_{k=1}^K\E\regret_T(\hat\vecu^k)}{DN} + \frac{1}{DN} \sum_{k=1}^K\sum_{t=1}^T \E\langle \nabla\hat F_\delta(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\hat\vecu^k\rangle.
+% \end{equation*}
+% Finally, by Corollary \ref{cor:smooth-reduction}, $\E\|F(\overline\vecw)\|_{2\delta}$ is also bounded by RHS, which concludes the proof.
+% \end{proof}
+
+Next, we introduce a key result in our convergence analysis. At its core, Lemma \ref{lem:oracle-variance} suggests that the variance of the non-private gradient oracle, defined as $\vecg_t^k$ in Algorithm \ref{alg:oracle-variance-reduced}, is approximately $O(dL^2/T)$. This result leads to the non-private term of $O(d\delta^{-1}\epsilon^{-3})$ in the data complexity, matching the optimal rate in non-private contexts. Together with Corollary \ref{cor:tree-noise}, this lemma implies the main result as stated in Theorem \ref{thm:convergence}.
+
+\begin{lemma}
+\label{lem:oracle-variance}
+Suppose $f(\vecx,z)$ is differentiable and $L$-Lipschitz in $\vecx$ and the domain of $\calA$ is bounded by $D={\delta}/{T}$, then the variance of the gradient oracle $\calO$ (Algorithm \ref{alg:oracle-variance-reduced}) is bounded by
+\begin{equation*}
+    \E\| \nabla\hat F_\delta(\vecw_t^k) - \vecg_t^k \|^2 \le \frac{16dL^2}{B_1} + \frac{64dL^2}{B_2T}.
+\end{equation*}
+\end{lemma}
+
+
+\begin{theorem}
+\label{thm:convergence}
+Suppose $f(\vecx,z)$ is differentiable and $L$-Lipschitz in $\vecx$, $F(\vecx_1)-\inf_\vecx F(\vecx) \le F^*$. Then for any $\delta,\epsilon>0$ and $\alpha>1,\rho>0$, there exists 
+\begin{equation*}
+    M = \tilde O\left( d\left(\frac{F^*L^2}{\delta\epsilon^3} + \frac{L^3}{\epsilon^3}\right) + d^{3/2}\left(\frac{F^*L}{\rho\delta\epsilon^2} + \frac{L^2}{\rho\epsilon^2}\right) \right)
+\end{equation*}
+such that upon running Algorithm \ref{alg:PONC} with projected OSD as the OCO algorithm, using Algorithm \ref{alg:oracle-variance-reduced} as the private oracle, and setting $\sigma_t$ as defined in Corollary \ref{cor:privacy} and $B_1=T+1, B_2=1, D=\frac{\delta}{T}, T=\min\{(\frac{\sqrt{d}L\delta M}{F^*+L\delta})^{2/3}, (\frac{d^{3/2}L\delta M}{(F^*+L\delta)\rho})^{1/2}\}, K=\frac{M}{2T}$, the algorithm outputs an $(\alpha,\alpha\rho^2/2)$-RDP $(\delta,\epsilon)$-stationary point with $M$ data points. 
+\end{theorem}
+
+\begin{proof}
+Since $B_1=T+1,B_2=1$ satisfy $B_1\ge TB_2/2$, Corollary \ref{cor:privacy} implies the privacy guarantee.
+For the convergence analysis, Corollary \ref{cor:O2NC-smoothing} states that
+\begin{equation*}
+    \E\|\nabla F(\overline \vecw)\|_{2\delta} 
+    \le \frac{F^*+2L\delta}{DKT} + \sum_{k=1}^K\frac{\E\regret_T(\hat\vecu^k)}{DKT} + \sum_{k=1}^K\sum_{t=1}^T \frac{ \E\langle \nabla\hat F_\delta(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\hat\vecu^k\rangle }{DKT}.
+    % \le \frac{F^*+2L\delta}{DN} + \frac{\sum_{k=1}^K\E\regret_T(\hat\vecu^k)}{DN} + \frac{1}{DN} \sum_{k=1}^K\sum_{t=1}^T \E\langle \nabla\hat F_\delta(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\hat\vecu^k\rangle.
+\end{equation*}
+Recall that given a sequence of stochastic vectors $\vecv_1,\ldots,\vecv_T$, the regret of projected OSD is bounded by $\E[\regret_T(\vecu)] \le D\sqrt{\sum_{t=1}^T\E\|\vecv_t\|^2}$ \citep{orabona2019modern}. In our case, $\vecv_t=\tilde\vecg_t^k$. We can bound
+\begin{align*}
+    \E\|\tilde\vecg_t^k\|^2
+    &\le 3\E\|\vecg_t^k - \nabla\hat F_\delta(\vecw_t^k)\|^2 + 3\E\|\nabla\hat F_\delta(\vecw_t^k)\|^2 + 3\E\|\tree(t)\|^2 \\
+    &\le 3\cdot \frac{80dL^2}{B_2T} + 3L^2 + 3\cdot\left(\frac{8\ln(T)d^{3/2}L}{B_2T\rho}\right)^2,
+\end{align*}
+where the first term is bounded by Lemma \ref{lem:oracle-variance} with $B_1\ge TB_2/2$, the second by Lipschitzness of $\hat F_\delta$ (Lemma \ref{lem:uniform-smoothing} (i)), and the third by Corollary \ref{cor:tree-noise}. Consequently, we bound the regret by
+\begin{equation}
+    \E[\regret_T(\hat\vecu^k)]
+    % \le DL\sqrt{T}\left( \frac{\sqrt{240d}}{\sqrt{B_2T}} + \sqrt{3} + \frac{\sqrt{192}\ln(T)d^{3/2}}{B_2T\rho} \right).
+    \lesssim DL\sqrt{T}\left( \frac{\sqrt{d}}{\sqrt{B_2T}} + 1 + \frac{d^{3/2}}{B_2T\rho} \right).
+    \label{eq:convergence-1}
+\end{equation}
+Next, note that $\|\Delta_t^k-\hat\vecu^k\| \le 2D$. Following the same previous bounds, we have
+\begin{align}
+    \E\langle \nabla\hat F_\delta(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\hat\vecu^k\rangle
+    &\le 2D\E[\|\nabla\hat F_\delta(\vecw_t^k)-\vecg_t^k\| + \|\tree(t)\|] \notag \\
+    % &\le 2D\left( \frac{\sqrt{80d}L}{\sqrt{B_2T}} + \frac{8\ln(T)d^{3/2}L}{B_2T\rho} \right).
+    &\lesssim D\left( \frac{\sqrt{d}L}{\sqrt{B_2T}} + \frac{d^{3/2}L}{B_2T\rho} \right).
+    \label{eq:convergence-2}
+\end{align}
+Upon substituting \eqref{eq:convergence-1} and \eqref{eq:convergence-2} into Corollary \ref{cor:O2NC-smoothing}, we have
+\begin{align*}
+    \E\|\nabla F(\overline \vecw)\|_{2\delta} 
+    % &\lesssim \frac{F^*+L\delta}{DN} + \frac{1}{DT} \cdot (1) + \frac{1}{D} \cdot (2) \\
+    &\lesssim \frac{F^*+L\delta}{DKT} + \frac{L}{\sqrt{T}}\left(\frac{\sqrt{d}}{\sqrt{B_2T}} + 1+ \frac{d^{3/2}}{B_2T\rho} \right) + \left( \frac{\sqrt{d}L}{\sqrt{B_2T}} + \frac{d^{3/2}L}{B_2T\rho} \right) 
+    % &\lesssim \frac{F^*+L\delta}{DN} + \frac{L}{\sqrt{T}} + \frac{\sqrt{d}L}{\sqrt{B_2T}} + \frac{d^{3/2}L}{B_2T\rho}
+    \intertext{Upon setting $B_1=T+1,B_2=1,D=\frac{\delta}{T}$, the data size is $M=K(B_1+B_2(T-1))=2KT$ and}
+    &\lesssim \frac{(F^*+L\delta)T}{\delta M} + \frac{\sqrt{d}L}{\sqrt{T}} + \frac{d^{3/2}L}{T\rho}
+    \intertext{Upon setting $T=\min\{(\frac{\sqrt{d}L\delta M}{F^*+L\delta})^{2/3}, (\frac{d^{3/2}L\delta M}{(F^*+L\delta)\rho})^{1/2}\}$, we achieve the desired bound}
+    % &\lesssim \frac{(F^*+L\delta)^{1/3}d^{1/3}L^{2/3}}{(\delta M)^{1/3}} + \frac{(F^*+L\delta)^{1/2}d^{3/4}L^{1/2}}{(\rho\delta M)^{1/2}} \\
+    &\lesssim \left(\frac{F^*dL^2}{\delta M}\right)^{1/3} + \left(\frac{dL^3}{M}\right)^{1/3} + \left(\frac{F^*d^{3/2}L}{\rho\delta M}\right)^{1/2} + \left(\frac{d^{3/2}L^2}{\rho M}\right)^{1/2}.
+\end{align*}
+Equivalently, the right hand side is bounded by $\epsilon$ if $M=\max\{\frac{F^*dL^2}{\delta\epsilon^3}, \frac{dL^3}{\epsilon^3}, \frac{F^*d^{3/2}L}{\rho\delta\epsilon^2}, \frac{d^{3/2}L^2}{\rho\epsilon^2}\}$.
+\end{proof}
