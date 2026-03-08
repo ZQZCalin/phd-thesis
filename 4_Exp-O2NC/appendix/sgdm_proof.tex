@@ -1,7 +1,7 @@
-\section{Proofs in Section \ref{sec:sgdm}}
-\label{app:sgdm}
+\section{Proofs in Section \ref{sec:Exp-O2NC_sgdm}}
+\label{app:Exp-O2NC:sgdm}
 
-\subsection{Proof of Theorem \ref{thm:OGD-brief}}
+\subsection{Proof of Theorem \ref{thm:Exp-O2NC:OGD-brief}}
 
 Only in this subsection, to be more consistent with the notations in online learning literature, we use $\vecw$ for weights instead of $\Delta$ as we used in the main text.
 
@@ -15,7 +15,7 @@ Note that $\nabla_\vecx D_\psi(\vecx,\vecy) = \nabla \psi(\vecx) - \nabla\psi(\v
 \end{align*}
 
 \begin{lemma}
-\label{lem:OMD-one-step}
+\label{lem:Exp-O2NC:OMD-one-step}
 Let $\psi, \phi$ be convex, and define $\vecw_{t+1} = \argmin_\vecw \langle \tilde\vecg_t,\vecw\rangle + D_\psi(\vecw,\vecw_t) + \phi(\vecw)$. Then for any $\vecu$,
 \begin{align*}
     \langle \tilde\vecg_t, \vecw_t-\vecu\rangle 
@@ -39,10 +39,10 @@ Since $\phi$ is convex, $\langle \phi(\vecw_{t+1}),\vecu-\vecw_{t+1}\rangle \le 
 Substituting these back and rearranging the inequality then conclude the proof.
 \end{proof}
 
-We restate the formal version of Theorem \ref{thm:OGD-brief} as follows.
+We restate the formal version of Theorem \ref{thm:Exp-O2NC:OGD-brief} as follows.
 
 \begin{theorem}
-\label{thm:OGD-formal}
+\label{thm:Exp-O2NC:OGD-formal}
 Given a sequence of $\{\tilde\vecg_t\}_{t=1}^\infty$, a sequence of $\{\eta_t\}_{t=1}^\infty$ such that $0<\eta_{t+1} \le \eta_t$, and a sequence of $\{\mu_t\}_{t=1}^\infty$ such that $\mu_t\ge 0$, let $\calR_t(\vecw)=\frac{\mu_t}{2}\|\vecw\|^2$, $\phi_t(\vecw)=(\frac{1}{\eta_{t+1}}-\frac{1}{\eta_t})\|\vecw\|^2$, $\vecw_1=0$ and $\vecw_t$ updated by
 \begin{equation*}
     \vecw_{t+1} = \argmin_\vecw \langle \tilde\vecg_t,\vecw\rangle + \frac{1}{2\eta_t}\|\vecw-\vecw_t\|^2 + \phi_t(\vecw) + \calR_{t+1}(\vecw).
@@ -55,7 +55,7 @@ Then for any $n\in \NN$,
 \end{theorem}
 
 \begin{proof}
-Denote $\psi_t(\vecw)=\frac{1}{2\eta_t}\|\vecw\|^2$. Since $\psi_t,\phi_t,\calR_t$ are all convex and $D_{\psi_t}(\vecw,\vecw_t) = \frac{1}{2\eta_t}\|\vecw-\vecw_t\|^2$, Lemma \ref{lem:OMD-one-step} holds, which gives
+Denote $\psi_t(\vecw)=\frac{1}{2\eta_t}\|\vecw\|^2$. Since $\psi_t,\phi_t,\calR_t$ are all convex and $D_{\psi_t}(\vecw,\vecw_t) = \frac{1}{2\eta_t}\|\vecw-\vecw_t\|^2$, Lemma \ref{lem:Exp-O2NC:OMD-one-step} holds, which gives
 \begin{align*}
     \langle \tilde\vecg_t, \vecw_t-\vecu\rangle 
     &\le \langle \tilde\vecg_t,\vecw_t - \vecw_{t+1}\rangle + D_{\psi_t}(\vecu,\vecw_t) - D_{\psi_t}(\vecu,\vecw_{t+1}) - D_{\psi_t}(\vecw_{t+1},\vecw_t) \\
@@ -66,7 +66,7 @@ Equivalently,
     \langle \tilde\vecg_t, \vecw_t-\vecu\rangle + \calR_t(\vecw_t) - \calR_t(\vecu)
     &\le \langle \tilde\vecg_t,\vecw_t - \vecw_{t+1}\rangle + D_{\psi_t}(\vecu,\vecw_t) - D_{\psi_t}(\vecu,\vecw_{t+1}) - D_{\psi_t}(\vecw_{t+1},\vecw_t) \notag\\
     &\quad + \phi_t(\vecu) - \phi_t(\vecw_{t+1}) + \calR_t(\vecw_t) - \calR_{t+1}(\vecw_{t+1}) + \calR_{t+1}(\vecu) - \calR_t(\vecu).
-    \label{eq:ogd-vary-1}
+    \label{eq:Exp-O2NC:ogd-vary-1}
 \end{align}
 By Young's inequality,
 \begin{align*}
@@ -90,7 +90,7 @@ Since $\|\vecu-\vecw_{t+1}\|^2 \le 2\|\vecu\|^2 + 2\|\vecw_{t+1}\|^2$ and $\frac
     \le \left(\frac{2}{\eta_{t+1}} - \frac{2}{\eta_t}\right)\|\vecu\|^2.
     % \tag{c}
 \end{align*}
-Upon substituting back into \eqref{eq:ogd-vary-1}, we have
+Upon substituting back into \eqref{eq:Exp-O2NC:ogd-vary-1}, we have
 \begin{align*}
     \langle \tilde\vecg_t, \vecw_t-\vecu\rangle + \calR_t(\vecw_t) - \calR_t(\vecu)
     &\le \frac{\eta_t}{2}\|\tilde\vecg_t\|^2 + D_{\psi_t}(\vecu,\vecw_t) - D_{\psi_{t+1}}(\vecu,\vecw_{t+1}) + \left(\frac{2}{\eta_{t+1}} - \frac{2}{\eta_t}\right)\|\vecu\|^2 \\
@@ -111,19 +111,19 @@ and $\calR_1(\vecw_1) - \calR_{n+1}(\vecw_{n+1}) + \calR_{n+1}(\vecu) - \calR_1(
 \end{proof}
 
 
-\subsection{Proof of Theorem \ref{thm:sgdm}}
+\subsection{Proof of Theorem \ref{thm:Exp-O2NC:sgdm}}
 
 \SGDM*
 
 \begin{proof}
 First, define $D=\frac{F^*}{(G+\sigma)\sqrt{\alpha}N}$, $\mu=\frac{24cD}{\alpha^2}$ and $\eta=\frac{2D\sqrt{\alpha}}{G+\sigma}$. Note that these definitions are equivalent to $\mu=\frac{24F^*c}{(G+D)\alpha^{5/2}N}$ and $\eta=\frac{2F^*}{(G+\sigma)^2N}$ as defined in the theorem. 
 
-Next, note that both Theorem \ref{thm:o2nc-formal} and Theorem \ref{thm:OGD-formal} hold since the explicit update of $\Delta_{t+1}$ is equivalent to
+Next, note that both Theorem \ref{thm:Exp-O2NC:o2nc-formal} and Theorem \ref{thm:Exp-O2NC:OGD-formal} hold since the explicit update of $\Delta_{t+1}$ is equivalent to
 \begin{align*}
     \Delta_{t+1} = \argmin_\Delta \langle\beta^{-t}\vecg_t, \Delta\rangle + \frac{1}{2\eta_t}\|\Delta-\Delta_t\|^2 + \left(\frac{1}{\eta_{t+1}}-\frac{1}{\eta_t}\right)\|\Delta\|^2 + \frac{\mu_{t+1}}{2}\|\Delta\|^2.
 \end{align*}
 Also recall that $\regret_n(\vecu_n) = \sum_{t=1}^n \langle\beta^{-t}\vecg_t,\Delta_t-\vecu_n\rangle + \calR_t(\Delta_t) - \calR_t(\vecu_n)$.
-Therefore, upon substituting $\tilde\vecg_t=\beta^{-t}\vecg_t$, $\eta_t=\beta^t\eta$, $\mu_t=\beta^{-t}\mu$ and $\|\vecu_n\|=D$ into Theorem \ref{thm:OGD-formal}, we have
+Therefore, upon substituting $\tilde\vecg_t=\beta^{-t}\vecg_t$, $\eta_t=\beta^t\eta$, $\mu_t=\beta^{-t}\mu$ and $\|\vecu_n\|=D$ into Theorem \ref{thm:Exp-O2NC:OGD-formal}, we have
 \begin{align*}
     \E\regret_n(\vecu_n) 
     &\le \left(\frac{2}{\eta_{n+1}}+\frac{\mu_{n+1}}{2}\right)\E\|\vecu\|^2 + \frac{1}{2}\sum_{t=1}^n \eta_t \E\|\tilde\vecg_t\|^2 \\
@@ -131,7 +131,7 @@ Therefore, upon substituting $\tilde\vecg_t=\beta^{-t}\vecg_t$, $\eta_t=\beta^t\
     % &= \frac{2D^2}{\beta^{n+1}\eta} + \frac{12cD}{\beta^{n+1}\alpha^2}\cdot D^2 + \frac{1}{2}\sum_{t=1}^n \beta^t\eta \E\|\beta^{-t}\vecg_t\|^2 \\
     % &\le \frac{2D^2}{\beta^{n+1}\eta} + \frac{12cD^3}{\beta^{n+1}\alpha^2} + \frac{\eta(G^2+\sigma^2)}{2}\cdot \frac{\beta^{-n}}{1-\beta}.
 \end{align*}
-By Assumption \ref{as:optimization}, $\E\|\vecg_t\|^2 = \E\|\nabla F(\vecx_t)\|^2 + \E\|\nabla F(\vecx_t)-\vecg_t\|^2 \le G^2+\sigma^2$. Moreover, $\sum_{t=1}^n\beta^{-t} \le \frac{\beta^{-n}}{1-\beta}$. Therefore,
+By Assumption \ref{as:Exp-O2NC:optimization}, $\E\|\vecg_t\|^2 = \E\|\nabla F(\vecx_t)\|^2 + \E\|\nabla F(\vecx_t)-\vecg_t\|^2 \le G^2+\sigma^2$. Moreover, $\sum_{t=1}^n\beta^{-t} \le \frac{\beta^{-n}}{1-\beta}$. Therefore,
 \begin{align*}
     \beta^{n+1}\E\regret_n(\vecu_n)
     &\le \left(\frac{2}{\eta}+\frac{\mu}{2}\right)D^2 + \frac{\eta(G^2+\sigma^2)}{2\alpha}
@@ -144,7 +144,7 @@ Consequently, with $\alpha \le \frac{1}{2}$ (so that $\beta^{-1}\le 2$), we have
     &\le \frac{1+2\alpha N}{DN} \left( \frac{2D(G+\sigma)}{\sqrt{\alpha}} + \frac{12cD^3}{\alpha^2} \right)
     \lesssim \frac{G+\sigma}{N} + \frac{cD^2}{\alpha^2 N} + (G+\sigma)\sqrt{\alpha} + \frac{cD^2}{\alpha}.
 \end{align*}
-Upon substituting this into the convergence guarantee in Theorem \ref{thm:o2nc-formal}, we have
+Upon substituting this into the convergence guarantee in Theorem \ref{thm:Exp-O2NC:o2nc-formal}, we have
 \begin{align*}
     \E \|\nabla F(\overline\vecx)\|_c
     % &\le \frac{F^*}{DN} + \frac{2G+\sigma}{\alpha N} + \sigma\sqrt{\alpha} + \frac{12c D^2}{\alpha^2} + \left( \frac{1}{N} + \alpha \right) \left( \frac{2(G+\sigma)}{\sqrt{\alpha}} + \frac{12cD^2}{\alpha^2} \right) \\

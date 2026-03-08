@@ -1,19 +1,19 @@
 \section{Further Discussions about Differential Privacy}
-\label{app:further-DP}
+\label{app:DP-OTB:further-DP}
 
 \subsection{Example of RDP Distribution}
 
-In this subsection, we prove that the multivariate Gaussian distribution $\calN(0,I)$ is a $(d,\alpha)$-RDP distribution w.r.t. 2-norm on $\RR^d$ for all $\alpha>0$ (Definition \ref{def:RDP-dist}). Namely, $\calN(0,I)$ satisfies the following three properties: let $R\sim \calN(0,I)$, then (i) $\E[R]=0$, (ii) $\E[\|R\|_2^2] \leq d$, and (iii) for all $\rho>0$ and $\mu,\mu'\in\RR^d$, if $\sigma^2 \geq \|\mu-\mu'\|_2^2/\rho^2$ then $D_\alpha(P\|Q) \leq \alpha\rho^2/2$, where $P,Q$ denote the distribution of $\sigma R+\mu$ and $\sigma R+\mu'$ respectively.
+In this subsection, we prove that the multivariate Gaussian distribution $\calN(0,I)$ is a $(d,\alpha)$-RDP distribution w.r.t. 2-norm on $\RR^d$ for all $\alpha>0$ (Definition \ref{def:DP-OTB:RDP-dist}). Namely, $\calN(0,I)$ satisfies the following three properties: let $R\sim \calN(0,I)$, then (i) $\E[R]=0$, (ii) $\E[\|R\|_2^2] \leq d$, and (iii) for all $\rho>0$ and $\mu,\mu'\in\RR^d$, if $\sigma^2 \geq \|\mu-\mu'\|_2^2/\rho^2$ then $D_\alpha(P\|Q) \leq \alpha\rho^2/2$, where $P,Q$ denote the distribution of $\sigma R+\mu$ and $\sigma R+\mu'$ respectively.
 
 The first property follows immediately from the definition of $\calN(0,I)$. For the second property, $R=(r_1,\ldots,r_d)$ where $r_i\sim N(0,1)$ iid., so $\E[\|R\|_2^2]=\sum_{i=1}^d \E[r_i^2]=d$. To check the third property, we need the following lemma:
 
-\begin{lemma}\label{lemma:renyigaussian}
+\begin{lemma}\label{lem:DP-OTB:renyigaussian}
 $D_\alpha(\calN(\mu,\sigma^2I)\| \calN(\mu',\sigma^2I))=\alpha \|\mu-\mu'\|^2/2\sigma^2$.
 \end{lemma}
 
 Consequently, for all $\sigma^2 \geq \|\mu-\mu'\|_2^2/\rho^2$, $D_\alpha(\calN(0,\sigma^2I)\| \calN(\mu, \sigma^2 I)) \leq \alpha\rho^2/2$. This proves that $\calN(0,I)$ is indeed a $(d,\alpha)$-RDP distribution.
 
-\begin{proof}[Proof of Lemma \ref{lemma:renyigaussian}]
+\begin{proof}[Proof of Lemma \ref{lem:DP-OTB:renyigaussian}]
 The density of $\calN(\mu,\sigma^2 I)$ is $(2\pi\sigma^2)^{-d/2}\exp(-\|x-\mu\|_2^2/2\sigma^2)$. For short we denote $A=(2\pi\sigma^2)^{-d/2}$ and $B=1/2\sigma^2$. Then
 \begin{align*}
     &D_\alpha(\calN(\mu,\sigma^2 I)\|\calN(\mu',\sigma^2 I))\\
@@ -43,20 +43,20 @@ Recall that $B=1/2\sigma^2$, and this completes the proof.
 
 \subsection{Extension to Pure-DP Mechanisms}
 
-In the main text, we focus on Renyi differential privacy, and we defined RDP-distribution (Definition \ref{def:RDP-dist}) accordingly. We can always extend our result in a pure differential privacy setting.
+In the main text, we focus on Renyi differential privacy, and we defined RDP-distribution (Definition \ref{def:DP-OTB:RDP-dist}) accordingly. We can always extend our result in a pure differential privacy setting.
 
 \newcommand{\DPnorm}{\text{$(K,\calD)$-DP-able}}
 \begin{definition}[$V$-DP distribution]
-\label{def:DP-dist}
+\label{def:DP-OTB:DP-dist}
 A distribution $\calD$ on $\RR^d$ is said to be a \textit{DP distribution on norm $\|\cdot\|$ with variance constant $V$} (or simply $\calD$ is $V$-DP on $\|\cdot\|$) if it satisfies that for $R\sim\calD$ (i) $\E[R]=0$, (ii) $\E[\|R\|_*^2]\leq V$, and (iii) for all $\epsilon>0$ and $\mu,\mu'\in\RR^d$, if $\sigma^2\geq \|\mu-\mu'\|_*^2/\epsilon^2$, then $p((x-\mu)/\sigma)/p((x-\mu')/\sigma) \leq \exp(\epsilon)$ for all $x\in\RR^d$, where $p(x)$ is the density of $\calD$.
 \end{definition}
 
-The tree aggregation described in Appendix \ref{app:tree-aggregation-RDP} also works for pure DP mechanisms as well. Therefore, if we assume $\calD$ in Algorithm \ref{alg:DP-OTB} with a $V$-DP distribution and change the definition of $\sigma_t^2$ in \eqref{eq:RDP-noise} correspondingly, Algorithm \ref{alg:DP-OTB} can be modified to an purely $\epsilon$-DP mechanism.
+The tree aggregation described in Appendix \ref{app:DP-OTB:tree-aggregation-RDP} also works for pure DP mechanisms as well. Therefore, if we assume $\calD$ in Algorithm \ref{alg:DP-OTB:main} with a $V$-DP distribution and change the definition of $\sigma_t^2$ in \eqref{eq:DP-OTB:RDP-noise} correspondingly, Algorithm \ref{alg:DP-OTB:main} can be modified to an purely $\epsilon$-DP mechanism.
 
 Next, we can show that exponential mechanism in general norm satisfies this definition:
 
 \begin{lemma}
-\label{thm:exponential-mechanism-general-norm}
+\label{thm:DP-OTB:exponential-mechanism-general-norm}
 Consider a probability density $p(x) = A\exp(-\|x\|_*)$ on $(\RR^d,\|\cdot\|)$, where $A$ is some normalization constant. Also define $V=\int_{\RR^d} \|x\|_*^2 A\exp(-\|x\|_*)\, dx$. Then distribution $\calD$ with density $p$ is a $\calK$-DP distribution.
 \end{lemma}
 

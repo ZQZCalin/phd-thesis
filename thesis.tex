@@ -11,6 +11,7 @@
 \usepackage{natbib}
 \usepackage{apalike}
 \usepackage{float}
+\usepackage{booktabs}
 \usepackage[bf]{caption}       
 \usepackage{fancyhdr}
 %\usepackage{fancyheadings}
@@ -24,6 +25,7 @@
 \usepackage{subfig}
 \usepackage{math_symbols}
 \usepackage{math_environments}
+\usepackage{thmtools}  % provides restatable environment
 %==========================================================================%
 %%% graphicx and pdf creation
 \usepackage{graphicx}
@@ -62,10 +64,11 @@
 % chapter 3
 \newcommand{\conv}{\operatorname{conv}}
 \newcommand{\vol}{\operatorname{vol}}
-\newcommand{\grad}{\textsc{Grad}}
-\newcommand{\diff}{\textsc{Diff}}
-\newcommand{\tree}{\textsc{Tree}}
-\newcommand{\node}{\textsc{Node}}
+\newcommand{\mathsc}[1]{{\normalfont\textsc{#1}}}
+\newcommand{\grad}{\mathsc{Grad}}
+\newcommand{\diff}{\mathsc{Diff}}
+\newcommand{\tree}{\mathsc{Tree}}
+\newcommand{\node}{\mathsc{Node}}
 \newcommand{\sT}{\mathbb{T}}
 
 % chapter 4

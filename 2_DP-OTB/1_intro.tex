@@ -1,12 +1,12 @@
-\section{Introduction} \label{sec:intro}
+\section{Introduction} \label{sec:DP-OTB_intro}
 
 Solving stochastic convex optimization (SCO) problems forms a core component of training models in machine learning, and is the topic of this paper. The SCO problem is to optimize an objective $\mathcal{L}$:
 \begin{align}
-    \min_{x\in W} f(x) = \E_{z\sim P_z}[F(x,z)]\label{eqn:stochopt}
+    \min_{x\in W} f(x) = \E_{z\sim P_z}[F(x,z)]\label{eqn:DP-OTB:stochopt}
 \end{align}
-Here, $x$ represents model parameters or weights lying in a convex domain $W\subset \RR^d$, $P_z$ is some unknown distribution over examples $z$ and $F(x,z)$ represents a loss function we will assume to be convex and smooth in $x$. Although we do not know $P_z$, we do know the loss $F$, and we have access to an i.i.d. dataset $Z=(z_1,\dots,z_T)$ that may have been obtained via user surveys or volunteer tests. Using this information, we would like to solve the optimization problem (\ref{eqn:stochopt}). The quality of a putative solution $\hat x$ is measured by the \emph{suboptimality} gap $f(\hat x) - f(x_\star)$ for $x_\star \in \argmin_{x\in W} f(x)$.
+Here, $x$ represents model parameters or weights lying in a convex domain $W\subset \RR^d$, $P_z$ is some unknown distribution over examples $z$ and $F(x,z)$ represents a loss function we will assume to be convex and smooth in $x$. Although we do not know $P_z$, we do know the loss $F$, and we have access to an i.i.d. dataset $Z=(z_1,\dots,z_T)$ that may have been obtained via user surveys or volunteer tests. Using this information, we would like to solve the optimization problem (\ref{eqn:DP-OTB:stochopt}). The quality of a putative solution $\hat x$ is measured by the \emph{suboptimality} gap $f(\hat x) - f(x_\star)$ for $x_\star \in \argmin_{x\in W} f(x)$.
 
-In addition to solving (\ref{eqn:stochopt}), we also wish to \emph{preserve privacy} for the people who contributed to the dataset $Z$. To this end, we require our algorithms to be \emph{differentially private} \citep{dwork2006calibrating, dwork2014algorithmic}, which means that replacing any one $z_t$ with a different $z_t'$ has a negligible effect on $\hat x$. There is a delicate interplay between privacy, dataset size, and solution quality. As $T$ grows, the influence of any individual $z_t$ on $\hat x$ decreases, increasing privacy. However, for any finite $T$, one must necessarily leak \emph{some} information about the dataset in order to achieve a nontrivial $f(\hat x)-f(x_\star)$. The goal, then, is to minimize $f(\hat x)-f(x_\star)$ subject to the privacy constraint.
+In addition to solving (\ref{eqn:DP-OTB:stochopt}), we also wish to \emph{preserve privacy} for the people who contributed to the dataset $Z$. To this end, we require our algorithms to be \emph{differentially private} \citep{dwork2006calibrating, dwork2014algorithmic}, which means that replacing any one $z_t$ with a different $z_t'$ has a negligible effect on $\hat x$. There is a delicate interplay between privacy, dataset size, and solution quality. As $T$ grows, the influence of any individual $z_t$ on $\hat x$ decreases, increasing privacy. However, for any finite $T$, one must necessarily leak \emph{some} information about the dataset in order to achieve a nontrivial $f(\hat x)-f(x_\star)$. The goal, then, is to minimize $f(\hat x)-f(x_\star)$ subject to the privacy constraint.
 
 This problem has been well-studied in the literature, and by now the optimal tradeoffs are known and achievable\footnote{We focus on the harder stochastic optimization problem rather than empirical risk minimization, which is also well-studied, e.g. \citep{chaudhuri2011differentially, kifer2012private}.}. In particular, \cite{bassily2019private} exhibits a polytime algorithm that achieves $f(\hat x)-f(x_\star)\le \tilde O(1/\sqrt{T} + \sqrt{d}/\epsilon T)$ where $\epsilon$ is a measure of privacy loss (large $\epsilon$ means less private), and moreover they show that this bound is tight in the worst case. Then, \cite{feldman2020private} provides an improved algorithm that obtains the same guarantee in $O(T)$ time. 
 % There has been significant further interest in this problem, considering 
@@ -31,7 +31,7 @@ Let $\|\cdot\|$ be a norm on $\RR^d$, with dual norm $\|\cdot\|_*$ defined by $\
 We make the following assumptions:% on $\|\cdot\|$ and $F(x,z)$.
 
 \begin{assumption}
-\label{as:sc-norm}
+\label{as:DP-OTB:sc-norm}
 $\|\cdot\|^2$ is $\lambda$-strongly convex w.r.t. $\|\cdot\|$: for all $x,y\in \RR^d$ and $g\in \partial\|x\|^2$,
 \begin{align*}
     \|y\|^2 \geq \|x\|^2 + \langle g, y-x\rangle + \frac{\lambda}{2}\|y-x\|^2.
@@ -39,33 +39,33 @@ $\|\cdot\|^2$ is $\lambda$-strongly convex w.r.t. $\|\cdot\|$: for all $x,y\in \
 \end{assumption}
 
 \begin{assumption}
-\label{as:bounded-domain}
+\label{as:DP-OTB:bounded-domain}
 $W$ has diameter at most $D$: $\forall$ $x,y\in W$, $\|x-y\|\leq D$.
 \end{assumption}
 
 \begin{assumption}
-\label{as:Lipschitz}
+\label{as:DP-OTB:Lipschitz}
 $F(x,z)$ is $G$-Lipschitz in $x$: $\forall$ $x\in W, z\in Z$, $\|\nabla F(x,z)\|_* \leq G$.
 \end{assumption}
 
 \begin{assumption}
-\label{as:smooth}
+\label{as:DP-OTB:smooth}
 $F(x,z)$ is $H$-smooth in $x$: $\forall$ $x,y\in W, z\in Z$, $\|\nabla F(x,z) - \nabla F(y,z)\|_* \leq H\|x-y\|$.
 \end{assumption}
 
 \begin{assumption}
-\label{as:sigma-G}
+\label{as:DP-OTB:sigma-G}
 $\E[\|\nabla f(x) - \nabla F(x,z)\|_*^2] \leq \sigma_G^2$ for all $x,z$.
 \end{assumption}
 
 \begin{assumption}
-\label{as:sigma-H}
+\label{as:DP-OTB:sigma-H}
 $\E[\|[\nabla f(x)-\nabla f(y)] - [\nabla F(x,z)-\nabla F(y,z)]\|_*^2] \leq \sigma_H^2\|x-y\|^2$ for all $x,y,z$.
 \end{assumption}
 
 % As a remark, \cite{shalev07online} proved that $\|\cdot\|_p^2$ is $2(p-1)$-strongly convex w.r.t. $\|\cdot\|_p$ for all $1<p\leq 2$.
 % Moreover, 
-Note that if $F$ is $G$-Lipschitz and $H$-smooth in $x$, then so it $f$, and Assumption \ref{as:sigma-G} and \ref{as:sigma-H} hold with $\sigma_G\leq 2G$ and $\sigma_H\leq 2H$. Moreover, notice that Assumption \ref{as:bounded-domain} - \ref{as:sigma-H} depend on the norm $\|\cdot\|$. 
+Note that if $F$ is $G$-Lipschitz and $H$-smooth in $x$, then so it $f$, and Assumption \ref{as:DP-OTB:sigma-G} and \ref{as:DP-OTB:sigma-H} hold with $\sigma_G\leq 2G$ and $\sigma_H\leq 2H$. Moreover, notice that Assumption \ref{as:DP-OTB:bounded-domain} - \ref{as:DP-OTB:sigma-H} depend on the norm $\|\cdot\|$. 
 % For a different norm $\|\cdot\|'$, the constant may be different or the assumptions may no longer hold.
 % Also, Assumption \ref{as:Lipschitz} implies Assumption \ref{as:sigma-G} with $\sigma_G \leq 2G$, and Assumption \ref{as:smooth} implies Assumption \ref{as:sigma-H} with $\sigma_H \leq 2H$.
 

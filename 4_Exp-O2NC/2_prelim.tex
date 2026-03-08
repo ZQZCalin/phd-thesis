@@ -1,5 +1,5 @@
 \section{Preliminaries}
-\label{sec:pre}
+\label{sec:Exp-O2NC_pre}
 
 \paragraph{Notations}
 Bold font $\vecx$ denotes a vector in $\RR^d$ and $\|\vecx\|$ denotes its Euclidean norm. We define $B_d(\vecx,r)=\{\vecy\in\RR^d:\|\vecx-\vecy\|\le r\}$ and sometimes drop the subscript $d$ when the context is clear. We use $[n]$ as an abbreviation for $\{1,2,\ldots,n\}$. We adopt the standard big-$O$ notation, and $f\lesssim g$ denotes $f=O(g)$. $\calP(S)$ denotes the set of all distributions over a measurable set $S$.
@@ -9,7 +9,7 @@ Bold font $\vecx$ denotes a vector in $\RR^d$ and $\|\vecx\|$ denotes its Euclid
 Given a function $F:\RR^d\to\RR$, $F$ is $G$-Lipschitz if $|F(\vecx)-F(\vecy)| \le G\|\vecx-\vecy\|, \forall \vecx,\vecy$. Equivalently, when $F$ is differentiable, $F$ is $G$-Lipschitz if $\|\nabla F(\vecx)\|\le G, \forall \vecx$. $F$ is $H$-smooth if $F$ is differentiable and $\nabla F$ is $H$-Lipschitz; $F$ is $\rho$-second-order-smooth if $F$ is twice differentiable and $\nabla^2 F$ is $\rho$-Lipschitz.
 
 \begin{assumption}
-\label{as:optimization}
+\label{as:Exp-O2NC:optimization}
 We assume that our objective function $F:\RR^d\to \RR$ is differentiable and $G$ Lipschitz, and given an initial point $\vecx_0$, $F(\vecx_0)-\inf F(\vecx) \le F^*$ for some known $F^*$. We also assume the stochastic gradient satisfies $\E[\nabla f(\vecx,z)\,|\,\vecx]=\nabla F(\vecx), \E\|\nabla F(\vecx)-\nabla f(\vecx,z)\|^2 \le \sigma^2$ for all $\vecx,z$. Finally, we assume that $F$ is \emph{well-behaved} in the sense of \cite{cutkosky2023optimal}: for any points $\vecx$ and $\vecy$, $F(\vecx)-F(\vecy) = \int_0^1 \langle \nabla F(\vecx+t(\vecy-\vecx)), \vecy-\vecx\rangle \ dt$.
 % Following the convention in literature, we assume $F$ is $G$-Lipschitz, $F(\vecx_0)-\inf F(\vecx) \le F^*$ and $\E[\nabla f(\vecx,z)\,|\,\vecx]=\nabla F(\vecx), \E\|\nabla F(\vecx)-\nabla f(\vecx,z)\|^2 \le \sigma^2$ for all $\vecx,z$.
 \end{assumption}
@@ -38,7 +38,7 @@ For readers interested in more details, please refer to \cite{cesa2006prediction
 
 \subsection{Paper Organization}
 
-In Section \ref{sec:alg}, we present the general online-to-non-convex framework, \alg. We  first explain the intuitions behind the algorithm design, and then we provide the convergence analysis in Section \ref{sec:alg-conv}. In Section \ref{sec:sgdm}, we provide an explicit instantiation of our framework, and see that the resulting algorithm is essentially the standard SGDM.
-% In section \ref{sec:adam}, we further apply adaptive learning rate.
-In Section \ref{sec:lower}, we present a lower bound for finding $(c,\epsilon)$-stationary point.
-In Section \ref{sec:experiment}, we present empirical evaluations.
+In Section \ref{sec:Exp-O2NC_alg}, we present the general online-to-non-convex framework, \alg. We  first explain the intuitions behind the algorithm design, and then we provide the convergence analysis in Section \ref{sec:Exp-O2NC_alg-conv}. In Section \ref{sec:Exp-O2NC_sgdm}, we provide an explicit instantiation of our framework, and see that the resulting algorithm is essentially the standard SGDM.
+% In section \ref{sec:Exp-O2NC_adam}, we further apply adaptive learning rate.
+In Section \ref{sec:Exp-O2NC_lower}, we present a lower bound for finding $(c,\epsilon)$-stationary point.
+In Section \ref{sec:Exp-O2NC_experiment}, we present empirical evaluations.

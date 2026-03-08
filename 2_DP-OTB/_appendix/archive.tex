@@ -1,7 +1,7 @@
 % backup: proof of parameter-free
 
 \begin{proof}
-We start with \eqref{eq:basic-decomposition-2}:
+We start with \eqref{eq:DP-OTB:basic-decomposition-2}:
 \begin{align*}
     \alpha_{1:T}(\L(x_T)-\L(x^*))
     \leq R_T(x^*) + \sum_{t=1}^T\langle \alpha_t\nabla\L(x_t)-g_t-\gamma_t,w_t-x^*\rangle.
@@ -13,12 +13,12 @@ By Fenchel-Young's inequality and triangle inequality,
 \end{align*}
 
 \textbf{Step 1.}
-By Lemma \ref{lem:nSG-concentration} and \ref{lem:X-R-nSG}, for each $t$, with probability $1-\delta_t$,
+By Lemma \ref{lem:DP-OTB:nSG-concentration} and \ref{lem:DP-OTB:X-R-nSG}, for each $t$, with probability $1-\delta_t$,
 \begin{align*}
     \|\alpha_t\nabla\L(x_t)-g_t\|_2 
     \leq C\sqrt{\sum_{i=1}^t \sigma_{X_i}^2 \log\frac{2d}{\delta_t}}.
 \end{align*}
-By Proposition \ref{prop:alphas} that $\alpha_t-\alpha_{t-1}\leq kt^{k-1}$ and $\alpha_t^2/\alpha_{1:t}\leq (k+1)t^{k-1}$,
+By Proposition \ref{prop:DP-OTB:alphas} that $\alpha_t-\alpha_{t-1}\leq kt^{k-1}$ and $\alpha_t^2/\alpha_{1:t}\leq (k+1)t^{k-1}$,
 \begin{align*}
     \sigma_{X_i} \leq 2C(k+1)i^{k-1}(G+H\|w_i-x_{i-1}\|_2).
 \end{align*}
@@ -41,7 +41,7 @@ Moreover, by Young's inequality that $ab\leq \frac{1}{2\lambda}a^2+\frac{\lambda
 \textbf{1.2.}
 For the second sum, we apply Young's inequality for each $t$ and apply change of summation:
 \begin{restatable}{lemma}{LemmaChangeSum}
-\label{lem:change-sum}
+\label{lem:DP-OTB:change-sum}
 For any sequence $a_i,b_j,c_k$,
 \begin{align*}
     \sum_{i=1}^N a_i \sum_{j=1}^i b_j = \sum_{i=1}^N b_i \sum_{j=i}^N a_j,
@@ -93,7 +93,7 @@ Therefore, the first term is bounded by:
     &\leq \sum_{t=1}^T \frac{1}{\lambda_t}\sqrt{\log \frac{d}{\delta_t}} \sum_{i=1}^{t} \frac{2(i+1)^{2(k-1)}}{\alpha_{1:i}}\sum_{j=1}^{i}2\alpha_j\|w_j\|_2^2\\
     &\leq \sum_{t=1}^T\sum_{i=t}^T\frac{1}{\lambda_i}\sqrt{\log\frac{2d}{\delta_i}}\sum_{j=t}^i\frac{(j+1)^{2(k-1)}}{\alpha_{1:j}} 2\alpha_t\|w_t\|_2^2.
 \end{align*}
-We then bound the inner summation with the same argument using the integral inequality. By Proposition \ref{prop:alphas}, $\sum_{j=t}^i\frac{(j+1)^{2(k-1)}}{\alpha_{1:j}}\leq \sum_{j=t}^i\frac{4(j+1)^4}{j^4} \leq 64i$. Hence,
+We then bound the inner summation with the same argument using the integral inequality. By Proposition \ref{prop:DP-OTB:alphas}, $\sum_{j=t}^i\frac{(j+1)^{2(k-1)}}{\alpha_{1:j}}\leq \sum_{j=t}^i\frac{4(j+1)^4}{j^4} \leq 64i$. Hence,
 % \begin{align*}
 %     % \sum_{i=t}^T\frac{1}{\lambda_i}\sqrt{\log\frac{2d}{\delta_i}}\sum_{j=t}^i\frac{(j+1)^{2(k-1)}}{\alpha_{1:j}}
 %     \sum_{i=t}^T\frac{1}{\lambda_i}\sqrt{\log\frac{2d}{\delta_i}}i
@@ -124,11 +124,11 @@ In conclusion, \textbf{step 1.2.} gives the following bound:
     \leq & 8C^2\sum_{t=1}^T \sqrt{\log\frac{\pi^2dt^2}{3\delta}}\left( Gt^{5/2} + (2G+28H)(\|w_t\|_2^2+\|x^*\|_2^2)t^{5/2} \right).
 \end{align*}
 
-\textbf{Step 2:} The proof for $\sum_{t=1}^T\|\gamma_t\|_2\|w_t-x^*\|_2$ follows similarly. By Lemma \ref{lem:nSG-concentration} and \ref{lem:normSG} and union bound, with probability $1-\delta$,
+\textbf{Step 2:} The proof for $\sum_{t=1}^T\|\gamma_t\|_2\|w_t-x^*\|_2$ follows similarly. By Lemma \ref{lem:DP-OTB:nSG-concentration} and \ref{lem:DP-OTB:normSG} and union bound, with probability $1-\delta$,
 \begin{align*}
     &\sum_{t=1}^T\|\gamma_t\|_2\|w_t-x^*\|_2 \\
     \leq & \sum_{t=1}^TC\sqrt{ \log \frac{2d}{\delta_t}\sum_{i\in I_t}\sigma_{R_i}^2}\|w_t-x^*\|_2
-    \intertext{We substitute $\sigma_{R_i}=C\sqrt{d}\sigma_\D\sigma_i$ and definition of $\sigma_i$ in \eqref{eq:RDP-noise-anytime}:}
+    \intertext{We substitute $\sigma_{R_i}=C\sqrt{d}\sigma_\D\sigma_i$ and definition of $\sigma_i$ in \eqref{eq:DP-OTB:RDP-noise}:}
     \leq & \sum_{t=1}^T C\sqrt{ \log\frac{2d}{\delta_t}\sum_{i\in I_t} C^2d\sigma_\D^2\frac{2\pi^2(k+1)^2K}{\rho^2}(G+H\|w_i-x_{i-1}\|_2)^2\log_2^2(2i)i^{2(k-1)} }\|w_t-x^*\|_2 \\
     = & \frac{\sqrt{2dK}\pi(k+1)C^2\sigma_\D}{\rho} \sum_{t=1}^T \sqrt{\log\frac{2d}{\delta_t}\sum_{i\in I_t}(G+H\|w_i-x_{i-1}\|_2)^2\log_2^2(2i)i^{2(k-1)}}\|w_t-x^*\|_2.
 \end{align*}

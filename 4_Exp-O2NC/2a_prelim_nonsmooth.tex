@@ -5,7 +5,7 @@ Suppose $F$ is differentiable. $\vecx$ is an $\epsilon$-stationary point of $F$ 
 For non-smooth non-convex optimization, the standard criterion is the following: $\vecx$ is an $(\delta,\epsilon)$-Goldstein stationary point of $F$ if there exists $S\subset \RR^d$ and $P\in\calP(S)$ such that $\vecy\sim P$ satisfies $\E[\vecy]=\vecx$, $\|\vecy-\vecx\|\le\delta$ almost surely, and $\|\E[\nabla F(\vecy)]\|\le\epsilon$.\footnote{The original definition of $(\delta,\epsilon)$ Goldstein stationary point proposed by \cite{zhang2020complexity} does not require the condition $\E[\vecy]=\vecx$. However, as shown in \cite{cutkosky2023optimal}, this condition allows us to reduce a Goldstein stationary point to an $\epsilon$-stationary point when the loss is second-order smooth. Hence we also keep this condition.} Next, we formally define $(c,\epsilon)$-stationary point, our proposed new criterion for non-smooth optimization.
 
 \begin{definition}
-\label{def:stationary-point}
+\label{def:Exp-O2NC:stationary-point}
 Suppose $F:\RR^d\to\RR$ is differentiable, $\vecx$ is a $(c,\epsilon)$-stationary point of $F$ if $\|\nabla F(\vecx)\|_c \le \epsilon$, where
 \begin{equation*}
     \|\nabla F(\vecx)\|_c = \inf_{\substack{S\subset \RR^d \\ \vecy\sim P\in\calP(S) \\ \E[\vecy]=\vecx}} \| \E[\nabla F(\vecy)]\| + c \cdot \Ex\|\vecy-\vecx\|^2.
@@ -19,7 +19,7 @@ In other words, if $\vecx$ is a $(c,\epsilon)$-stationary point, then there exis
 To further motivate this definition, we demonstrate that $(c,\epsilon)$-stationary point retains desirable properties of Goldstein stationary points. Firstly, the following result shows that, similar to Goldstein stationary points, $(c,\epsilon)$-stationary points can also be reduced to first-order stationary points with proper choices of $c$ when the objective is smooth or second-order smooth. 
 
 \begin{restatable}{lemma}{CriterionReduction}
-\label{lem:criterion-reduction}
+\label{lem:Exp-O2NC:criterion-reduction}
 % Assume $\|\nabla F(\vecx)\|_c\le \epsilon$ for any $c=\epsilon\delta^{-2}$ and $\delta>0$. Then $\|\nabla F(\vecx)\| \le \epsilon$ if $F$ is $H$-smooth and $\delta=\eps/2H$ or if $F$ is $\rho$-second-order-smooth and $\delta=\sqrt{2\epsilon}/\sqrt{\rho}$.
 Suppose $F$ is $H$-smooth. 
 If $\|\nabla F(\vecx)\|_c\le\epsilon$ where $c=H^2\epsilon^{-1}$, then $\|\nabla F(\vecx)\|\le 2\epsilon$. \\
@@ -29,12 +29,12 @@ If $\|\nabla F(\vecx)\|_c\le\epsilon$ where $c=\rho/2$, then $\|\nabla F(\vecx)\
 % If $\|\nabla F(\vecx)\|_c\le\epsilon$ where $c=\epsilon\delta^{-2}, \delta=\sqrt{2\epsilon}/\sqrt{\rho}$, then $\|\nabla F(\vecx)\|\le 2\epsilon$.
 \end{restatable}
 
-As an immediate implication, suppose an algorithm achieves $O(c^{1/2}\epsilon^{-7/2})$ rate for finding a $(c,\epsilon)$-stationary point. Then Lemma \ref{lem:criterion-reduction} implies that, with $c=O(\epsilon^{-1})$, the algorithm automatically achieves the optimal rate of $O(\epsilon^{-4})$ for smooth objectives \cite{arjevani2019lower}. Similarly, with $c=O(1)$, it achieves the optimal rate of $O(\epsilon^{-7/2})$ for second-order smooth objectives \cite{arjevani2020second}. 
+As an immediate implication, suppose an algorithm achieves $O(c^{1/2}\epsilon^{-7/2})$ rate for finding a $(c,\epsilon)$-stationary point. Then Lemma \ref{lem:Exp-O2NC:criterion-reduction} implies that, with $c=O(\epsilon^{-1})$, the algorithm automatically achieves the optimal rate of $O(\epsilon^{-4})$ for smooth objectives \cite{arjevani2019lower}. Similarly, with $c=O(1)$, it achieves the optimal rate of $O(\epsilon^{-7/2})$ for second-order smooth objectives \cite{arjevani2020second}. 
 
 Secondly, we show in the following lemma that $(c,\epsilon)$-stationary points can also be reduced to Goldstein stationary points when the objective is Lipschitz.
 
 \begin{restatable}{lemma}{GoldsteinReduction}
-\label{lem:goldstein-reduction}
+\label{lem:Exp-O2NC:goldstein-reduction}
 Suppose $F$ is $G$-Lipschitz. For any $c,\epsilon,\delta>0$, a $(c,\epsilon)$-stationary point is also a $(\delta,\epsilon')$-Goldstein stationary point where $\epsilon' = (1+\frac{2G}{c\delta^2})\epsilon$.
 \end{restatable}
 

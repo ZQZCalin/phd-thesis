@@ -1,5 +1,5 @@
 \section{Introduction}
-\label{ch3:sec:intro}
+\label{sec:DP-O2NC_intro}
 
 
 We study the stochastic optimization problem of the form
@@ -64,11 +64,11 @@ Notably, the non-private term $O(d\delta^{-1}\epsilon^{-3})$ matches the state-o
 
 % Building upon the non-private Online-to-non-convex Conversion (O2NC) framework by \cite{cutkosky2023optimal}, we design our private algorithm with a different approach. Unlike previous variants of O2NC that implement the gradient oracle with stochastic gradients or their zeroth-order estimators \citep{cutkosky2023optimal, kornowski2023algorithm}, our method introduces a carefully designed zeroth-order oracle. This involves defining two zeroth-order estimators, one for the gradient and the other for the gradient difference at two points. 
 % % Both estimators exhibit reduced sensitivity.
-% We further construct a variance-reduced gradient oracle using these estimators and incorporate the tree mechanism to reduce the amount of noise required to achieve the desired privacy guarantees. This design yields an optimal privacy guarantee. A detailed explanation of the intuition and challenges associated with our algorithm can be found in Section \ref{sec:algorithm}.
+% We further construct a variance-reduced gradient oracle using these estimators and incorporate the tree mechanism to reduce the amount of noise required to achieve the desired privacy guarantees. This design yields an optimal privacy guarantee. A detailed explanation of the intuition and challenges associated with our algorithm can be found in Section \ref{sec:DP-O2NC_algorithm}.
 
 Our algorithm incorporates four essential components, each crucial for achieving the optimal rate. We leverage the non-private Online-to-non-convex Conversion (O2NC) framework by \cite{cutkosky2023optimal}, which finds a $(\delta,\epsilon)$-stationary point of a non-smooth objective using a first-order oracle. We then build an approximate first-order oracle (i.e. a gradient estimator) with a zeroth-order oracle. Although this high-level strategy is a common technique, our approach distinguishes itself through its gradient oracle design. 
 In contrast to prior non-private approaches that directly approximate the gradient with a standard zeroth-order estimator \citep{kornowski2023algorithm}, we introduce a variance-reduced gradient oracle. Our approach incorporates two zeroth-order estimators: one for the gradient and another for its difference between two points. Our gradient oracle also differs subtly from the standard zeroth-order estimator by sampling $d$ i.i.d. estimators for each data point, which is required to achieve the optimal dimension dependence. Both estimators exhibit reduced sensitivity. We reduce the privacy cost of our variance-reduced estimators by using the ``tree mechanism'' \citep{dwork2010differential, chan2011private}, yielding a new state-of-the-art privacy guarantee.
 
 Omitting any component from our algorithm significantly impacts the results. Neither utilizing the O2NC technique nor sampling $d$ i.i.d. estimators results in an additional dimension dependence of $\sqrt{d}$. 
 Moreover, the combination of the variance-reduced oracle and the tree mechanism is crucial for optimal privacy. A naive approach might directly make O2NC private adding noise to classical zeroth-order gradient estimators, but this yields a sub-optimal rate with an extra factor of $\epsilon^{-1}$.
-More details about the intuitions and challenges of our algorithm can be found in Section \ref{sec:algorithm}.
+More details about the intuitions and challenges of our algorithm can be found in Section \ref{sec:DP-O2NC_algorithm}.

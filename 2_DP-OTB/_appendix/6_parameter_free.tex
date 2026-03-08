@@ -1,5 +1,5 @@
-\section{Proofs for the Parameter-free Case (Section \ref{sec:parameter-free})}
-\label{app:parameter-free}
+\section{Proofs for the Parameter-free Case (Section \ref{sec:DP-OTB_parameter-free})}
+\label{app:DP-OTB:parameter-free}
 
 % Previously, we always bound $\|w_t-x^*\|\leq D$, but the following lemma gives a finer bound on the inner product, which preserves the quantity $\|w_t\|$ and $\|x^*\|$. This allows us to come up with an adaptive bound by regularizing $\ell_t(w)$ by $\|w\|^2$.
 % In this subsection, we only consider the specific case in 2-norm, and we make the following definition:
@@ -13,27 +13,27 @@ A random vector $X\in\RR^d$ is said to be $\sigma$-norm-sub-Gaussian, denoted by
 We will rely on the following concentration bound on norm-sub-Gaussian random vectors.
 
 \begin{lemma}[Lemma 1, \cite{jin2019short}]
-\label{lem:normSG}
+\label{lem:DP-OTB:normSG}
 There exists a universal $C$ such that (i) if $\|X\|\leq \sigma$, then $X$ is $\nSG(C\sigma)$ nad (ii) if $X$ is $\sigma$-sub-Gaussian, then $X$ is $\nSG(C\sqrt{d}\sigma)$. 
 \end{lemma}
 
 \begin{lemma}[Corollary 8, \cite{jin2019short}]
-\label{lem:nSG-concentration}
+\label{lem:DP-OTB:nSG-concentration}
 There exists a universal constant $C$ such that if $X_i|X_{1:i-1}$ is mean-zero $\nSG(\sigma_i)$ for all $X_1,\ldots,X_t$, then for any fixed $\delta>0$ and $B>b>0$ such that $b<\sum_{i=1}^t \sigma_i^2 \leq B$ almost surely, with probability at least $1-\delta$,
 \begin{align*}
     \left\|\sum_{i=1}^t X_i\right\|_2 \leq C\sqrt{\sum_{i=1}^t \sigma_i^2\left(\log\frac{2d}{\delta}+\log\log\frac{B}{b} \right)}.
 \end{align*}
 \end{lemma}
 
-Recall that $\weight_t\nabla f(x_t)-g_t=\sum_{i=1}^t X_i$ (Lemma \ref{lem:variance-expectation-bound}), where
+Recall that $\weight_t\nabla f(x_t)-g_t=\sum_{i=1}^t X_i$ (Lemma \ref{lem:DP-OTB:variance-expectation-bound}), where
 \[
 X_i = [\weight_i\nabla f(x_i)-\weight_{i-1}\nabla f(x_{i-1})]-[\weight_i\nabla\ell(x_i,z_i)-\weight_{i-1}\nabla\ell(x_{i-1},z_i)];
 \]
 and $\gamma_t = \sum_{i\in I_t}R_i$, where $R_i=\sigma_i\tilde R_i$ and $R_i\sim \calD$ i.i.d. We have the following lemma:
 
 \begin{lemma}
-\label{lem:X-R-nSG}
-Suppose Assumption \ref{as:bounded-domain} - \ref{as:smooth} hold w.r.t. the 2-norm, and suppose $\calD$ is a $(V,\alpha)$-RDP distribution and is $\sigma_\calD$-sub-Gaussian, i.e.,
+\label{lem:DP-OTB:X-R-nSG}
+Suppose Assumption \ref{as:DP-OTB:bounded-domain} - \ref{as:DP-OTB:smooth} hold w.r.t. the 2-norm, and suppose $\calD$ is a $(V,\alpha)$-RDP distribution and is $\sigma_\calD$-sub-Gaussian, i.e.,
 \begin{align*}
     \P\{\sup_{\|a\|=1} \langle X, a\rangle \geq \epsilon \} \leq \exp\left(- \frac{\epsilon^2}{2\sigma_\calD^2}\right).
 \end{align*}
@@ -46,9 +46,9 @@ Also set $\weight_t=t^k$. Then there exists a universal constant $C$ such that $
 \end{lemma}
 
 \begin{proof}
-Since we assume $\E[\nabla\ell(x,z)]=\nabla f(x)$ for all $x$, $\E[X_i|X_{1:i-1}]=0$. Also, since $\calD$ is a $(V,\alpha)$-RDP distribution (Definition \ref{def:RDP-dist}) and $R_i=\sigma_i\tilde R_i$'s are independent, $\E[R_i|R_{1:i-1}]=\E[\tilde R_i]=0$. 
+Since we assume $\E[\nabla\ell(x,z)]=\nabla f(x)$ for all $x$, $\E[X_i|X_{1:i-1}]=0$. Also, since $\calD$ is a $(V,\alpha)$-RDP distribution (Definition \ref{def:DP-OTB:RDP-dist}) and $R_i=\sigma_i\tilde R_i$'s are independent, $\E[R_i|R_{1:i-1}]=\E[\tilde R_i]=0$. 
 
-For the second part, in Lemma \ref{lem:variance-expectation-bound} we proved that
+For the second part, in Lemma \ref{lem:DP-OTB:variance-expectation-bound} we proved that
 \begin{align*}
     \|\delta_i\|_2 = \|\weight_i\nabla\ell(x_i,z_i)-\weight_{i-1}\nabla\ell(x_{i-1},z_i)\|_2 \leq (k+1)(G+H\|w_i-x_{i-1}\|_2)i^{k-1}.
 \end{align*}
@@ -58,7 +58,7 @@ The same bound holds for $\weight_i\nabla f(x_i)-\weight_{i-1}\nabla f(x_{i-1})$
 \|X_i\|_2 \leq 2(k+1)(G+H\|w_i-x_{i-1}\|_2)i^{k-1}.
 \]
 Moreover, since we assume $\tilde R_i\sim \calD$ is $\sigma_\calD$-sub-Gaussian, $R_i=\sigma_i\tilde R_i$ is $\sigma_i\sigma_\calD$-sub-Gaussian.
-Hence, by Lemma \ref{lem:normSG}, $X_i|X_{1:i-1}$ and $R_i|R_{1:i-1}$ are norm-sub-Gaussian.
+Hence, by Lemma \ref{lem:DP-OTB:normSG}, $X_i|X_{1:i-1}$ and $R_i|R_{1:i-1}$ are norm-sub-Gaussian.
 \end{proof}
 
 % \highlight{To be more careful in the proof, we may need to say $\F_t=\{(w_i,x_i)\}_{i=1}^{t+1}\cup\{(g_i,\gamma_i)\}_1^t$ is a filtration of $X_t$, then $X_i|\F_{t-1}$ is conditionally $\nSG(...\|w_i-x_{i-1}\|)$.}
@@ -66,16 +66,16 @@ Hence, by Lemma \ref{lem:normSG}, $X_i|X_{1:i-1}$ and $R_i|R_{1:i-1}$ are norm-s
 \input{2_DP-OTB/_theorems/thm_parameter_free}
 
 \begin{proof}
-We start with Eq. \eqref{eq:basic-decomposition}:
+We start with Eq. \eqref{eq:DP-OTB:parameter-free-base}:
 \begin{align}
     \weight_{1:T}(f(x_T)-f(x^*))
     &\leq R_T(x^*) + \sum_{t=1}^T\langle \weight_t\nabla f(x_t)-g_t-\gamma_t,w_t-x^*\rangle \notag\\
     % \intertext{By Fenchel-Young's inequality and triangle inequality,}
-    &\leq R_T(x^*) + \sum_{t=1}^T \left(\|\weight_t\nabla f(x_t)-g_t\|_2+\|\gamma_t\|_2\right) (\|w_t-x^*\|_2). \label{eq:parameter-free-base}
+    &\leq R_T(x^*) + \sum_{t=1}^T \left(\|\weight_t\nabla f(x_t)-g_t\|_2+\|\gamma_t\|_2\right) (\|w_t-x^*\|_2). \label{eq:DP-OTB:parameter-free-base}
 \end{align}
 
 \textbf{Step 1.}
-By Lemma \ref{lem:nSG-concentration} and \ref{lem:X-R-nSG}, for each $t$, with probability $1-\delta/2T$,
+By Lemma \ref{lem:DP-OTB:nSG-concentration} and \ref{lem:DP-OTB:X-R-nSG}, for each $t$, with probability $1-\delta/2T$,
 \begin{align*}
     \|\weight_t\nabla f(x_t)-g_t\|_2 
     \leq C\sqrt{\sum_{i=1}^t \sigma_{X_i}^2 \left( \log\frac{4dT}{\delta} + \log\log\frac{B}{b}\right)}.
@@ -103,14 +103,14 @@ Therefore, with probability at least $1-\delta/2T$,
     \|\weight_t \nabla f(x_t) - g_t\|_2 
     &\leq C\Phi \sqrt{\sum_{i=1}^t [8Ci^2(G+H\|w_i-x_{i-1}\|_2)]^2} \notag\\
     &\leq 8C^2\Phi \sqrt{\sum_{i=1}^t i^4(G+H\|w_i-x_{i-1}\|_2)^2}.
-    \label{eq:variance-concentration}
+    \label{eq:DP-OTB:variance-concentration}
 \end{align}
 By union bound, with probability at least $1-\delta/2$,
 \begin{align}
     &\sum_{t=1}^T \|\weight_t\nabla f(x_t)-g_t\|_2\|w_t-x^*\|_2 \notag\\
     \leq & 8C^2\Phi \sum_{t=1}^T \sqrt{\sum_{i=1}^t i^4(G+H\|w_i-x_{i-1}\|_2)^2} \|w_t-x^*\|_2 \notag
     \intertext{We use the identity $(a+b)^2\leq 2a^2+2b^2$ and $\sqrt{a+b}\leq \sqrt{a}+\sqrt{b}$:}
-    \leq & 8C^2\Phi \sum_{t=1}^T \left(\sqrt{\sum_{i=1}^t 2G^2i^4} + \sqrt{\sum_{i=1}^t 2H^2\|w_i-x_{i-1}\|_2^2i^4}\right) \|w_t-x^*\|_2 \label{eq:step-1}
+    \leq & 8C^2\Phi \sum_{t=1}^T \left(\sqrt{\sum_{i=1}^t 2G^2i^4} + \sqrt{\sum_{i=1}^t 2H^2\|w_i-x_{i-1}\|_2^2i^4}\right) \|w_t-x^*\|_2 \label{eq:DP-OTB:step-1}
 \end{align}
 \textbf{1.1.} We bound these two sums separately. For the first sum,
 recall that $A=8\sqrt{2}C^2$, so
@@ -126,11 +126,11 @@ For the second sum, we apply Young's inequality ($ab\leq \frac{1}{2\lambda}a^2+\
     \leq & AH\sum_{t=1}^T\frac{1}{2\lambda_t}\sum_{i=1}^t (\|w_i-x_{i-1}\|_2^2i^4) + \frac{\lambda_t}{2}\|w_t-x^*\|_2^2 \notag
     % line 1
     \intertext{We first bound $\|w_i-x_{i-1}\|_2^2 \leq 2\|w_i\|_2^2+2\|x_{i-1}\|_2^2$. Recall that $x_0=0$ and for $i\geq 2$, $x_{i-1}=\sum_{j=1}^{i-1} \frac{\weight_j}{\weight_{1:{i-1}}}w_j$, so $\|x_{i-1}\|_2^2\leq \sum_{j=1}^{i-1}\frac{\weight_j}{\weight_{1:i-1}}\|w_j\|_2^2$ by convexity. Consequently,}
-    \leq & AH\sum_{t=1}^T \left( \frac{1}{\lambda_t}\sum_{i=1}^t i^4\|w_i\|_2^2 + \frac{1}{\lambda_t}\sum_{i=2}^t i^4\sum_{j=1}^{i-1} \frac{\weight_j\|w_j\|_2^2}{\weight_{1:i-1}} + \lambda_t(\|w_t\|_2^2+\|x^*\|_2^2) \right). \label{eq:step-1.2}
+    \leq & AH\sum_{t=1}^T \left( \frac{1}{\lambda_t}\sum_{i=1}^t i^4\|w_i\|_2^2 + \frac{1}{\lambda_t}\sum_{i=2}^t i^4\sum_{j=1}^{i-1} \frac{\weight_j\|w_j\|_2^2}{\weight_{1:i-1}} + \lambda_t(\|w_t\|_2^2+\|x^*\|_2^2) \right). \label{eq:DP-OTB:step-1.2}
 \end{align}
 We define $\lambda_t = ct^{5/2}$ for some constant $c$ to be determined later, and we apply change of summation on the first two sums:
 \begin{lemma}
-\label{lem:change-sum}
+\label{lem:DP-OTB:change-sum}
 For any sequence $a_i,b_j,c_k$,
 \begin{align*}
     \sum_{i=1}^N a_i \sum_{j=1}^i b_j = \sum_{i=1}^N b_i \sum_{j=i}^N a_j,
@@ -171,7 +171,7 @@ For any sequence $a_i,b_j,c_k$,
 %     % \leq \sum_{t=1}^T 8\log\left(\frac{\pi^2dt^2}{3\delta}\right)t^{5/2}\|w_t\|_2^2.
 %     \leq \sum_{t=1}^T \frac{10}{3c}t^{5/2}\|w_t\|_2^2.
 % \end{align*}
-\textbf{1.2.2.} For the second term, by Proposition \ref{prop:alphas}, $\weight_{1:i-1}\geq (i-1)^4/4$, so
+\textbf{1.2.2.} For the second term, by Proposition \ref{prop:DP-OTB:alphas}, $\weight_{1:i-1}\geq (i-1)^4/4$, so
 \begin{align*}
     \sum_{t=1}^T \frac{1}{\lambda_t} \sum_{i=2}^t i^4\sum_{j=1}^{i-1} \frac{\weight_j\|w_j\|_2^2}{\weight_{1:i-1}} 
     &\leq \sum_{t=1}^T \frac{1}{ct^{5/2}}\sum_{i=2}^{t} \frac{4i^4}{(i-1)^4} \sum_{j=1}^{i} j^3\|w_j\|_2^2 
@@ -185,7 +185,7 @@ The last inequality is again derived from the integral bound:
     \leq \frac{1}{t^{3/2}} + \int_t^\infty \frac{1}{x^{3/2}}\,dx
     \leq \frac{3}{t^{1/2}}.
 \end{align*}
-% We then bound the inner summation with the same argument using the integral inequality. By Proposition \ref{prop:alphas}, $\sum_{j=t}^i\frac{(j+1)^{2(k-1)}}{\weight_{1:j}}\leq \sum_{j=t}^i\frac{4(j+1)^4}{j^4} \leq 64i$. Hence,
+% We then bound the inner summation with the same argument using the integral inequality. By Proposition \ref{prop:DP-OTB:alphas}, $\sum_{j=t}^i\frac{(j+1)^{2(k-1)}}{\weight_{1:j}}\leq \sum_{j=t}^i\frac{4(j+1)^4}{j^4} \leq 64i$. Hence,
 % \begin{align*}
 %     \sum_{i=t}^T\frac{c}{\lambda_i}\sum_{j=t}^i\frac{(j+1)^{2(k-1)}}{\weight_{1:j}}
 %     &\leq \sum_{i=t}^T \frac{64}{i^{3/2}} \leq \frac{64}{t^{3/2}}+\int_t^\infty \frac{64}{x^{3/2}}\,dx = \frac{64}{t^{3/2}} + \frac{128}{t^{1/2}} \leq \frac{192}{t^{1/2}}.
@@ -195,14 +195,14 @@ The last inequality is again derived from the integral bound:
 %     \sum_{t=1}^T\sum_{i=t}^T\frac{1}{\lambda_i}\sum_{j=t}^i\frac{(j+1)^{2(k-1)}}{\weight_{1:j}} 2\weight_t\|w_t\|_2^2
 %     &\leq \sum_{t=1}^T \frac{384}{c}t^{5/2}\|w_t\|_2^2.
 % \end{align*}
-In conclusion, upon substituting \textbf{1.2.1.} and \textbf{1.2.2.} into \eqref{eq:step-1.2} and setting $c=14$, we get:
+In conclusion, upon substituting \textbf{1.2.1.} and \textbf{1.2.2.} into \eqref{eq:DP-OTB:step-1.2} and setting $c=14$, we get:
 \begin{align*}
     &8C^2\sum_{t=1}^T\sqrt{\sum_{i=1}^t2H^2\|w_i-x_{i-1}\|_2^2i^4}\|w_t-x^*\|_2 \\
     \leq & AH \sum_{t=1}^T \left(\frac{5}{3c}t^{5/2}\|w_t\|_2^2 + \frac{192}{c}t^{5/2}\|w_t\|_2^2 + ct^{5/2}(\|w_t\|_2^2+\|x^*\|_2^2) \right) \\
     \leq & AH \sum_{t=1}^T 28 t^{5/2}(\|w_t\|_2^2+\|x^*\|_2^2).
 \end{align*}
 % The second inequality holds by choosing $c=14$.
-Moreover, upon substituting \textbf{1.1.} and \textbf{1.2.} into \eqref{eq:step-1}, we get: with probability at least $1-\delta/2$,
+Moreover, upon substituting \textbf{1.1.} and \textbf{1.2.} into \eqref{eq:DP-OTB:step-1}, we get: with probability at least $1-\delta/2$,
 \begin{align*}
     &\sum_{t=1}^T\|\weight_t\nabla f(x_t)-g_t\|_2\|w_t-x^*\|_2 \\
     % \leq & \sum_{t=1}^T A\left( G\sqrt{\log(2d/\delta_t)} + 14H(1+\log(2d/\delta_t)) \right) t^{5/2} (\|w_t\|_2^2+\|x^*\|_2^2).
@@ -215,7 +215,7 @@ Moreover, upon substituting \textbf{1.1.} and \textbf{1.2.} into \eqref{eq:step-
 %     \leq & 8C^2G\sqrt{\log\frac{2d}{\delta_t}}T^{7/2} + 16C^2\sum_{t=1}^T\left(G\sqrt{\log\frac{2d}{\delta_t}}+20H(1+\log\frac{2d}{\delta_t})\right)t^{5/2}(\|w_t\|_2^2+\|x^*\|_2^2).
 % \end{align*}
 
-\textbf{Step 2:} We can bound $\sum_{t=1}^T\|\gamma_t\|_2\|w_t-x^*\|_2$ in a similar way. By Lemma \ref{lem:X-R-nSG} and definition of $\sigma_t$ in \eqref{eq:RDP-noise}, $R_i|R_{1:i-1}$ is mean-zero $\nSG(\sigma_{R_i})$, where
+\textbf{Step 2:} We can bound $\sum_{t=1}^T\|\gamma_t\|_2\|w_t-x^*\|_2$ in a similar way. By Lemma \ref{lem:DP-OTB:X-R-nSG} and definition of $\sigma_t$ in \eqref{eq:DP-OTB:RDP-noise}, $R_i|R_{1:i-1}$ is mean-zero $\nSG(\sigma_{R_i})$, where
 \begin{align*}
     \sigma_{R_i} 
     &= C\sqrt{d}\sigma_\calD \sigma_i
@@ -236,13 +236,13 @@ Hence, $B_t/b \leq \log_2(2T)\kappa^2T^4 \leq (2\kappa T)^5$ (because $\log_2(2T
     \sqrt{\log\frac{4dT}{\delta}+\log\log\frac{B_t}{b}}
     \leq \sqrt{\log\frac{20dT\log(2\kappa T)}{\delta}} = \Phi.
 \end{align*}
-Recall that $A'=8\sqrt{d}\sigma_\calD C^2$. By Lemma \ref{lem:nSG-concentration}, for each $t$, with probability at least $1-\delta/2T$,
+Recall that $A'=8\sqrt{d}\sigma_\calD C^2$. By Lemma \ref{lem:DP-OTB:nSG-concentration}, for each $t$, with probability at least $1-\delta/2T$,
 \begin{align}
     \|\gamma_t\|_2 
     &\leq C\sqrt{\sum_{i\in I_t}\sigma_{R_i}^2\left(\log\frac{4dT}{\delta}+\log\log\frac{B_t}{b}\right)}
     % \intertext{Recall that $A'=8\sqrt{dK}\sigma_\calD C^2$. Upon substituting \eqref{eq:parameter-pf-2}, we get:}
     \leq \frac{A'}{\rho}(G+DH)\Phi \log_2(2T)t^2.
-    \label{eq:privacy-concentration}
+    \label{eq:DP-OTB:privacy-concentration}
 \end{align}
 By union bound, with probability at least $1-\delta/2$,
 \begin{align*}
@@ -254,7 +254,7 @@ By union bound, with probability at least $1-\delta/2$,
     &\leq \sum_{t=1}^T \frac{A'}{\rho}(G+DH)\Phi \log_2(2T)t^2(\|w_t\|_2+\|x^*\|_2).
 \end{align*}
 
-In conclusion, we take the union bound on the results from \textbf{step 1.} and \textbf{step 2.} and substitute it back to the starting point \eqref{eq:parameter-free-base}.  Then with probability at least $1-\delta$,
+In conclusion, we take the union bound on the results from \textbf{step 1.} and \textbf{step 2.} and substitute it back to the starting point \eqref{eq:DP-OTB:parameter-free-base}.  Then with probability at least $1-\delta$,
 \begin{align*}
     \weight_{1:T}(f(x_T)-f(x^*))
     &\leq R_T(x^*) + \sum_{t=1}^T 28AH\Phi t^{5/2}(\|w_t\|_2^2+\|x^*\|_2^2)  \\

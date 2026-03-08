@@ -1,5 +1,5 @@
-\section{Proofs for Convergence (Section \ref{sec:OTB})}
-\label{app:proof-A}
+\section{Proofs for Convergence (Section \ref{sec:DP-OTB_OTB})}
+\label{app:DP-OTB:proof-A}
 
 \input{2_DP-OTB/_theorems/lem_anytime_regret}
 
@@ -25,7 +25,7 @@ where the equality follows from (i) the telescopic sum of $\weight_{1:t-1}\nabla
 \end{proof}
 
 \begin{lemma}
-\label{lem:martingale-bound-general-norm}
+\label{lem:DP-OTB:martingale-bound-general-norm}
 Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex w.r.t. $\|\cdot\|$, and let $\{X_t\}$ be a sequence of random vectors such that (i) $\E[\|X_t\|_*]<\infty$ and (ii) $\E[X_{t+1}\mid X_{1:t}]=0$ for all $t$. Then,
 \begin{align*}
     \E\left[ \left\| \sum_{t=1}^T X_t \right\|_*^2 \right]
@@ -80,7 +80,7 @@ The second inequality holds because $\inf_\eta \frac{\eta^2}{\eta-1}=4$ when $\e
 In this paper, we will always set $\weight_t=t^k$ for some $k\geq 1$. The following proposition gives relevant bounds for $\weight_t-\weight_{t-1}$ and $\weight_t^2/\weight_{1:t}$.
 
 \begin{proposition}
-\label{prop:alphas}
+\label{prop:DP-OTB:alphas}
 If $\weight_t=t^k$, then (i) $\weight_t-\weight_{t-1} \leq kt^{k-1}$ and (ii) $\weight_t^2/\weight_{1:t} \leq (k+1)t^{k-1}$.
 % \begin{align*}
 %     (1) \quad & \weight_t-\weight_{t-1} \leq kt^{k-1}, \\
@@ -102,13 +102,13 @@ Hence, $\weight_t^2/\weight_{1:t} \leq (k+1)t^{k-1}$.
 \end{proof}
 
 \begin{lemma}
-\label{lem:variance-expectation-bound}
+\label{lem:DP-OTB:variance-expectation-bound}
 Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex, $W$ is bounded by $D$, and $\ell$ is $G$-Lipschitz and $H$-smooth. If we set $\weight_t=t^k$, then
 \[
 % \|\delta_t\|_*\leq |\weight_t-\weight_{i-1}|G + (\weight_i^2/\weight_{1:i})H\|w_t-x_{t-1}\|.
 \|\delta_t\|_* \leq (k+1) (G+H\|w_t-x_{t-1}\|) t^{k-1}.
 \]
-If we further assume Assumption \ref{as:sigma-G} and \ref{as:sigma-H},
+If we further assume Assumption \ref{as:DP-OTB:sigma-G} and \ref{as:DP-OTB:sigma-H},
 % i.e., for all $x,y,z$, $\E[\|\nabla\ell(x,z)-\nabla f(x)\|_*^2]\leq \sigma_G^2$ and $\E[\|[\nabla\ell(x,z)-\nabla\ell(y,z)]-[\nabla f(x)-\nabla f(y)]\|_*^2]\leq \sigma_H^2\|x-y\|^2$, 
 % \begin{align*}
 %     & \E[\|\nabla\ell(x,z)-\nabla f(x)\|_*^2]\leq \sigma_G^2, \\
@@ -139,7 +139,7 @@ Since $\ell$ is $G$-Lipschitz and $H$-smooth, $\|\nabla\ell(x_{t-1},z_t)\|_*\leq
     \|\nabla\ell(x_t,z_t)-\nabla\ell(x_{t-1},z_t)\|_* 
     &\leq H\|x_t-x_{t-1}\| \leq (\weight_t/\weight_{1:t})H\|w_t-x_{t-1}\|,
 \end{align*}
-where the second inequality follows from the definition of $x_t$ that $\weight_{1:t}(x_t-x_{t-1})=\weight_t(w_t-x_{t-1})$. The first result then follows from Proposition \ref{prop:alphas}.
+where the second inequality follows from the definition of $x_t$ that $\weight_{1:t}(x_t-x_{t-1})=\weight_t(w_t-x_{t-1})$. The first result then follows from Proposition \ref{prop:DP-OTB:alphas}.
 
 For the second part, by telescopic sum $\weight_t\nabla f(x_t) = \sum_{i=1}^t \weight_i\nabla f(x_i) - \weight_{i-1}\nabla f(x_{i-1})$, and recall that $g_t=\sum_{i=1}^t \delta_i$. Therefore,
 \begin{align*}
@@ -156,9 +156,9 @@ We denote each summand by $X_i$, and we can check $X_i$ satisfies condition (ii)
     &\leq 2(\weight_i-\weight_{i-1})^2\sigma_G^2 + 2(\weight_i^2/\weight_{1:i})^2 \sigma_H^2\|w_i-x_{i-1}\|^2 \\
     &\leq 2(k+1)^2(\sigma_G^2 + D^2\sigma_H^2)i^{2k-2}.
 \end{align*}
-The last inequality follows from the assumption that $\|w_i-x_{i-1}\|\leq D$ and Proposition \ref{prop:alphas}.
+The last inequality follows from the assumption that $\|w_i-x_{i-1}\|\leq D$ and Proposition \ref{prop:DP-OTB:alphas}.
 
-The last part of the theorem is a direct result from Lemma \ref{lem:martingale-bound-general-norm}:
+The last part of the theorem is a direct result from Lemma \ref{lem:DP-OTB:martingale-bound-general-norm}:
 \begin{align*}
     \E[ \| \nabla f(x_t)-g_t \|_*^2]
     \leq \frac{2}{\lambda} \sum_{i=1}^t \E[\|X_i\|_*^2] 
@@ -170,7 +170,7 @@ The last part of the theorem is a direct result from Lemma \ref{lem:martingale-b
 \end{proof}
 
 \begin{lemma}
-\label{lem:privacy-expectation}
+\label{lem:DP-OTB:privacy-expectation}
 Suppose $\E[R_t]=0$ and $\E[\|R_t\|_*^2]\leq \bar\sigma_t^2$, then
 \begin{align*}
     \E[\|\gamma_t\|_*^2]
@@ -179,7 +179,7 @@ Suppose $\E[R_t]=0$ and $\E[\|R_t\|_*^2]\leq \bar\sigma_t^2$, then
 \end{lemma}
 
 \begin{proof}
-By construction, $\gamma_t=\sum_{i\in I_t}R_i$, and $R_i$'s are independent and mean-zero. Therefore, Lemma \ref{lem:martingale-bound-general-norm} can be applied, which yields
+By construction, $\gamma_t=\sum_{i\in I_t}R_i$, and $R_i$'s are independent and mean-zero. Therefore, Lemma \ref{lem:DP-OTB:martingale-bound-general-norm} can be applied, which yields
 \begin{align*}
     \E[\|\gamma_t\|_*^2]
     &\leq \frac{2}{\lambda}\sum_{i\in I_t} \E[\|R_i\|_*^2] 
@@ -209,7 +209,7 @@ The last inequality is from the fact that $|I_t|\leq \log_2(2t)$.
 %     \|g_t+\gamma_t\|_2^2 
 %     &\leq 3\|\weight_t\nabla f(x_t)\|_2^2 + 3\|\weight_t\nabla f(x_t)-g_t\|_2^2 + 3\|\gamma_t\|_2^2.
 % \end{align*}
-% Since $f$ is $G_2$-Lipschitz, $\|\weight_t\nabla f(x_t)\|_2^2 \leq t^2G_2^2$. In the proof of Lemma \ref{lem:variance-expectation-bound} and \ref{lem:privacy-expectation}, if we use the stronger version of Lemma \ref{lem:martingale-bound-general-norm} for 2-norm and set $\weight_t, R_t$ accordingly, we get
+% Since $f$ is $G_2$-Lipschitz, $\|\weight_t\nabla f(x_t)\|_2^2 \leq t^2G_2^2$. In the proof of Lemma \ref{lem:variance-expectation-bound} and \ref{lem:privacy-expectation}, if we use the stronger version of Lemma \ref{lem:DP-OTB:martingale-bound-general-norm} for 2-norm and set $\weight_t, R_t$ accordingly, we get
 % \begin{align*}
 %     &\E[\|\weight_t\nabla f(x_t)-g_t\|_2^2] \leq 4(G_2+2D_2H_2)^2 t, \\
 %     &\E[\|\gamma_t\|_2^2] \leq 4(G_2+2D_2H_2)^2\log_2(2t)/\epsilon^2.

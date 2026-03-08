@@ -1,13 +1,13 @@
 \section{Experiments}
-\label{sec:experiment}
+\label{sec:Exp-O2NC_experiment}
 
 In the preceding sections, we theoretically demonstrated that scaling the learning rate by an exponential random variable $s_n$ allows SGDM to satisfy convergence guarantees for non-smooth non-convex optimization. To validate this finding empirically, we implemented the SGDM algorithm with random scaling and assessed its performance against the standard SGDM optimizer without random scaling. Our evaluation involved the ResNet-18 model \cite{he2016deep} on the CIFAR-10 image classification benchmark \cite{krizhevsky2009learning}. For the hyperparameters, we configured the learning rate at $0.01$, the momentum constant at $0.9$, and the weight decay at $5 \times 10^{-4}$. These settings are optimized for training the ResNet model on the CIFAR-10 dataset using SGDM. We use the same hyperparameters for our modified SGDM with random scaling. 
 
-For each optimizer, we ran the experiment three times under the same setting to minimize variability. We recorded the train loss, train accuracy, test loss, and test accuracy (refer to Figure \ref{fig:experiment}). We also recorded the performance of the best iterate, e.g., the lowest train/test loss and the highest train/test accuracy, in each trial (see Table \ref{tab:1}).
+For each optimizer, we ran the experiment three times under the same setting to minimize variability. We recorded the train loss, train accuracy, test loss, and test accuracy (refer to Figure \ref{fig:Exp-O2NC:experiment}). We also recorded the performance of the best iterate, e.g., the lowest train/test loss and the highest train/test accuracy, in each trial (see Table \ref{tab:Exp-O2NC:1}).
 
 \begin{table}[h]
 \caption{Performance of the best iterate in each trial.}
-\label{tab:1}
+\label{tab:Exp-O2NC:1}
 \vskip 0.15in
 \begin{center}
 \begin{small}

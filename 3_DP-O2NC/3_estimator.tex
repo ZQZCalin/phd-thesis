@@ -1,14 +1,14 @@
 \section{Zeroth-Order Estimators}
-\label{ch3:sec:estimator}
+\label{sec:DP-O2NC_estimator}
 
 Let $F(\vecx)=\E_z[f(\vecx,z)]$ and denote $\hat F_\delta$ and $\hat f_\delta$ as the uniform smoothing of $F$ and $f$ respectively.
-Using the randomized smoothing technique from Lemma \ref{lem:uniform-smoothing}, we can construct unbiased zeroth-order estimators for both
+Using the randomized smoothing technique from Lemma \ref{lem:DP-O2NC:uniform-smoothing}, we can construct unbiased zeroth-order estimators for both
 % $\nabla\hat f(\vecx,z)$ and $\nabla\hat f(\vecx,z) - \nabla\hat f(\vecy,z)$. 
 $\nabla\hat F_\delta(\vecx)$ and $\nabla\hat F_\delta(\vecx) - \nabla\hat F_\delta(\vecy)$.
-The key properties of these estimators $\grad$ and $\diff$, as defined in Algorithm \ref{alg:first-grad} and \ref{alg:zeroth-diff}, are summarized in the following results.
+The key properties of these estimators $\grad$ and $\diff$, as defined in Algorithm \ref{alg:DP-O2NC:first-grad} and \ref{alg:DP-O2NC:zeroth-diff}, are summarized in the following results.
 
 \begin{lemma}
-\label{lem:grad-estimator}
+\label{lem:DP-O2NC:grad-estimator}
 If $f(\vecx,z)$ is differentiable and $L$-Lipschitz in $\vecx$,
 % and $F(\vecx)=\E_z[f(\vecx,z)]$, 
 then for any $\delta>0, \vecx\in\RR^d$ and neighboring data batches $z_{1:b},z'_{1:b}$ of size $b$,
@@ -21,7 +21,7 @@ then for any $\delta>0, \vecx\in\RR^d$ and neighboring data batches $z_{1:b},z'_
 \end{lemma}
 
 \begin{lemma}
-\label{lem:diff-estimator}
+\label{lem:DP-O2NC:diff-estimator}
 If $f(\vecx,z)$ is differentiable and $L$-Lipschitz in $\vecx$,
 % and $F(\vecx) = \E_z[f(\vecx,z)]$, 
 then for any $\delta>0$, $\vecx,\vecy\in\RR^d$ and neighboring data batches $z_{1:b},z'_{1:b}$ of size $b$,
@@ -39,7 +39,7 @@ then for any $\delta>0$, $\vecx,\vecy\in\RR^d$ and neighboring data batches $z_{
 
 \begin{algorithm}[t]
 \caption{Zeroth-order gradient oracle $\grad_{f,\delta}(\vecx,z_{1:b})$}
-\label{alg:first-grad}
+\label{alg:DP-O2NC:first-grad}
 \begin{algorithmic}[1]
     \Statex \textbf{Input:} loss function $f$, constant $\delta>0$, parameter $\vecx$, i.i.d. data batch $z_{1:b}$
     \State Sample $\vecu_{11},\ldots,\vecu_{bd}\sim\mathrm{Uniform}(\bfS)$ i.i.d.
@@ -49,7 +49,7 @@ then for any $\delta>0$, $\vecx,\vecy\in\RR^d$ and neighboring data batches $z_{
 
 \begin{algorithm}[t]
 \caption{Zeroth-order gradient difference oracle $\diff_{f,\delta}(\vecx,\vecy,z_{1:b})$}
-\label{alg:zeroth-diff}
+\label{alg:DP-O2NC:zeroth-diff}
 \begin{algorithmic}[1]
     \Statex \textbf{Input:} loss function $f$, constant $\delta>0$, parameter $\vecx, \vecy$, i.i.d. data batch $z_{1:b}$
     \State Sample $\vecu_{11},\ldots,\vecu_{bd}\sim\mathrm{Uniform}(\bfS)$ i.i.d.
@@ -57,10 +57,10 @@ then for any $\delta>0$, $\vecx,\vecy\in\RR^d$ and neighboring data batches $z_{
 \end{algorithmic}
 \end{algorithm}
 
-Proofs for Lemmas \ref{lem:grad-estimator} and \ref{lem:diff-estimator} are both stemming from the uniform smoothing properties detailed in Lemma \ref{lem:uniform-smoothing}. We defer the proofs to Appendix \ref{app:diff-estimator}.
-Notably, these lemmas indicate that both the gradient and gradient difference estimators are unbiased, with low variance and sensitivity. Specifically, in our final algorithm, we will be able to control the distance between parameters $\vecx,\vecy$ in two successive iterations by $\delta/T$. As a result, the variance in Lemma \ref{lem:diff-estimator} is bounded by $O({dL^2}/{bT^2})$, and its sensitivity is bounded by $O({dL}/{bT})$. Using these estimators, we construct zeroth-order gradient oracles  by exploiting the decomposition $\nabla \hat F_\delta(\vecx_t) = \nabla \hat F_\delta(\vecx_1) + \sum_{i=1}^t \nabla \hat F_\delta(\vecx_i)-\nabla \hat F_\delta(\vecx_{i-1})\approx \grad_{f,\delta}(\vecx_1,z) +\sum_{i=1}^t \diff_{f,\delta}(\vecx_i,\vecx_{i-1},z)$. Our constructed oracles have low variance and low sensitivity, thus allowing us to incorporate the tree mechanism to privately aggregate the sum with less noise.
+Proofs for Lemmas \ref{lem:DP-O2NC:grad-estimator} and \ref{lem:DP-O2NC:diff-estimator} are both stemming from the uniform smoothing properties detailed in Lemma \ref{lem:DP-O2NC:uniform-smoothing}. We defer the proofs to Appendix \ref{app:DP-O2NC:diff-estimator}.
+Notably, these lemmas indicate that both the gradient and gradient difference estimators are unbiased, with low variance and sensitivity. Specifically, in our final algorithm, we will be able to control the distance between parameters $\vecx,\vecy$ in two successive iterations by $\delta/T$. As a result, the variance in Lemma \ref{lem:DP-O2NC:diff-estimator} is bounded by $O({dL^2}/{bT^2})$, and its sensitivity is bounded by $O({dL}/{bT})$. Using these estimators, we construct zeroth-order gradient oracles  by exploiting the decomposition $\nabla \hat F_\delta(\vecx_t) = \nabla \hat F_\delta(\vecx_1) + \sum_{i=1}^t \nabla \hat F_\delta(\vecx_i)-\nabla \hat F_\delta(\vecx_{i-1})\approx \grad_{f,\delta}(\vecx_1,z) +\sum_{i=1}^t \diff_{f,\delta}(\vecx_i,\vecx_{i-1},z)$. Our constructed oracles have low variance and low sensitivity, thus allowing us to incorporate the tree mechanism to privately aggregate the sum with less noise.
 % Given their low variance, the oracle exhibits reduced variance; given their low sensitivity, we can incorporate the tree mechanism to privately aggregate the sum with less noise.
-A more detailed exploration of this idea is presented in the subsequent sections, especially in Corollary \ref{cor:privacy} and Lemma \ref{lem:oracle-variance}.
+A more detailed exploration of this idea is presented in the subsequent sections, especially in Corollary \ref{cor:DP-O2NC:privacy} and Lemma \ref{lem:DP-O2NC:oracle-variance}.
 
 In addition, we would like to discuss the rationale behind sampling $d$ i.i.d. uniform vectors $\vecu_{ij}$ for each data point $z_i$. For the gradient estimator \textsc{grad}, it is feasible to approximate $\nabla\hat f_\delta(\vecx,z_i)$ with a single two-point estimator, namely $\vecg_i=\frac{d}{2\delta}(f(\vecx+\delta\vecu,z_i)-f(\vecx-\delta\vecu,z_i))\vecu$, as it is proved that $\E\|\vecg_i\|^2 = O(dL^2)$ \citep[Lemma 10]{shamir2017optimal}. The central argument hinges on a concentration inequality for Lipschitz functions, which states that if $h$ is $L$-Lipschitz on $\vecu$ and $\vecu\sim\calU_\bfS$, then $\P\{|h(\vecu)-\E h(\vecu)| \ge t\} \le 2\exp(-\frac{dt^2}{2L^2})$, as per \citep{wainwright2019high} Proposition 3.11. In the context of their proof, $h(\vecu) = f(\vecx+\delta\vecu)$ which is $L\delta$-Lipschitz.
 

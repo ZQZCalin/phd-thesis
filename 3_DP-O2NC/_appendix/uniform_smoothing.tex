@@ -1,8 +1,8 @@
-\section{Proofs in Section \ref{sec:pre}}
-\label{app:pre}
+\section{Proofs in Section \ref{sec:DP-O2NC_pre}}
+\label{app:DP-O2NC:pre}
 
-\subsection{Proof of Lemma \ref{lem:uniform-smoothing}}
-\label{app:uniform-smoothing}
+\subsection{Proof of Lemma \ref{lem:DP-O2NC:uniform-smoothing}}
+\label{app:DP-O2NC:uniform-smoothing}
 
 % \UniformSmoothing*
 
@@ -30,8 +30,8 @@ $S = B(\vecx,\delta)\triangle B(\vecy,\delta)$. Then
     \le \frac{\vol(S)L}{\vol(\delta\bfB)}
     \le \frac{\sqrt{d}L}{\delta}\|\vecx-\vecy\|,
 \end{align*}
-where the second last inequality follows from $\|\nabla h(\vecv)\| \le L$, and the last follows from Lemma \ref{lem-aux:volume}. 
-% Smoothness then follows from Lemma \ref{lem-aux:volume}.
+where the second last inequality follows from $\|\nabla h(\vecv)\| \le L$, and the last follows from Lemma \ref{lem-aux:DP-O2NC:volume}. 
+% Smoothness then follows from Lemma \ref{lem-aux:DP-O2NC:volume}.
 
 Finally, by definition of expectation,
 \begin{align*}
@@ -54,7 +54,7 @@ This proves the second equality in (iv).
 \end{proof}
 
 \begin{lemma}
-\label{lem-aux:volume}
+\label{lem-aux:DP-O2NC:volume}
 Let $\vecx,\vecy\in\RR^d$ and $S=B(\vecx,\delta)\triangle B(\vecy,\delta)$, then $\frac{\vol(S)}{\vol(\delta\bfB)} \le \frac{\sqrt{d}}{\delta}\|\vecx-\vecy\|$.
 \end{lemma}
 
@@ -74,7 +74,7 @@ Recall that the volume of an $d$-ball is $V_d(r) = \frac{\pi^{d/2}}{\Gamma(d/2+1
     &= \frac{\Gamma(\frac{d}{2}+1)}{\sqrt{\pi}\Gamma(\frac{d-1}{2}+1)} \int_{\delta-\frac{D}{2}}^{\delta+\frac{D}{2}} \left(\frac{2t}{\delta} - \frac{t^2}{\delta^2} \right)^{\frac{d-1}{2}} \frac{1}{\delta} \, dt \\
     &= \frac{\Gamma(\frac{d}{2}+1)}{\sqrt{\pi}\Gamma(\frac{d-1}{2}+1)} \int_{1-\frac{D}{2\delta}}^{1+\frac{D}{2\delta}} (2u-u^2)^{\frac{d-1}{2}} \, du  \tag{$t=\delta u$}.
 \end{align*}
-Note that $2u-u^2 \le 1$ for all $u\in\RR$, so the integral is bounded by $\int_{1-\frac{D}{2\delta}}^{1+\frac{D}{2\delta}} 1 \, du = \frac{D}{\delta}$. The proof then follows from the fact that $\Gamma(\frac{d}{2}+1)/\Gamma(\frac{d-1}{2}+1) \le \sqrt{2d}$ (proved in Lemma \ref{lem-aux:Gamma} for completeness).
+Note that $2u-u^2 \le 1$ for all $u\in\RR$, so the integral is bounded by $\int_{1-\frac{D}{2\delta}}^{1+\frac{D}{2\delta}} 1 \, du = \frac{D}{\delta}$. The proof then follows from the fact that $\Gamma(\frac{d}{2}+1)/\Gamma(\frac{d-1}{2}+1) \le \sqrt{2d}$ (proved in Lemma \ref{lem-aux:DP-O2NC:Gamma} for completeness).
 % and the volume of an $n$-sphere is $S_{n-1}(r) = \frac{2\pi^{n/2}}{\Gamma(n/2)}r^{n-1}$. 
 % Observe that $\vol(S) \le \vol((\delta+D)\bfB) - \vol(\delta\bfB) \le D\vol((\delta+D)\bfS)$. Therefore,
 % \begin{align*}
@@ -85,7 +85,7 @@ Note that $2u-u^2 \le 1$ for all $u\in\RR$, so the integral is bounded by $\int_
 \end{proof}
 
 \begin{lemma}
-\label{lem-aux:Gamma}
+\label{lem-aux:DP-O2NC:Gamma}
 For all $n\in\NN$, $\Gamma(\frac{n}{2}+1)/\Gamma(\frac{n-1}{2}+1) \le \sqrt{2n}$.
 \end{lemma}
 
@@ -120,7 +120,7 @@ This concludes the proof by induction.
 \end{proof}
 
 
-\subsection{Proof of Corollary \ref{cor:smooth-reduction}}
+\subsection{Proof of Corollary \ref{cor:DP-O2NC:smooth-reduction}}
 
 % \SmoothReduction*
 
@@ -129,7 +129,7 @@ Recall that the $\delta$-subdifferential of $\hat F_\delta$ is defined as $\part
 \begin{equation*}
     \nabla \hat F_\delta(\vecy_i) \in \partial_\delta F(\vecy_i) \subset \partial_{2\delta}F(\vecx)
 \end{equation*}
-and thus $\vecg \in \partial_{2\delta} F(\vecx)$ for all $\vecg\in\partial_\delta\hat F_\delta(\vecx)$. We conclude the proof by recalling Definition \ref{def:stationary} that 
+and thus $\vecg \in \partial_{2\delta} F(\vecx)$ for all $\vecg\in\partial_\delta\hat F_\delta(\vecx)$. We conclude the proof by recalling Definition \ref{def:DP-O2NC:stationary} that 
 \begin{equation*}
     \|\nabla \hat F_\delta (\vecx)\|_\delta = \inf \{\|\vecg\|: \vecg\in \partial_\delta \hat F_\delta(\vecx)\}, \quad \|\nabla F(\vecx)\|_{2\delta} = \inf \{\|\vecg\|: \vecg\in \partial_{2\delta} F(\vecx)\}
 \end{equation*}

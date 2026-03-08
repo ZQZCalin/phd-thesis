@@ -1,5 +1,5 @@
 \section{Preliminary}
-\label{ch3:sec:pre}
+\label{sec:DP-O2NC_pre}
 
 \paragraph{Notation}
 
@@ -12,7 +12,7 @@ A function $h:\RR^d\to\RR$ is $L$-Lipschitz if $|h(\vecx)-h(\vecy)| \le L\|\vecx
 % When $h$ is non-smooth, finding an $\epsilon$-stationary point may be computationally intractable \citep{kornowski2022oracle, zhang2020complexity}. Instead, we aim to find a Goldstein stationary point \citep{goldstein1977optimization}.
 
 \begin{definition}
-\label{def:stationary}
+\label{def:DP-O2NC:stationary}
 Let $\delta>0$ and $h:\RR^d\to\RR$ be differentiable. The Goldstein $\delta$-subdifferential of $h$ at $\vecx$ is $\partial_\delta h(\vecx) = \conv(\cup_{y\in B(\vecx,\delta)} \nabla h(\vecy))$. We define $\|\nabla h(\vecx)\|_\delta = \inf \{\|\vecg\|: \vecg\in\partial_\delta h(\vecx)\}$. 
 Then $\vecx^*$ is said to be a Goldstein $(\delta,\epsilon)$-stationary point of $h$ if $\|\nabla h(\vecx^*)\|_\delta \le \epsilon$. Note that
 \begin{equation*}
@@ -34,7 +34,7 @@ RDP can be converted to $(\epsilon,\delta)$-DP as follows: if an algorithm is $(
 
 If $\|\calA(Z)-\calA(Z')\| \le s$ for any neighboring $Z,Z'$, we say the sensitivity of $\calA$ is bounded by $s$. It is well known that in this case, adding a Gaussian noise $\calN(0,\sigma^2I)$ to the output of $\calA$, where $\sigma=s/\rho$, ensures that $\calA$ is $(\alpha,\alpha\rho^2/2)$-RDP \citep{mironov2017renyi}.
 
-We also make use of the ``tree mechanism'' \cite{dwork2010differential, chan2011private}, which is a technique that allows for private release of \emph{running sums} of potentially sensitive data (Algorithm~\ref{alg:tree}).
+We also make use of the ``tree mechanism'' \cite{dwork2010differential, chan2011private}, which is a technique that allows for private release of \emph{running sums} of potentially sensitive data (Algorithm~\ref{alg:DP-O2NC:tree}).
 
 
 \paragraph{Online Learning}
@@ -62,7 +62,7 @@ Given a Lipschitz function $h:\RR^d\to\RR$ and $\delta>0$, we define the \textit
 As shown in prior works (see \citep{yousefian2012stochastic} and \citet[Section E]{duchi2012randomized}), uniform smoothing is a smooth approximation whose gradient can be estimated by finite differentiation. We rephrase the key properties in the following lemma, whose proof is presented in the appendix for completeness.
 
 \begin{lemma}
-\label{lem:uniform-smoothing}
+\label{lem:DP-O2NC:uniform-smoothing}
 Suppose $h:\RR^d\to\RR$ is $L$-Lipschitz.
 Then (i) $\hat h_\delta$ is $L$-Lipschitz; (ii) $\|\hat h_\delta(\vecx) - h(\vecx)\| \le L\delta$; (iii) $\hat h_\delta$ is differentiable and $\frac{\sqrt{d}L}{\delta}$-smooth; (iv) 
 % with gradient 
@@ -74,11 +74,11 @@ Then (i) $\hat h_\delta$ is $L$-Lipschitz; (ii) $\|\hat h_\delta(\vecx) - h(\vec
 % (iv) $\hat h_\delta$ is $\frac{\sqrt{d}L}{\delta}$-smooth.
 \end{lemma}
 
-% We defer the proof to Appendix \ref{app:uniform-smoothing}. 
-As a corollary, finding an $(\delta,\epsilon)$-stationary point of $\hat F_\delta$ is sufficient to find an $(2\delta,\epsilon)$-stationary point of $F$. The formal statement is as follows (\citet[Lemma 4]{kornowski2023algorithm}; proof is presented in Appendix \ref{app:pre} for completeness). 
+% We defer the proof to Appendix \ref{app:DP-O2NC:uniform-smoothing}. 
+As a corollary, finding an $(\delta,\epsilon)$-stationary point of $\hat F_\delta$ is sufficient to find an $(2\delta,\epsilon)$-stationary point of $F$. The formal statement is as follows (\citet[Lemma 4]{kornowski2023algorithm}; proof is presented in Appendix \ref{app:DP-O2NC:pre} for completeness). 
 
 \begin{corollary}
-\label{cor:smooth-reduction}
+\label{cor:DP-O2NC:smooth-reduction}
 % Let $F:\RR^d\to\RR$ be differentiable and $L$-Lipschitz, and define $\hat F_\delta(\vecx) = \E_\vecv[F(\vecx+\delta\vecv)]$ where $\vecv\sim\mathrm{Uniform}(\bfB)$. 
 Suppose $F:\RR^d\to\RR$ is $L$-Lipschitz.
 Then for any $\epsilon, \delta > 0$, $\|\nabla \hat F_\delta(\vecx)\|_\delta \le \epsilon$ implies that $\|\nabla F(\vecx)\|_{2\delta} \le \epsilon$.
@@ -88,4 +88,4 @@ Then for any $\epsilon, \delta > 0$, $\|\nabla \hat F_\delta(\vecx)\|_\delta \le
 
 As a brief overview, our algorithm leverages O2NC to privately optimize the uniform smoothing of the objective. Note that O2NC does not require any smoothness itself - we employ uniform smoothing because it allows us to construct a low-sensitivity gradient oracle from a zeroth-order oracle. The smoothness property is tangential. We construct a variance-reduced gradient oracle for O2NC and incorporate the tree mechanism for enhanced privacy. This oracle is based on two zeroth-order estimators: one for the stochastic gradient of the uniform smoothing and another for the gradient difference.
 
-This paper is organized in the following order. In Section \ref{sec:estimator}, we introduce the zeroth-order estimators. In Section \ref{sec:algorithm}, we present the O2NC algorithm combined with the private variance-reduced gradient oracle. In Section \ref{sec:privacy}, we demonstrate the improved privacy guarantee provided by the tree mechanism. We conclude with the convergence analysis in Section \ref{sec:convergence}.
+This paper is organized in the following order. In Section \ref{sec:DP-O2NC_estimator}, we introduce the zeroth-order estimators. In Section \ref{sec:DP-O2NC_algorithm}, we present the O2NC algorithm combined with the private variance-reduced gradient oracle. In Section \ref{sec:DP-O2NC_privacy}, we demonstrate the improved privacy guarantee provided by the tree mechanism. We conclude with the convergence analysis in Section \ref{sec:DP-O2NC_convergence}.

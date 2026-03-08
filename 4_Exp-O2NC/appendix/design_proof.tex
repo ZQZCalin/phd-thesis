@@ -1,6 +1,6 @@
-\section{Proofs in Section \ref{sec:alg}}
+\section{Proofs in Section \ref{sec:Exp-O2NC_alg}}
 
-\subsection{Proof of Lemma \ref{lem:variance-regularizer}}
+\subsection{Proof of Lemma \ref{lem:Exp-O2NC:variance-regularizer}}
 
 The proof consists of two composite lemmas.
 Recall the following notations: $S_n = \{\vecx_t\}_{t\in[n]}$, $\vecy_n\sim P_n$ where $P_n(\vecx_t) = \beta^{n-t}\cdot \frac{1-\beta}{1-\beta^n}$, and $\overline \vecx_n = \sum_{t=1}^n \beta^{n-t}\vecx_t\cdot \frac{1-\beta}{1-\beta^n}$. Also note two useful change of summation identities:
@@ -10,12 +10,12 @@ Recall the following notations: $S_n = \{\vecx_t\}_{t\in[n]}$, $\vecy_n\sim P_n$
 \end{align*}
 
 \begin{proposition}
-\label{prop:variance-regularizer}
+\label{prop:Exp-O2NC:variance-regularizer}
 $\E_{\vecy_n,s}\|\vecy_n-\overline\vecx_n\|^2 \le \sum_{t=1}^n \lambda_{n,t}\|\Delta_t\|^2$, where
 \begin{align}
     \lambda_{n,t} = 4\sum_{i=t}^n\sum_{i'=1}^{t-1} p_{n,i}p_{n,i'}(i-i'), 
     \quad p_{n,i} = P_n(\vecx_i) = \beta^{n-i}\cdot\frac{1-\beta}{1-\beta^n}. 
-    \label{eq:def-lambda}
+    \label{eq:Exp-O2NC:def-lambda}
 \end{align}
 \end{proposition}
 
@@ -45,8 +45,8 @@ We then conclude the proof by substituting the definition of $\lambda_{n,t}$.
 
 
 \begin{proposition}
-\label{prop:tech-lam-t:N}
-Define $\lambda_{n,t}$ as in \eqref{eq:def-lambda}, then $\sum_{n=t}^N \lambda_{n,t} \le \frac{12}{(1-\beta)^2}$.
+\label{prop:Exp-O2NC:tech-lam-t:N}
+Define $\lambda_{n,t}$ as in \eqref{eq:Exp-O2NC:def-lambda}, then $\sum_{n=t}^N \lambda_{n,t} \le \frac{12}{(1-\beta)^2}$.
 % \begin{align*}
 %     % &\lambda_{n,t} = 4\cdot \frac{(n-t+1)\beta^{n-t+1} - n\beta^n + (t-1)\beta^{2n-t+1}}{(1-\beta^n)^2}, 
 %     &\sum_{n=t}^N \lambda_{n,t} \le \frac{12}{(1-\beta)^2}.
@@ -60,7 +60,7 @@ In the first part of the proof, we find a good upper bound of $\lambda_{n,t}$. W
     &= 4\left(\frac{1-\beta}{1-\beta^n}\right)^2 \sum_{i=t}^n\sum_{i'=1}^{t-1} \beta^{n-i}\beta^{n-i'}(i-i') \tag{let $j=i-i'$}\\
     &= 4\left(\frac{1-\beta}{1-\beta^n}\right)^2 \sum_{i=t}^n\sum_{j=i-t+1}^{i-1} \beta^{n-i}\beta^{n-i+j}\cdot j \tag{let $k=n-i$}\\
     &= 4\left(\frac{1-\beta}{1-\beta^n}\right)^2 \sum_{k=0}^{n-t} \beta^{2k} \sum_{j=n-k-t+1}^{n-k-1} j\beta^j.
-    \label{eq:lam-sum-2a}
+    \label{eq:Exp-O2NC:lam-sum-2a}
 \end{align}
 The second line uses change of variable that $j=i-i'$, and the third line uses $k=n-i$. Next, 
 \begin{align*}
@@ -70,12 +70,12 @@ The second line uses change of variable that $j=i-i'$, and the third line uses $
     &= \beta\cdot \frac{d}{d\beta} \left( \frac{\beta^{n-k-t+1} - \beta^{n-k}}{1-\beta} \right) \\
     &= \frac{\beta^{a-k+1}-\beta^{b-k+1}}{(1-\beta)^2} + \frac{(a-k)\beta^{a-k} - (b-k)\beta^{b-k}}{1-\beta},
 \end{align*}
-where $a=n-t+1, b=n$. Upon substituting this back into \eqref{eq:lam-sum-2a}, we have
+where $a=n-t+1, b=n$. Upon substituting this back into \eqref{eq:Exp-O2NC:lam-sum-2a}, we have
 \begin{align}
     \lambda_{n,t}
     &= 4\left(\frac{1-\beta}{1-\beta^n}\right)^2 \sum_{k=0}^{n-t} \beta^{2k}\left( \frac{\beta^{a-k+1} - \beta^{b-k+1}}{(1-\beta)^2} + \frac{a\beta^{a-k}-b\beta^{b-k}}{1-\beta} - k \frac{\beta^{a-k}-\beta^{b-k}}{1-\beta} \right) \notag\\
     &= 4\left(\frac{1-\beta}{1-\beta^n}\right)^2 \sum_{k=0}^{n-t} \left( \frac{\beta^{a+1} - \beta^{b+1}}{(1-\beta)^2} + \frac{a\beta^{a}-b\beta^{b}}{1-\beta} \right) \beta^k - \frac{\beta^a-\beta^b}{1-\beta} \cdot k\beta^k.
-    \label{eq:lam-sum-2b}
+    \label{eq:Exp-O2NC:lam-sum-2b}
 \end{align}
 For the first term, $\sum_{k=0}^{n-t}\beta^k = \frac{1-\beta^{n-t+1}}{1-\beta} = \frac{1-\beta^a}{1-\beta}$. For the second term,
 \begin{align*}
@@ -84,7 +84,7 @@ For the first term, $\sum_{k=0}^{n-t}\beta^k = \frac{1-\beta^{n-t+1}}{1-\beta} =
     = \beta \cdot \frac{d}{d\beta} \left( \frac{1-\beta^a}{1-\beta} \right) 
     = \frac{\beta-\beta^{a+1}}{(1-\beta)^2} - \frac{a\beta^a}{1-\beta}.
 \end{align*}
-Upon substituting this back into \eqref{eq:lam-sum-2b} and simplifying the expression, we have
+Upon substituting this back into \eqref{eq:Exp-O2NC:lam-sum-2b} and simplifying the expression, we have
 \begin{align*}
     \lambda_{n,t}
     &= 4\left(\frac{1-\beta}{1-\beta^n}\right)^2 \cdot \left[
@@ -111,10 +111,10 @@ In the second part, we use this inequality to bound $\sum_{n=t}^N\lambda_{n,t}$.
     % &\le \sum_{n=1}^N \lambda_{n,t} 
     % \le \sum_{n=t}^{K-1} \lambda_{n,t} + \sum_{n=K}^N \lambda_{n,t},
     = \one_{\{t\le K-1\}}\cdot \sum_{n=t}^{K-1} \lambda_{n,t} + \sum_{n=\max\{t,K\}}^N \lambda_{n,t}.
-    \label{eq:lam-sum-1}
+    \label{eq:Exp-O2NC:lam-sum-1}
 \end{align}
 % where we denote $\sum_{n=t}^{K-1} = 0$ if $t>K-1$ for simplicity.
-For the first summation in \eqref{eq:lam-sum-1}, for all $t\le n\le K-1$, we have
+For the first summation in \eqref{eq:Exp-O2NC:lam-sum-1}, for all $t\le n\le K-1$, we have
 \begin{align*}
     \lambda_{n,t}
     &\le 4\cdot \frac{(n-t+1)\beta^{n-t+1}}{1-\beta^n} 
@@ -122,26 +122,26 @@ For the first summation in \eqref{eq:lam-sum-1}, for all $t\le n\le K-1$, we hav
     \stackrel{(ii)}{\le} 4\cdot \frac{1\cdot \beta^1}{1-\beta^1} \le \frac{4}{1-\beta}.
 \end{align*}
 (i) holds because $\frac{1}{1-\beta^n}$ is decreasing w.r.t. $n$. (ii) holds because $f(x)=\frac{x\beta^x}{1-\beta^x}$ is decreasing for $x\ge 0$ and $\beta\in(0,1)$, so $f(n-t+1) \le f(1)$ since $n-t+1 \ge 1$.
-Recall that $K-1\le \frac{1}{1-\beta}$, then the first summation in \eqref{eq:lam-sum-1} can be bounded by
+Recall that $K-1\le \frac{1}{1-\beta}$, then the first summation in \eqref{eq:Exp-O2NC:lam-sum-1} can be bounded by
 \begin{align}
     \one_{\{t\le K-1\}}\cdot \sum_{n=t}^{K-1} \lambda_{n,t}
     &\le \sum_{n=1}^{K-1} \frac{4}{1-\beta} \le \frac{4}{(1-\beta)^2}.
-    \label{eq:lam-sum-1a}
+    \label{eq:Exp-O2NC:lam-sum-1a}
 \end{align}
-For the second summation in \eqref{eq:lam-sum-1}, for all $n\ge K \ge \frac{1}{1-\beta}$, 
+For the second summation in \eqref{eq:Exp-O2NC:lam-sum-1}, for all $n\ge K \ge \frac{1}{1-\beta}$, 
 \begin{align*}
     \frac{1}{1-\beta^n} 
     \stackrel{(i)}{\le} \frac{1}{1-\beta^{\frac{1}{1-\beta}}} 
     \stackrel{(ii)}{\le} \lim_{x\to 1} \frac{1}{1-x^{\frac{1}{1-x}}} = \frac{e}{e-1} \le 2.
 \end{align*}
-(i) holds because $\frac{1}{1-\beta^n}$ is decreasing. (ii) holds because $f(x)=\frac{1}{1-x^{\frac{1}{1-x}}}$ is increasing for $x\ge 0$, so $f(\beta) \le \lim_{x\to 1}f(x)$ for all $\beta\in(0,1)$. Consequently, the second summation in \eqref{eq:lam-sum-1} can be bounded by
+(i) holds because $\frac{1}{1-\beta^n}$ is decreasing. (ii) holds because $f(x)=\frac{1}{1-x^{\frac{1}{1-x}}}$ is increasing for $x\ge 0$, so $f(\beta) \le \lim_{x\to 1}f(x)$ for all $\beta\in(0,1)$. Consequently, the second summation in \eqref{eq:Exp-O2NC:lam-sum-1} can be bounded by
 \begin{align}
     \sum_{n=\max\{t,K\}}^N \lambda_{n,t}
     \le \sum_{n=\max\{t,K\}}^N 4\cdot \frac{(n-t+1)\beta^{n-t+1}}{1-\beta^n} 
     \le 8\sum_{n=t}^N (n-t+1)\beta^{n-t+1} 
     = 8\sum_{n=1}^{N-t} n\beta^n
     % \le \frac{8}{(1-\beta)^2}.
-    \label{eq:lam-sum-1b}
+    \label{eq:Exp-O2NC:lam-sum-1b}
 \end{align}
 By change of summation,
 \begin{align*}
@@ -151,25 +151,25 @@ By change of summation,
     \le \sum_{i=1}^N \frac{\beta^i}{1-\beta}
     \le \frac{1}{(1-\beta)^2}.
 \end{align*}
-We then conclude the proof by substituting \eqref{eq:lam-sum-1a}, \eqref{eq:lam-sum-1b} into \eqref{eq:lam-sum-1}.
+We then conclude the proof by substituting \eqref{eq:Exp-O2NC:lam-sum-1a}, \eqref{eq:Exp-O2NC:lam-sum-1b} into \eqref{eq:Exp-O2NC:lam-sum-1}.
 \end{proof}
 
 \VarianceToRegularizer*
 
 \begin{proof}
-By Proposition \ref{prop:variance-regularizer} and Proposition \ref{prop:tech-lam-t:N}, we have
+By Proposition \ref{prop:Exp-O2NC:variance-regularizer} and Proposition \ref{prop:Exp-O2NC:tech-lam-t:N}, we have
 \begin{align*}
     \Ex_s\sum_{n=1}^N\Ex_{\vecy_n} \|\vecy_n-\overline\vecx_n\|^2 
     \stackrel{(i)}{\le} \sum_{n=1}^N\sum_{t=1}^n \lambda_{n,t}\|\Delta_t\|^2 
     \stackrel{(ii)}{=} \sum_{t=1}^N\left(\sum_{n=t}^N \lambda_{n,t}\right) \|\Delta_t\|^2 
     \stackrel{(iii)}{\le} \sum_{t=1}^N \frac{12}{(1-\beta)^2} \|\Delta_t\|^2. 
 \end{align*}
-Here (i) is from Proposition \ref{prop:variance-regularizer}, (ii) is from change of summation, and (iii) is from Proposition \ref{prop:tech-lam-t:N}.
+Here (i) is from Proposition \ref{prop:Exp-O2NC:variance-regularizer}, (ii) is from change of summation, and (iii) is from Proposition \ref{prop:Exp-O2NC:tech-lam-t:N}.
 \end{proof}
 
 
 
-\subsection{Proof of Lemma \ref{lem:exp-scaling}}
+\subsection{Proof of Lemma \ref{lem:Exp-O2NC:exp-scaling}}
 
 \ExponentialScaling*
 \begin{proof}

@@ -1,5 +1,5 @@
-\section{Missing Proofs in Section \ref{sec:convergence}}
-\label{app:base-lemma}
+\section{Missing Proofs in Section \ref{sec:DP-O2NC_convergence}}
+\label{app:DP-O2NC:base-lemma}
 
 % \BaseLemma*
 
@@ -34,19 +34,19 @@ Finally, note that $\|\vecw_t^k-\overline w^k\| \le DT = \delta$, so $\|\nabla F
 % \BaseCorollary*
 
 \begin{proof}
-By Lemma \ref{lem:uniform-smoothing}, $\hat F_\delta$ is differentiable. Next, since $\|\hat F_\delta - F\| \le L\delta$, 
+By Lemma \ref{lem:DP-O2NC:uniform-smoothing}, $\hat F_\delta$ is differentiable. Next, since $\|\hat F_\delta - F\| \le L\delta$, 
 % $\inf \hat F_\delta$ is finite and
 \begin{equation*}
     \hat F_\delta(\vecx_1) - \inf_\vecx \hat F_\delta(\vecx)
     \le F(\vecx_1) - \inf_\vecx F(\vecx) + 2L\delta = F^* + 2L\delta.
 \end{equation*}
-Hence, upon applying Lemma \ref{lem:O2NC-base} on the uniform smoothing $\hat F_\delta$, we have
+Hence, upon applying Lemma \ref{lem:DP-O2NC:O2NC-base} on the uniform smoothing $\hat F_\delta$, we have
 \begin{equation*}
     \E\|\hat F_\delta(\overline\vecw)\|_\delta \le 
     \frac{F^*+2L\delta}{DKT} + \sum_{k=1}^K\frac{\E\regret_T(\hat\vecu^k)}{DKT} + \sum_{k=1}^K\sum_{t=1}^T \frac{ \E\langle \nabla\hat F_\delta(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\hat\vecu^k\rangle }{DKT}.
     % \frac{F^*+2L\delta}{DN} + \frac{\sum_{k=1}^K\E\regret_T(\hat\vecu^k)}{DN} + \frac{1}{DN} \sum_{k=1}^K\sum_{t=1}^T \E\langle \nabla\hat F_\delta(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\hat\vecu^k\rangle.
 \end{equation*}
-Finally, by Corollary \ref{cor:smooth-reduction}, $\E\|F(\overline\vecw)\|_{2\delta}$ is also bounded by RHS, which concludes the proof.
+Finally, by Corollary \ref{cor:DP-O2NC:smooth-reduction}, $\E\|F(\overline\vecw)\|_{2\delta}$ is also bounded by RHS, which concludes the proof.
 \end{proof}
 
 
@@ -58,11 +58,11 @@ First, we recall a martingale concentration bound. Let $\vecv_1,\ldots,\vecv_n$ 
     \textstyle
     \E\|\sum_{i=1}^n \vecv_i\|^2 = \sum_{i=1}^n \E\|\vecv_i\|^2.
 \end{equation*}
-In our case, note that $\nabla\hat F(\vecw_t^k) = \nabla\hat F(\vecw_1^k) + \sum_{i=2}^t \nabla\hat F(\vecw_t^k) - \nabla\hat F(\vecw_{t-1}^k)$ and recall that $\vecg_t^k = \vecg_1^k + \sum_{i=2}^t \vecd_i$. Therefore, by the concentration inequality and Lemma \ref{lem:grad-estimator} and \ref{lem:diff-estimator}, 
+In our case, note that $\nabla\hat F(\vecw_t^k) = \nabla\hat F(\vecw_1^k) + \sum_{i=2}^t \nabla\hat F(\vecw_t^k) - \nabla\hat F(\vecw_{t-1}^k)$ and recall that $\vecg_t^k = \vecg_1^k + \sum_{i=2}^t \vecd_i$. Therefore, by the concentration inequality and Lemma \ref{lem:DP-O2NC:grad-estimator} and \ref{lem:DP-O2NC:diff-estimator}, 
 \begin{align*}
     \E\| \nabla \hat F(\vecw_t^k) - \vecg_t^k \|^2
     &\le \E\|\nabla \hat F(\vecw_1^k) - \vecg_1^k\|^2 + \sum_{i=2}^t \E\|\nabla\hat F(\vecw_i^k)-\nabla\hat F(\vecw_{i-1}^k) - \vecd_i^k\|^2 \\
     &\le \frac{16dL^2}{B_1} + \sum_{i=2}^t \frac{16dL^2}{B_2\delta^2} \E\|\vecw_i^k-\vecw_{i-1}^k\|^2.
 \end{align*}
-We conclude the proof by Remark \ref{rmk:w-distance} that $\|\vecw_i^k-\vecw_{i-1}^k\| \le 2D \le \frac{2\delta}{T}$.
+We conclude the proof by Remark \ref{rmk:DP-O2NC:w-distance} that $\|\vecw_i^k-\vecw_{i-1}^k\| \le 2D \le \frac{2\delta}{T}$.
 \end{proof}

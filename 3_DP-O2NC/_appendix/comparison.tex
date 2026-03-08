@@ -1,11 +1,11 @@
 \section{Comparison with naive approach}
-\label{app:comparison}
+\label{app:DP-O2NC:comparison}
 
 \input{3_DP-O2NC/_appendix/naive_alg}
 
-To concrete the discussion from Section \ref{sec:algorithm}, we'll delve into the analysis of the naive private algorithm built on O2NC. Specifically, this algorithm replaces the gradient oracle (as seen in line 5 of Algorithm \ref{alg:PONC}) with a direct zeroth-order estimator, as defined in Algorithm \ref{alg:oracle-standard}. As a remark, $\vecg_t^k$ is an unbiased estimator and $\E\|\vecg_t^k\|^2 \lesssim L^2(\frac{d}{B}+1)$, according to \citep{kornowski2023algorithm} Remark 6. Moreover, following the same argument as the sensitivity bound in Lemma \ref{lem:grad-estimator}, the sensitivity of $\vecg_t^k$ is bounded by $O(dL/B)$. Consequently, if we set $\sigma=dL/B\rho$, each $\tilde\vecg_t^k$ achieves $(\alpha,\alpha\rho^2/2)$-RDP. 
+To concrete the discussion from Section \ref{sec:DP-O2NC_algorithm}, we'll delve into the analysis of the naive private algorithm built on O2NC. Specifically, this algorithm replaces the gradient oracle (as seen in line 5 of Algorithm \ref{alg:DP-O2NC:PONC}) with a direct zeroth-order estimator, as defined in Algorithm \ref{alg:DP-O2NC:oracle-standard}. As a remark, $\vecg_t^k$ is an unbiased estimator and $\E\|\vecg_t^k\|^2 \lesssim L^2(\frac{d}{B}+1)$, according to \citep{kornowski2023algorithm} Remark 6. Moreover, following the same argument as the sensitivity bound in Lemma \ref{lem:DP-O2NC:grad-estimator}, the sensitivity of $\vecg_t^k$ is bounded by $O(dL/B)$. Consequently, if we set $\sigma=dL/B\rho$, each $\tilde\vecg_t^k$ achieves $(\alpha,\alpha\rho^2/2)$-RDP. 
 
-Although the algorithm appears more straightforward, its convergence analysis is less favorable. Following the proof idea of Theorem \ref{thm:convergence}, we first recall the result in Corollary \ref{cor:O2NC-smoothing}:
+Although the algorithm appears more straightforward, its convergence analysis is less favorable. Following the proof idea of Theorem \ref{thm:DP-O2NC:convergence}, we first recall the result in Corollary \ref{cor:DP-O2NC:O2NC-smoothing}:
 \begin{equation*}
     \E\|\nabla F(\overline \vecw)\|_{2\delta} 
     \le \frac{F^*+2L\delta}{DKT} + \sum_{k=1}^K\frac{\E\regret_T(\hat\vecu^k)}{DKT} + \sum_{k=1}^K\sum_{t=1}^T \frac{ \E\langle \nabla\hat F_\delta(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\hat\vecu^k\rangle }{DKT}.
@@ -29,7 +29,7 @@ Next, we bound the sum of inner product. It's important to note that $\E\langle 
     DL\sqrt{T} \left( \frac{\sqrt{d}}{\sqrt{B}} + 1 + \frac{d^{3/2}}{B\rho} \right).
 \end{align*}
 % The second line follows from the martingale bound. 
-Upon substituting back into Corollary \ref{cor:O2NC-smoothing}, we have
+Upon substituting back into Corollary \ref{cor:DP-O2NC:O2NC-smoothing}, we have
 \begin{align*}
     \E\|\nabla F(\overline \vecw)\|_{2\delta} 
     &\lesssim
@@ -40,5 +40,5 @@ Upon substituting back into Corollary \ref{cor:O2NC-smoothing}, we have
     \intertext{To achieve the optimal non-private rate $O(d\delta^{-1}\epsilon^{-3})$, we need to set $B=1$. Therefore, upon setting $T=\min\{(\frac{\sqrt{d}L\delta M}{F^*+L\delta})^{2/3}, (\frac{d^{3/2}L\delta M}{(F^*+L\delta)\rho})^{2/3}\}$, we have}
     &\lesssim \left(\frac{(F^* + L\delta)dL^2}{\delta M}\right)^{1/3} + \left(\frac{(F^*+L\delta)d^{3/2}L^2}{\rho\delta M}\right)^{1/3}.
 \end{align*}
-Equivalently, $\E\|\nabla F(\overline\vecw)\|_{2\delta}\le \epsilon$ if $M=\Omega\left( d(\frac{F^*L^2}{\delta\epsilon^3}+\frac{L^3}{\epsilon^3}) + d^{3/2}(\frac{F^*L^2}{\rho\delta\epsilon^3} + \frac{L^3}{\rho\epsilon^3}) \right)$, whose dominating term is $\Omega(d^{3/2}\rho^{-1}\delta^{-1}\epsilon^{-3})$. In contrast, our carefully designed algorithm only requires $\tilde\Omega(d\delta^{-1}\epsilon^{-3}+d^{3/2}\rho^{-1}\delta^{-1}\epsilon^{-2})$ samples, as proved in Theorem \ref{thm:convergence}. Notably, the naive algorithm suffers an additional cost of $\epsilon^{-1}$ for privacy. 
+Equivalently, $\E\|\nabla F(\overline\vecw)\|_{2\delta}\le \epsilon$ if $M=\Omega\left( d(\frac{F^*L^2}{\delta\epsilon^3}+\frac{L^3}{\epsilon^3}) + d^{3/2}(\frac{F^*L^2}{\rho\delta\epsilon^3} + \frac{L^3}{\rho\epsilon^3}) \right)$, whose dominating term is $\Omega(d^{3/2}\rho^{-1}\delta^{-1}\epsilon^{-3})$. In contrast, our carefully designed algorithm only requires $\tilde\Omega(d\delta^{-1}\epsilon^{-3}+d^{3/2}\rho^{-1}\delta^{-1}\epsilon^{-2})$ samples, as proved in Theorem \ref{thm:DP-O2NC:convergence}. Notably, the naive algorithm suffers an additional cost of $\epsilon^{-1}$ for privacy. 
 % Moreover, note that the private term dominates the naive bound, suggesting that the ``privacy for free'' property when $\rho\ge \sqrt{d}\epsilon$ no longer holds.

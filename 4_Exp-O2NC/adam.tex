@@ -1,11 +1,11 @@
 \section{Reduction to Adam with AdaGrad}
-\label{sec:adam}
+\label{sec:Exp-O2NC_adam}
 
-In this section, we delve deeper into the exploration of unconstrained online gradient descent equipped with adaptive learning rates. In the spirit of the AdaGrad-style learning rate, a natural selection involves setting $\eta_t = \frac{\eta}{\sqrt{\epsilon_0 + \sum_{i=1}^t\|\beta^{-i}\vecg_i\|^2}}$ for a given constant $\eta$ and some arbitrarily small $\epsilon_0>0$. However, as highlighted by Theorem \ref{thm:OGD-brief}, the OMD algorithm requires the next iteration's learning rate, $\eta_{t+1}$, for calculating its composite loss. Unlike the fixed learning rate scheduler $\eta_t=\beta^t\eta$ discussed previously, $\eta_{t+1}$ now depends on $\vecg_{t+1}$, incorporating information not yet available at round $t$. To circumvent this issue, we propose a modification to the adaptive learning rate by substituting $\|\vecg_{t+1}\|$ with its known upper bound, $G_f$. This adjustment allows Theorem \ref{thm:OGD-brief} to establish a regret bound for the adaptive OMD algorithm, which, together with Theorem \ref{thm:o2nc}, yields an adaptive momentum algorithm.
+In this section, we delve deeper into the exploration of unconstrained online gradient descent equipped with adaptive learning rates. In the spirit of the AdaGrad-style learning rate, a natural selection involves setting $\eta_t = \frac{\eta}{\sqrt{\epsilon_0 + \sum_{i=1}^t\|\beta^{-i}\vecg_i\|^2}}$ for a given constant $\eta$ and some arbitrarily small $\epsilon_0>0$. However, as highlighted by Theorem \ref{thm:Exp-O2NC:OGD-brief}, the OMD algorithm requires the next iteration's learning rate, $\eta_{t+1}$, for calculating its composite loss. Unlike the fixed learning rate scheduler $\eta_t=\beta^t\eta$ discussed previously, $\eta_{t+1}$ now depends on $\vecg_{t+1}$, incorporating information not yet available at round $t$. To circumvent this issue, we propose a modification to the adaptive learning rate by substituting $\|\vecg_{t+1}\|$ with its known upper bound, $G_f$. This adjustment allows Theorem \ref{thm:Exp-O2NC:OGD-brief} to establish a regret bound for the adaptive OMD algorithm, which, together with Theorem \ref{thm:o2nc}, yields an adaptive momentum algorithm.
 
 \begin{restatable}{theorem}{Adam}
-\label{thm:adam}
-Follow Assumption \ref{as:optimization} and further assume $f(\vecx,z)$ is $G_f$-Lipschitz in $\vecx$ (i.e., $\|\vecg_t\| \le G_f$ almost surely). Let $\Delta_1=0$ and update $\Delta_t$ by
+\label{thm:Exp-O2NC:adam}
+Follow Assumption \ref{as:Exp-O2NC:optimization} and further assume $f(\vecx,z)$ is $G_f$-Lipschitz in $\vecx$ (i.e., $\|\vecg_t\| \le G_f$ almost surely). Let $\Delta_1=0$ and update $\Delta_t$ by
 \begin{align*}
     &\Delta_{t+1} = \frac{\Delta_t - \eta_t\beta^{-t}\vecg_t}{1+\eta_t\mu_{t+1}+\eta_t(\frac{1}{\eta_{t+1}}-\frac{1}{\eta_t})}, \\
     &\eta_t = \frac{\eta}{\sqrt{\epsilon_0+\sum_{i=1}^{t-1}\|\beta^{-i}\vecg_i\|^2+(\beta^{-t}G_f)^2}}.

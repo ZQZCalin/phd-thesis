@@ -1,8 +1,8 @@
-\section{Proofs for the Strongly Convex Case (Section \ref{sec:strongly-convex})}
-\label{app:strongly-convex}
+\section{Proofs for the Strongly Convex Case (Section \ref{sec:DP-OTB_strongly-convex})}
+\label{app:DP-OTB:strongly-convex}
 
 \begin{lemma}
-\label{lem:basic-lemma-sc}
+\label{lem:DP-OTB:basic-lemma-sc}
 For any sequence $\weight_t>0, g_t\in\RR^d$, suppose an online learner predicts $w_t$ and receives $t$-th loss $\ell_t(w)=\langle g_t,w\rangle$, and define $x_t=\sum_{i=1}^t\frac{\weight_iw_i}{\weight_{1:t}}$. If $f$ is $\mu$-strongly convex w.r.t. $\|\cdot\|$, then
 \begin{align*}
     \weight_{1:T}(f(x_T) - f(x^*)) \leq \regret_T(x^*) + \sum_{t=1}^T \left( \langle \weight_t \nabla f(x_t) - g_t, w_t-x^* \rangle - \frac{\weight_t\mu}{2}\|x_t-x^*\|^2 \right).
@@ -14,16 +14,16 @@ We start with the strong convexity identity $f(x^*)\geq f(x_t)+\langle\nabla f(x
 \begin{align}
     \sum_{t=1}^T\weight_t(f(x_t) - f(x^*))
     &\leq \sum_{t=1}^T \weight_t\langle \nabla f(x_t),x_t-x^*\rangle - \frac{\weight_t\mu}{2}\|x_t-x^*\|^2.
-    \label{eq:sc-1}
+    \label{eq:DP-OTB:sc-1}
 \end{align}
-With the same argument in the proof of Lemma \ref{lem:basic-lemma}, we can show:
+With the same argument in the proof of Lemma \ref{lem:DP-OTB:basic-lemma}, we can show:
 \begin{align*}
     \weight_t\langle \nabla f(x_t),x_t-x^*\rangle
     &= \weight_t \langle \nabla f(x_t), x_t-w_t \rangle + \weight_t \langle \nabla f(x_t), w_t-x^*\rangle 
     \intertext{Recall the definition that $\weight_{1:t}x_t = \weight_{1:t-1}x_{t-1}+\weight_tw_t$ and thus $\weight_t(x_t-w_t)=\weight_{1:t-1}(x_{t-1}-x_t)$. Also, since $f$ is convex, $\langle \nabla f(x_t),x_{t-1}-x_t\rangle \leq f(x_{t-1})-f(x_t)$, so:}
     &\leq \weight_{1:t-1}f(x_{t-1}) - \weight_{1:t-1}f(x_t) + \langle \weight_t\nabla f(x_t) - g_t + g_t,w_t-x^*\rangle.
 \end{align*}
-Consequently, moving $\sum_{t=1}^T \weight_tf(x_t)$ to the right side and taking the telescopic sum in \eqref{eq:sc-1} gives:
+Consequently, moving $\sum_{t=1}^T \weight_tf(x_t)$ to the right side and taking the telescopic sum in \eqref{eq:DP-OTB:sc-1} gives:
 \begin{align*}
     -\weight_{1:T}f(x^*)
     &\leq \sum_{t=1}^T \weight_t\langle \nabla f(x_t),x_t-x^*\rangle -\weight_tf(x_t) - \frac{\weight_t\mu}{2}\|x_t-x^*\|^2 \\
@@ -32,7 +32,7 @@ Consequently, moving $\sum_{t=1}^T \weight_tf(x_t)$ to the right side and taking
 Moving $\weight_{1:T}f(x_T)$ to the left completes the proof.
 \end{proof}
 
-This lemma immediately implies Lemma \ref{lem:strongly-convex-regularized-loss}.
+This lemma immediately implies Lemma \ref{lem:DP-OTB:strongly-convex-regularized-loss}.
 
 \input{2_DP-OTB/_theorems/lem_strongly_convex_regret}
 
@@ -43,7 +43,7 @@ By definition, $\bar{\ell}_t(w)=\ell_t(w) + \frac{\weight_t\mu}{4}\|w-x_t\|^2$, 
     &= \sum_{t=1}^T \left( \ell_t(w_t)+\frac{\weight_t\mu}{4}\|w_t-x_t\|^2\right) - \left( \ell_t(x^*) + \frac{\weight_t\mu}{4}\|x^*-x_t\|^2 \right) \\
     &= \regret_T(x^*) + \sum_{t=1}^T \frac{\weight_t\mu}{4}(\|w_t-x_t\|^2-\|x_t-x^*\|^2).
 \end{align*}
-Upon substituting this equation into Lemma \ref{lem:basic-lemma-sc}, we get:
+Upon substituting this equation into Lemma \ref{lem:DP-OTB:basic-lemma-sc}, we get:
 \begin{align*}
     &\quad \ \weight_{1:T}(f(x_T) - f(x^*)) \\
     &\leq \overline\regret_T(x^*) -\sum_{t=1}^T \frac{\weight_t\mu}{4}(\|w_t-x_t\|^2-\|x_t-x^*\|^2) \\
@@ -64,7 +64,7 @@ For the second inequality in the lemma, by Fenchel-Young's inequality,
 \end{proof}
 
 \begin{proposition}
-\label{prop:subdiff-chain-rule}
+\label{prop:DP-OTB:subdiff-chain-rule}
 Suppose $W$ is a convex bounded domain with diameter $D$, and let $u\in W$ and $f(w)=\|w-u\|^2$. Then for all $w\in W$ and $v\in \partial f(w)$, $\|v\|_*\leq 2D$.
 \end{proposition}
 

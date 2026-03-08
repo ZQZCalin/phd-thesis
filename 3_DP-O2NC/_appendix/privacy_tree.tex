@@ -1,12 +1,12 @@
-\section{Proofs in Section \ref{sec:privacy}}
+\section{Proofs in Section \ref{sec:DP-O2NC_privacy}}
 
-\subsection{Proof of Theorem \ref{thm:tree}}
-\label{app:tree}
+\subsection{Proof of Theorem \ref{thm:DP-O2NC:tree}}
+\label{app:DP-O2NC:tree}
 
 Before we prove the theorem, we first prove a more general composition of RDP mechanisms. For two datasets $Z,Z'\in\calZ$, we denote $Z\simeq_q Z'$ if $Z,Z'$ are neighbors and they differ at the $q$-th entry.
 
 \begin{lemma}
-\label{lem-aux:RDP-composition}
+\label{lem-aux:DP-O2NC:RDP-composition}
 For any domain $\calZ$, let $\calR^{(i)}:\calS^{(1)}\times\dotsm\times\calS^{(i-1)}\times\calZ \to \calS^{(i)}$ be a sequence of algorithms such that $\calR^{(i)}(\vecx_{1:i-1},\cdot)$ is $(\alpha,\epsilon_i)$-RDP for all auxiliary inputs $\vecx_{1:i-1}\in \calS^{(i)}\times\dotsm\times\calS^{(i-1)}$. Let $f_{\calR^{(i)}(\vecx_{1:i-1}, Z)}$ be the distribution of $\calR^{(i)}(\vecx_{1:i-1}, Z)$. Suppose each dataset $Z\in\calZ$ has $m$ data, and for each $q\in[m]$, let
 \begin{equation*}
     \textsc{In}(q) := \{ i\in[n] : f_{\calR^{(i)}(\cdot, Z)} = f_{\calR^{(i)}(\cdot, Z')}, \, \forall Z\simeq_q Z' \}, \quad \textsc{Out}(q) := [n]\setminus \textsc{In}(q).
@@ -49,29 +49,29 @@ Now we are ready to prove the theorem.
 % Consequently, we can assume that $\sT_{(a,b)}<\sT_{(c,d)}$ iff $(a,b)<(c,d)$, i.e., $\sT$ is sorted in an ascending order.
 
 % \begin{observation}
-% Given input $r$, the \textsc{Node} function in Algorithm \ref{alg:tree} starts from the root $(1,n)$ and 
+% Given input $r$, the \textsc{Node} function in Algorithm \ref{alg:DP-O2NC:tree} starts from the root $(1,n)$ and 
 % \end{observation}
 
 
 % \TreeMechanism*
 
 \begin{proof}
-% [Proof of Theorem \ref{thm:tree}]
+% [Proof of Theorem \ref{thm:DP-O2NC:tree}]
 For any $n\in\NN$, define $\sT$ as he tree set with $2^{\lceil\log_2 n\rceil}$ leaves.
 Let $\calZ = \calZ^{(1:n)}$ and $S^{(a,b)}=\calX$ for all $(a,b)\in\sT$. For each $(a,b)\in \sT$, define $\calR^{(a,b)}: ( \prod_{(c,d)<(a,b)} \calS^{(c,d)} ) \times \calZ \to \calS^{(a,b)}$ as
 \begin{equation}
     \calR^{(a,b)}(\vecy_{(c,d)<(a,b)},Z_{1:n}) = \sum_{i=a}^b \calM^{(i)}(\vecx_{1:i-1},Z_i)
     + \xi_b, 
     % \quad \tilde\calR^{(a,b)} = \calR^{(a,b)} + \xi_b,
-    \label{eq:1-tree-1}
+    \label{eq:DP-O2NC:1-tree-1}
 \end{equation}
 where $\vecx_j = \sum_{(c,d)\in \textsc{Node}(j)} \vecy_{(c,d)}$ for each $j\in[i-1]$ and $\xi_b\sim N(0,\sigma_b^2I)$. We can check that $\vecx_j$ is well-defined: for all $j \le b$ and for all $(c,d)\in \textsc{Node}(j)$, we have $(c,d)<(a,b)$ by definition of $\textsc{Node}$ and thus $\vecx_{1:i-1}$ can be computed from $\vecy_{(i,j)<(a,b)}$ for all $i\in[a,b]$.
 
 Next, since for all neighboring $Z_{1:n},Z_{1:n}'\in\calZ$, $\|\calM^{(i)}(\vecx_{1:i-1},Z_i)-\calM^{(i)}(\vecx_{1:i-1},Z_i')\| \le s_i$, $\calR^{(a,b)}(\vecy_{(c,d)<(a,b)},\cdot)$ has sensitivity bounded by $s_{(a,b)} := \max_{i\in[a,b]} s_i$. Therefore, upon adding Gaussian noise $\calN(0,\sigma_b^2I)$, $\calR^{(a,b)}(\vecy_{(c,d)<(a,b)},\cdot)$ is $(\alpha, \epsilon_{(a,b)})$-RDP where $\epsilon_{(a,b)} = {\alpha s_{(a,b)}^2}/{2\sigma_b^2}$.
 % Also recall that adding Gaussian noise $N(0,\sigma^2I)$ to an algorithm with $\ell_2$-sensitivity $\gamma$ makes it $(\alpha, \alpha\gamma^2/2\sigma^2)$-RDP. Therefore, $\tilde\calR^{\sT_{(a,b)}}$ is $(\alpha,\epsilon_{\sT_{(a,b)}})$-RDP where $\epsilon_{\sT_{(a,b)}} = \alpha\sup_{i\in[a,b]} \gamma_i^2/2\sigma_b^2$. 
 
-Now we are ready to apply Lemma \ref{lem-aux:RDP-composition}.
-Let $\calA_\calR:\calZ\to\prod\calS^{(a,b)}$ be the composition of $\calR$, i.e., given dataset $Z_{1:n}$ sequentially computes $\vecy_{(a,b)}=\calR^{(a,b)}(\vecy_{(c,d)<(a,b)},Z_{1:n})$ and outputs $\vecy_{(a,b)\in\sT}$. Then by Lemma \ref{lem-aux:RDP-composition}, $\calA_\calR$ is $(\alpha,\epsilon)$-RDP where
+Now we are ready to apply Lemma \ref{lem-aux:DP-O2NC:RDP-composition}.
+Let $\calA_\calR:\calZ\to\prod\calS^{(a,b)}$ be the composition of $\calR$, i.e., given dataset $Z_{1:n}$ sequentially computes $\vecy_{(a,b)}=\calR^{(a,b)}(\vecy_{(c,d)<(a,b)},Z_{1:n})$ and outputs $\vecy_{(a,b)\in\sT}$. Then by Lemma \ref{lem-aux:DP-O2NC:RDP-composition}, $\calA_\calR$ is $(\alpha,\epsilon)$-RDP where
 \begin{equation*}
     \epsilon \le \max_{q} \sum_{(a,b) \in \textsc{Out}(q)} \epsilon_{(a,b)} = \max_{q} \sum_{(a,b)\in \textsc{Out}(q)} \max_{i\in[a.b]} \frac{\alpha s_i^2}{2\sigma_b^2}.
 \end{equation*}
@@ -91,7 +91,7 @@ Since there is exactly one such node in each of $\lceil\log_2 n\rceil+1$ layers 
 % \begin{equation*}
 %     \epsilon' \le  \sqrt{\log_2(2n)\log1/\delta} \sup_{b\in[n], i\le b} \frac{\gamma_i}{\sigma_b}.
 % \end{equation*}
-Finally, we conclude the proof by claiming that algorithm $\calA$ defined in the theorem can be derived from $\calA_\calR$ after post-processing. Observe that $\sum_{(a,b)\in \textsc{Node}(i)}\sum_{j=a}^b = \sum_{j=1}^i$, so by \eqref{eq:1-tree-1},
+Finally, we conclude the proof by claiming that algorithm $\calA$ defined in the theorem can be derived from $\calA_\calR$ after post-processing. Observe that $\sum_{(a,b)\in \textsc{Node}(i)}\sum_{j=a}^b = \sum_{j=1}^i$, so by \eqref{eq:DP-O2NC:1-tree-1},
 \begin{align*}
     \vecx_i 
     = \sum_{(a,b)\in\textsc{Node}(i)} \vecy_{(a,b)} 
@@ -103,20 +103,20 @@ Therefore, $\calA$ is indeed a post-processing of $\calA_\calR$, which concludes
 \end{proof}
 
 
-\subsection{Proof of Corollary \ref{cor:privacy}}
+\subsection{Proof of Corollary \ref{cor:DP-O2NC:privacy}}
 
 % \TreeCorollary*
 
 \begin{proof}
-Since the private oracle defined in Algorithm \ref{alg:oracle-variance-reduced} uses disjoint data in different iteration $k\in[K]$, Algorithm \ref{alg:PONC} is a post-processing of $\{(\tilde\vecg_1^k,\ldots,\tilde\vecg_T^k)\}_{k\in[K]}$. Therefore, it suffices to prove that for each $k\in[K]$, the composition $(\tilde\vecg_1^k,\ldots,\tilde \vecg_T^k)$ is $(\alpha,\alpha\rho^2/2)$-RDP.
+Since the private oracle defined in Algorithm \ref{alg:DP-O2NC:oracle-variance-reduced} uses disjoint data in different iteration $k\in[K]$, Algorithm \ref{alg:DP-O2NC:PONC} is a post-processing of $\{(\tilde\vecg_1^k,\ldots,\tilde\vecg_T^k)\}_{k\in[K]}$. Therefore, it suffices to prove that for each $k\in[K]$, the composition $(\tilde\vecg_1^k,\ldots,\tilde \vecg_T^k)$ is $(\alpha,\alpha\rho^2/2)$-RDP.
 
-The key is to observe that $(\tilde\vecg_1^k,\ldots,\tilde\vecg_T^k)$ can be written as the adaptive composition in Theorem \ref{thm:tree}. Let $\vecg_1^k = \calM^{(1)}(Z_1^k) \triangleq \grad_{f,\delta}(\vecw_1^k,Z_1^k)$ and $\vecd_i^k = \calM^{(i)}(\tilde\vecg_{1:i-1}^k, Z_i^k) \triangleq \diff_{f,\delta}(\vecw_i^k,\vecw_{i-1}^k,Z_i^k)$. This is well-defined because 
+The key is to observe that $(\tilde\vecg_1^k,\ldots,\tilde\vecg_T^k)$ can be written as the adaptive composition in Theorem \ref{thm:DP-O2NC:tree}. Let $\vecg_1^k = \calM^{(1)}(Z_1^k) \triangleq \grad_{f,\delta}(\vecw_1^k,Z_1^k)$ and $\vecd_i^k = \calM^{(i)}(\tilde\vecg_{1:i-1}^k, Z_i^k) \triangleq \diff_{f,\delta}(\vecw_i^k,\vecw_{i-1}^k,Z_i^k)$. This is well-defined because 
 % $\vecw_1^k$ is initialized by the OCO algorithm and is thus data-independent, and 
-$\vecw_i^k$ is a post-processing of $\tilde\vecg_{1:i-1}^k$ by construction of O2NC. Therefore, $\vecg_t^k=\vecg_1^k+\sum_{i=2}^t \vecd_i^k = \sum_{i=1}^t \calM^{(i)}(\tilde\vecg_{1:i-1}^k,Z_i^k)$, and Theorem \ref{thm:tree} can be applied.
+$\vecw_i^k$ is a post-processing of $\tilde\vecg_{1:i-1}^k$ by construction of O2NC. Therefore, $\vecg_t^k=\vecg_1^k+\sum_{i=2}^t \vecd_i^k = \sum_{i=1}^t \calM^{(i)}(\tilde\vecg_{1:i-1}^k,Z_i^k)$, and Theorem \ref{thm:DP-O2NC:tree} can be applied.
 
-By Lemma \ref{lem:grad-estimator}, the sensitivity of $\calM^{(1)}$ is bounded by $s_1 = \frac{2dL}{B_1}$. By Remark \ref{rmk:w-distance} and Lemma \ref{lem:diff-estimator}, the sensitivity of $\calM^{(i)}(\tilde\vecg_{1:i-1}^k,\cdot)$ is bounded by $s_i=\frac{2dL}{B_2\delta}\|\vecw_i^k-\vecw_{i-1}^k\| \le \frac{4dL}{B_2T}$ for all $i\ge 2$.
+By Lemma \ref{lem:DP-O2NC:grad-estimator}, the sensitivity of $\calM^{(1)}$ is bounded by $s_1 = \frac{2dL}{B_1}$. By Remark \ref{rmk:DP-O2NC:w-distance} and Lemma \ref{lem:DP-O2NC:diff-estimator}, the sensitivity of $\calM^{(i)}(\tilde\vecg_{1:i-1}^k,\cdot)$ is bounded by $s_i=\frac{2dL}{B_2\delta}\|\vecw_i^k-\vecw_{i-1}^k\| \le \frac{4dL}{B_2T}$ for all $i\ge 2$.
 % because $\|\vecw_i^k-\vecw_{i-1}^k\| \le 2D = \frac{2\delta}{T}$. 
-Since we assume $B_1\ge TB_2/2$, it holds that $s_1\le s_t$ for all $t\ge 2$. Therefore, upon setting $\sigma_t = {\sqrt{2\ln T}s_2}/{\rho}$ for all $t\in[T]$, Theorem \ref{thm:tree} implies that $(\tilde\vecg_1^k,\ldots\tilde\vecg_T^k)$ is $(\alpha,\alpha\rho^{\prime 2}/2)$-RDP where
+Since we assume $B_1\ge TB_2/2$, it holds that $s_1\le s_t$ for all $t\ge 2$. Therefore, upon setting $\sigma_t = {\sqrt{2\ln T}s_2}/{\rho}$ for all $t\in[T]$, Theorem \ref{thm:DP-O2NC:tree} implies that $(\tilde\vecg_1^k,\ldots\tilde\vecg_T^k)$ is $(\alpha,\alpha\rho^{\prime 2}/2)$-RDP where
 \begin{equation*}
     % \textstyle
     \rho' \le \sqrt{2\ln T} \cdot \max_{b\in[n], i\le n} \frac{s_i}{\sigma_b} \le \sqrt{2\ln T} \cdot \frac{s_2}{\sigma_2} = \rho.
@@ -125,7 +125,7 @@ Since we assume $B_1\ge TB_2/2$, it holds that $s_1\le s_t$ for all $t\ge 2$. Th
 \end{proof}
 
 
-\subsection{Proof of Corollary \ref{cor:tree-noise}}
+\subsection{Proof of Corollary \ref{cor:DP-O2NC:tree-noise}}
 
 % \TreeNoise*
 
@@ -137,5 +137,5 @@ Recall that $\tree(t)=\sum_{(\cdot,i)\in\node(t)} \xi_i$. Since $\xi_i$'s are in
     = \sum_{(\cdot,i)\in\node(t)} d\sigma_i^2
     \le 2\ln(t) d\sigma^2.
 \end{equation*}
-The last inequality follows from Remark \ref{rmk:tree} that $|\node(t)|\le 2\ln(t)$. We then conclude the proof by substituting the value of $\sigma$ defined in Corollary \ref{cor:privacy}.
+The last inequality follows from Remark \ref{rmk:DP-O2NC:tree} that $|\node(t)|\le 2\ln(t)$. We then conclude the proof by substituting the value of $\sigma$ defined in Corollary \ref{cor:DP-O2NC:privacy}.
 \end{proof}

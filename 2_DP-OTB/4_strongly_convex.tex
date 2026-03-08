@@ -1,18 +1,18 @@
 \section{The Strongly Convex Case}
-\label{sec:strongly-convex}
+\label{sec:DP-OTB_strongly-convex}
 
 In this section, we prove that in the case of strong convexity, our algorithm can be improved by regularizing the loss of online learner.
-If $ f$ is strongly convex, then we can prove a similar result to Theorem \ref{lem:basic-lemma} (the proof is in Appendix \ref{app:strongly-convex}).
+If $ f$ is strongly convex, then we can prove a similar result to Theorem \ref{lem:DP-OTB:basic-lemma} (the proof is in Appendix \ref{app:DP-OTB:strongly-convex}).
 
 \input{2_DP-OTB/_theorems/lem_strongly_convex_regret}
 
-% First, recall that $x_t$ are determined by $\{g_1+\gamma_1,\ldots,g_{t-1}+\gamma_{t-1}\}$, and we proved in Theorem \ref{thm:main-privacy}
+% First, recall that $x_t$ are determined by $\{g_1+\gamma_1,\ldots,g_{t-1}+\gamma_{t-1}\}$, and we proved in Theorem \ref{thm:DP-OTB:main-privacy}
 
-Compared to Lemma \ref{lem:basic-lemma} and Equation \ref{eq:basic-decomposition-2}, in the strongly convex case, there is an additional term $-\frac{\weight_t\mu}{8}\|w_t-x^*\|^2$, which allows the improved convergence rate:
+Compared to Lemma \ref{lem:DP-OTB:basic-lemma} and Equation \ref{eq:DP-OTB:basic-decomposition-2}, in the strongly convex case, there is an additional term $-\frac{\weight_t\mu}{8}\|w_t-x^*\|^2$, which allows the improved convergence rate:
 
 \begin{theorem}
-\label{thm:strongly-convex}
-Suppose Assumption \ref{as:sc-norm} - \ref{as:sigma-H} hold, and $\calD$ is a $(V,\alpha)$-RDP distribution. Also suppose $ f$ is $\mu$-strongly convex. Set $\weight_t=t^k$ and $\sigma_t^2$ as defined in \eqref{eq:RDP-noise}. Then $\E[ f(x_T) -  f(x^*)]$ is bounded by:
+\label{thm:DP-OTB:strongly-convex}
+Suppose Assumption \ref{as:DP-OTB:sc-norm} - \ref{as:DP-OTB:sigma-H} hold, and $\calD$ is a $(V,\alpha)$-RDP distribution. Also suppose $ f$ is $\mu$-strongly convex. Set $\weight_t=t^k$ and $\sigma_t^2$ as defined in \eqref{eq:DP-OTB:RDP-noise}. Then $\E[ f(x_T) -  f(x^*)]$ is bounded by:
 \begin{align*}
     % \E[ f(x_T)- f(x^*)] &\leq 
     \frac{(k+1)\E[\overline\regret_T(x^*)]}{T^{k+1}} 
@@ -30,7 +30,7 @@ As an example, again consider the case $\calD=\calN(0,I)$ with $L_2$ norm. Onlin
 \begin{align*}
     \regret_T(u) \leq \sum_{t=1}^T \frac{\|g_t\|_2^2}{2\sum_{i=1}^t\mu_i},
 \end{align*}
-where $g_t\in \partial\ell_t(w_t)$. In our case, $\|\cdot\|_2^2$ is $2$-strongly convex and the regularized loss $\bar \ell_t$ is $\frac{\weight_t\mu}{2}$-strongly convex, i.e. $\mu_t=\mu t^k/2$ and $\sum_{i=1}^t \mu_i = O(\mu t^{k+1})$. Therefore, by Theorem \ref{thm:strongly-convex},
+where $g_t\in \partial\ell_t(w_t)$. In our case, $\|\cdot\|_2^2$ is $2$-strongly convex and the regularized loss $\bar \ell_t$ is $\frac{\weight_t\mu}{2}$-strongly convex, i.e. $\mu_t=\mu t^k/2$ and $\sum_{i=1}^t \mu_i = O(\mu t^{k+1})$. Therefore, by Theorem \ref{thm:DP-OTB:strongly-convex},
 \begin{align*}
     \E[\overline\regret_T(x^*)] 
     % &\lesssim \sum_{t=1}^T \frac{t^{k-1}}{\mu}\left(G^2+\mu^2D^2+ \frac{(\sigma_G+D\sigma_H)^2}{t}+\frac{\alpha(G+DH)^2\log_2^{3/2}T}{\rho^2t^2}\right) \\
@@ -45,15 +45,15 @@ Consequently,
 This again matches the optimal private convergence rates.
 \end{remark}
 
-\begin{proof}[Proof of Theorem \ref{thm:strongly-convex}]
-We have already bounded $\E[\|\weight_t\nabla f(x_t)-g_t\|_*^2]$ and $\E[\|\gamma_t\|_*^2]$ in \eqref{eq:variance-norm} and \eqref{eq:gamma-bound} respectively, so
+\begin{proof}[Proof of Theorem \ref{thm:DP-OTB:strongly-convex}]
+We have already bounded $\E[\|\weight_t\nabla f(x_t)-g_t\|_*^2]$ and $\E[\|\gamma_t\|_*^2]$ in \eqref{eq:DP-OTB:variance-norm} and \eqref{eq:DP-OTB:gamma-bound} respectively, so
 \begin{align*}
     \E[\|\weight_t\nabla f(x_t)-g_t-\gamma_t\|_*^2]
     &\leq 2\E[\|\weight_t\nabla f(x_t)-g_t\|_*^2+\|\gamma_t\|_*^2] \\
     % &\leq 8(k+1)^2(\sigma_G^2+D^2\sigma_H^2)t^{2k-1}/\lambda, \label{eq:variance-norm} + \frac{4K\log_2(2t)}{\lambda}\left(\frac{2(k+1)(G+DH)t^{k-1}\log_2(2T)}{\rho}\right)^2.
     &\leq \frac{8(k+1)^2t^{2k-1}}{\lambda}\left((\sigma_G+D\sigma_H)^2+ \frac{2V(G+DH)^2\log_2^2(2T)}{\rho^2 t}\right).
 \end{align*}
-Upon substituting this into Lemma \ref{lem:strongly-convex-regularized-loss} and replace $\weight_t=t^k$, we get:
+Upon substituting this into Lemma \ref{lem:DP-OTB:strongly-convex-regularized-loss} and replace $\weight_t=t^k$, we get:
 \begin{align*}
     & \weight_{1:T} \E[ f(x_T)- f(x^*)] \\
     \leq & \E[\overline\regret_T(x^*)] + \sum_{t=1}^T \frac{16(k+1)^2t^{k-1}}{\lambda\mu}\left((\sigma_G+D\sigma_H)^2+ \frac{2V(G+DH)^2\log_2^2(2T)}{\rho^2 t}\right) \\
@@ -74,11 +74,11 @@ For the second part, recall that $\bar \ell_t(w)=\langle g_t+\gamma_t,w\rangle +
 %     &= \{2\|w-x_t\| u : u\in\partial \|w-x_t\|\}.
 % \end{align*}
 % By assumption, $\|w-x_t\|\leq D$. By triangular inequality, $\|x\|-\|y\| \leq \|x-y\|$, and thus $\|\cdot\|$ is $1$-Lipschitz. Equivalently, $\|u\|_*\leq 1$ for all $u\in\partial \|w-x_t\|$. Therefore, for all $v\in \partial\|w-x_t\|^2$, $\|v\|_*\leq 2D$.
-We follow the same argument in Theorem \ref{thm:DP-OTB-general-norm}: 
+We follow the same argument in Theorem \ref{thm:DP-OTB:general-norm}: 
 \begin{align*}
     \E[\|\bar g_t\|_*^2]
     &\leq 4\E[\|\weight_t\nabla f(x_t)\|_*^2 + \|\weight_t\nabla f(x_t)-g_t\|_*^2 + \|\gamma_t\|_*^2 + \|\tfrac{\weight_t\mu}{4} v\|_*^2] \\
-    \intertext{Here $v\in\partial\|w_t-x_t\|^2$. We bound the first term by Lipschitz, the second by \eqref{eq:variance-norm}, and the third by \eqref{eq:gamma-bound}. Moreover, by chain rule (Proposition \ref{prop:subdiff-chain-rule}), we can show that $\|v\|_* \leq 2D$, so:}
+    \intertext{Here $v\in\partial\|w_t-x_t\|^2$. We bound the first term by Lipschitz, the second by \eqref{eq:DP-OTB:variance-norm}, and the third by \eqref{eq:DP-OTB:gamma-bound}. Moreover, by chain rule (Proposition \ref{prop:DP-OTB:subdiff-chain-rule}), we can show that $\|v\|_* \leq 2D$, so:}
     &\leq 4t^{2k}G^2 + \frac{16(k+1)^2(\sigma_G+D\sigma_H)^2t^{2k-1}}{\lambda} \\
     &\quad \ + \frac{32V(k+1)^2(G+DH)^2t^{2k-2}\log_2^2(2T)}{\lambda\rho^2} + \mu^2D^2t^{2k} \\
     &\leq t^{2k}\left( 4G^2 + \mu^2D^2 + \frac{16(k+1)^2}{\lambda}\left(\frac{(\sigma_G+D\sigma_H)^2}{t} + \frac{2V(G+DH)^2\log_2^2(2T)}{\rho^2t^2}\right) \right).
