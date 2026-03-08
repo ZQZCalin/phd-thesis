@@ -1,0 +1,183 @@
+\section{Exponentiated Online-to-non-convex}
+\label{sec:alg}
+
+\begin{algorithm}[t]
+\caption{Exponentiated O2NC}
+\label{alg:O2NC-exp-avg}
+\begin{algorithmic}[1]
+    \STATE \textbf{Input:} OCO algorithm $\calA$, initial state $\vecx_0$, parameters $N\in\NN, \beta\in (0,1)$, regularizers $\calR_n(\Delta)$.
+    \FOR {$n\gets 1,2,\ldots,N$}
+        \STATE Receive $\Delta_n$ from $\calA$.
+        \STATE Update $\vecx_n \gets \vecx_{n-1} + s_n\Delta_n$, where $s_n\sim\Expo(1)$ i.i.d.
+        \STATE Compute $\vecg_n \gets \nabla f(\vecx_n, z_n)$.
+        \STATE Send loss $\ell_n(\Delta) = \langle \beta^{-n}\vecg_n, \Delta\rangle + \calR_n(\Delta)$ to $\calA$.
+        
+        % \STATE 
+        // For output only (does \textit{not} affect training):
+        \STATE Update $\overline\vecx_n = \frac{\beta-\beta^n}{1-\beta^n}\overline\vecx_{n-1} + \frac{1-\beta}{1-\beta^n}\vecx_n$. \\
+        Equivalently, $\overline \vecx_n = \sum_{t=1}^n \beta^{n-t}\vecx_t\cdot \frac{1-\beta}{1-\beta^n}$.
+    \ENDFOR
+    % \State Compute $\vecx^k \gets \frac{1}{T} \sum_{n\in I_k} \vecx_n$ where $I_k=[(k-1)T+1,kT]$.
+    \STATE Output $\overline \vecx \sim \Unif(\{\overline\vecx_n:n\in[N]\})$.
+\end{algorithmic}
+\end{algorithm}
+
+
+
+% \subsection{Algorithm Design}
+% \label{sec:alg-design}
+
+% In this section, we introduce a comprehensive framework designed to transform any OCO algorithm with sublinear regret into a stochastic optimization algorithm suitable for non-smooth non-convex losses. This framework is an adaptation of the Online-to-non-convex Conversion (O2NC) algorithm \cite{cutkosky2023optimal}. We have implemented several critical modifications to more effectively recover momentum algorithms. The specifics of each modification are elaborated in Section \ref{sec:alg-design}.
+
+In this section, we present our improved online-to-non-convex framework, \alg, and explain the key techniques we employed to improve the algorithm. The pseudocode is presented in Algorithm \ref{alg:O2NC-exp-avg}.
+
+
+\paragraph{Random Scaling}
+% One notable difference between \alg \ and standard O2NC lies in the selection of the scaling random variable $s_n$. In O2NC, $s_n$ is chosen to be uniform, $s_n\sim \Unif([0,1])$, based on
+% \begin{align*}
+%     \E[F(\vecx+\Delta) - F(\vecx)] = \Ex_{s\sim\Unif([0,1])}[\langle \vecx+s\Delta), \Delta\rangle].
+% \end{align*}
+% Given $\vecx_n=\vecx_{n-1}+\Delta_n$ and $\vecw_n=\vecx_{n-1}+s_n\Delta_n$, it follows that $\langle \nabla F(\vecw_n),\Delta_n\rangle$ is an unbiased estimator of $F(\vecx_n)-F(\vecx_{n-1})$. However, this approach introduces additional memory burden, as it requires  to compute the gradient at the intermediate variable $\vecw_n$ lying between $\vecx_{n-1}$ and $\vecx_n$, rather than directly at the iterate $\vecx_n$.
+% To address this limitation, we choose an exponential random variable as the scaling factor, namely $s_n \sim \Expo(1)$. The reason for this choice is as follows.
+
+One notable feature of Algorithm \ref{alg:O2NC-exp-avg} is that the update $\Delta_n$ is scaled by an exponential random variable $s_n$. 
+Formally, we have the following result:
+
+\begin{restatable}{lemma}{ExponentialScaling}
+\label{lem:exp-scaling}
+Let $s\sim\mathrm{Exp}(\lambda)$ for some $\lambda>0$, then
+\begin{equation*}
+    \Ex_s[F(\vecx+s\Delta) - F(\vecx)] = \Ex_s[\langle \nabla F(\vecx+s\Delta), \Delta\rangle] / \lambda.
+\end{equation*}
+\end{restatable}
+
+In Algorihtm~\ref{alg:O2NC-exp-avg}, we set $s_n\sim\mathrm{Exp}(1)$ and then define $\vecx_n = \vecx_{n-1} + s_n\Delta_n$. Thus, Lemma \ref{lem:exp-scaling} implies that 
+% $\E[F(\vecx_n) - F(\vecx_{n-1})] = \E\langle \nabla F(\vecx_n), \Delta_n\rangle$. 
+\begin{align*}
+    \E[F(\vecx_n) - F(\vecx_{n-1})] 
+    &= \E\langle \nabla F(\vecx_n), \Delta_n\rangle \\
+    &= \E\langle \nabla F(\vecx_n), \vecx_n-\vecx_{n-1}\rangle.
+\end{align*}
+In other words, we can estimate the ``training progress'' $F(\vecx_n)-F(\vecx_{n-1})$ by directly computing the stochastic gradient at iterate $\vecx_n$. By exploiting favorable properties of the exponential distribution, we dispense with the need for the ``auxiliary point'' $\vecw_n $ employed by O2NC.
+% In contrast to the previous scenario where $s_n$ is uniform, this new approach allows us to compute the gradient directly at $\vecx_n$ to estimate the training progress $F(\vecx_n)-F(\vecx_{n-1})$.
+
+We'd like to highlight the significance of this result. The vast majority of smooth non-convex optimization analysis depends on the assumption that $F(\vecx)$ is locally linear, namely $F(\vecx_n)-F(\vecx_{n-1}) \approx \langle \nabla F(\vecx_n), \vecx_n-\vecx_{n-1}\rangle$. Under various smoothness assumptions, the error in this approximation can be controlled via bounds on the remainder in a Taylor series. For example, when $F$ is smooth, then $F(\vecx_n) - F(\vecx_{n-1}) = \langle F(\vecx_n),\vecx_n-\vecx_{n-1}\rangle + O(\|\vecx_n-\vecx_{n-1}\|^2)$. However, since smoothness is necessary for bounding Taylor approximation error, such analysis technique is inapplicable in non-smooth optimization. In contrast, by scaling an exponential random variable to the update, we directly establish a linear equation that $\E[F(\vecx_n)-F(\vecx_{n-1})]=\E\langle \nabla F(\vecx_n),\vecx_n-\vecx_{n-1}\rangle$, effectively eliminating any additional error that Taylor approximation might incur. 
+
+A randomized approach such as ours is also recommended in the recent findings by \citet{jordan2023deterministic}, who demonstrated that randomization is \emph{necessary} for achieving a dimension-free rate in non-smooth optimization. In particular, any deterministic algorithm suffers an additional dimension dependence of $\Omega(d)$. 
+
+Although employing exponential random scaling might seem unconventional, we justify this scaling by noting that $s_n\sim\Expo(1)$ satisfies $\E[s_n]=1$ and $\P\{s_n \ge t\} = \exp(-t)$ (in particular, $\P\{s_n \le 5\} \ge 0.99$). In other words, with high probability, the scaling factor behaves like a constant scaling on the update. To corroborate the efficacy of random scaling, we have conducted a series of empirical tests, the details of which are discussed in Section \ref{sec:experiment}.
+
+
+\paragraph{Exponentiated and Regularized Losses}
+The most significant feature of Exponentiated O2NC (and from which it derives its name) is the loss function: $\ell_n(\Delta) = \langle \beta^{-n}\vecg_n, \Delta\rangle + \calR_n(\Delta)$. This loss consists of two parts: intuitively, the exponentially upweighted linear loss $\langle \beta^{-n}\vecg_n,\Delta\rangle$ measures the ``training progress'' $F(\vecx_n)-F(\vecx_{n-1})$ (as discussed in Lemma \ref{lem:exp-scaling}), and $\calR_n(\Delta)$ serves as an stabilizer that prevents the iterates from irregular behaviors. We will elaborate the role of each component later.
+To illustrate how Exponential O2NC works, let $\vecu_n$ be the optimal choice of $\Delta_n$ in hindsight. Then by minimizing the regret $\regret_n(\vecu_n)$ w.r.t. $\vecu_n$, Algorithm \ref{alg:O2NC-exp-avg} automatically chooses the best possible update $\Delta_n$ that is closest to $\vecu_n$.
+
+
+\paragraph{Exponentially Weighted Gradients}
+% The key modification distinguishing Exponentiated O2NC from standard O2NC (and the feature from which it derives its name) is the selection of the loss function. While O2NC uses linear loss $\langle\vecg_n,\Delta\rangle$, we adopt an exponentiated and regularized loss: $\ell_n(\Delta) = \langle \beta^{-n}\vecg_n, \Delta\rangle + \calR_n(\Delta)$. 
+For now, set aside the regularizer $\calR_n$ and focus on the linear term $\langle\beta^{-n}\vecg_n,\Delta\rangle$. To provide an intuition why we upweight the gradient by an exponential factor $\beta^{-n}$, we provide a brief overview for the convergence analysis of our algorithm. For simplicity of illustration, we assume $\vecg_n = \nabla F(\vecx_n)$ and $\calR_n=0$.
+
+Let $S_n=\{\vecx_t\}_{t=1}^n$ and let $\vecy_n$ be distributed over $S_n$ such that $\P\{\vecy_n=\vecx_t\} = p_{n,t} := \beta^{n-t}\cdot \frac{1-\beta}{1-\beta^n}$. Our strategy will be to show that this set $S_n$ and random variable $\vecy_n$ satisfy the conditions to make $\overline \vecx_n$ a $(c,\epsilon)$ stationary point  where $\overline\vecx_n$ is defined in Algorithm \ref{alg:O2NC-exp-avg}. To start, note that this distribution satisfies $\overline\vecx_n=\E[\vecy_n]$. Next, since there is always non-zero probability that $\vecy_n=\vecx_1$, it's not possible to obtain a deterministic bound of $\|\vecy_n-\overline\vecx_n\|\le \delta$ for some small $\delta$ (as would be required if we were trying to establish $(\delta,\epsilon)$ Goldstein stationarity). However, since $\vecy_n$ is exponentially more likely to be a later iterate (close to $\vecx_n$) than an early iterate (far from $\vecx_n$), intuitively $\E\|\vecy_n-\overline\vecx_n\|^2$ should not be too big. Formalizing this intuition forms a substantial part of our analysis.
+
+% In fact, we will see in a moment that $\E\|\vecy_n-\overline\vecx_n\|\ll \max\|\vecy_n-\overline\vecx_n\|$. 
+
+In the convergence analysis, we will show $\overline\vecx$ is a $(c,\epsilon)$-stationary point by bounding $\|\nabla F(\overline\vecx_n)\|_c$ (defined in Definition \ref{def:stationary-point}) for all $n$. The condition $\E[\vecy_n]=\overline\vecx_n$ is already satisfied by construction of $\vecy_n$, and it remains to bound the expected gradient $\|\E[\nabla F(\vecy_n)]\|$ and the variance $\E\|\vecy_n-\overline\vecx_n\|^2$. While the regularizer $\calR_n$ is imposed to control the variance, the exponentiated gradients is employed to bound the expected gradient. 
+In particular, this is achieved by reducing the difficult task of minimizing the expected gradient of a non-smooth non-convex objective to a relatively easier (and very heavily studied) one: minimizing the regret w.r.t. exponentiated losses $\ell_t(\Delta) = \langle \beta^{-t}\vecg_t,\Delta\rangle$.
+To elaborate further, let's consider a simplified illustration as follows.
+% To elaborate further, let's first briefly review how O2NC bounds the expected gradient.
+
+% In O2NC (refer to Algorithm \ref{alg:o2nc-original} for notations), \citet{cutkosky2023optimal} draw a connection between the expected gradient and the shifting regret by carefully constructing the comparator. Specifically, by setting $\vecu_n=\vecu^k$ for all $n\in I_k=[(k-1)T+1,kT]$ where
+% \begin{equation}
+%     \vecu^k = -D \frac{\sum_{t\in I_k} \nabla F(\vecw_n)}{\|\sum_{t\in I_k} \nabla F(\vecw_n)\|},
+%     \label{eq:o2nc-u}
+% \end{equation}
+% it follows that $\vecy'_k\sim \Unif(\{\vecw_n\}_{n\in I_k})$ satisfies
+% \begin{align*}
+%     \frac{1}{DN} \sum_{n=1}^N \langle \nabla F(\vecw_n), -\vecu_n\rangle 
+%     &= \frac{1}{K}\sum_{k=1}^K \left\| \frac{1}{T}\sum_{n\in I_k} \nabla F(\vecw_n) \right\| \\
+%     &= \Ex_{k \sim \Unif([K])} \|\E \nabla F(\vecy'_k)\|.
+% \end{align*}
+% For simplicity of illustration, assume $\vecg_n = \nabla F(\vecw_n)$ and $\sum_{n=1}^N \langle \nabla F(\vecw_n),-\Delta_n\rangle = O(1)$. 
+% % (the latter is true with proper assumption because $\E \langle\nabla F(\vecw_n),\Delta_n\rangle = \E[\nabla F(\vecx_n)-F(\vecx_{n-1})]$). 
+% Consequently,
+% \begin{align*}
+%     &\Ex_k\|\E\nabla F(\vecy_k')\| \\
+%     &= \frac{1}{DN}\sum_{n=1}^N \langle\nabla F(\vecw_n), \Delta_n - \vecu_n\rangle - \langle \nabla F(\vecw_n), \Delta_n\rangle \\
+%     &\lesssim \frac{1}{DN}\regret(\vecu_1,\ldots,\vecu_N).
+% \end{align*}
+% Here $\regret(\vecu_1,\ldots,\vecu_N)=\sum_{n=1}^N\langle\vecg_n,\Delta_n-\vecu_n\rangle$ denotes the shifting regret with linear loss $\langle \vecg_t,\Delta\rangle$ and comparators $\vecu_n$ defined in \eqref{eq:o2nc-u}. In other words, O2NC reduces the difficult task of bounding the expected gradient to minimizing the shifting regret.
+
+% In our algorithm, such reduction from expected gradient to regret is significantly more complicate since $\vecy_n$ is no longer uniformly distributed. 
+
+% Let $p_{n,t} = P_n(\vecx_t) = \beta^{n-t}\cdot \frac{1-\beta}{1-\beta^n}$. 
+Recall that $p_{n,t} = \beta^{n-t}\cdot \frac{1-\beta}{1-\beta^n}$. By construction of $\vecy_n$,
+\begin{align*}
+    \E[\nabla F(\vecy_n)]
+    &= \littlesum_{t=1}^n p_{n,t} \nabla F(\vecx_t).
+\end{align*}
+Next, for each $n\in[N]$, we define
+\begin{align}
+    \vecu_n = -D\frac{\sum_{t=1}^n p_{n,t} \nabla F(\vecx_t)}{\|\sum_{t=1}^n p_{n,t}\nabla F(\vecx_t)\|}
+    \label{eq:eo2nc-u}
+\end{align}
+for some $D$ to be specified later. As a remark, $\vecu_n$ minimizes $\langle \E[\nabla F(\vecy_n)], \Delta\rangle$ over all possible $\Delta$ such that $\|\Delta\|=D$, therefore representing the optimal update in iterate $n$ that leads to the fastest convergence.
+
+With $\vecu_n$ defined in \eqref{eq:eo2nc-u}, it follows that
+\begin{align*}
+    \frac{1}{D}\sum_{t=1}^n p_{n,t} \langle \nabla F(\vecx_t), -\vecu_n\rangle 
+    &= \left\| \sum_{t=1}^n p_{n,t} \nabla F(\vecx_t) \right\| \\
+    &= \|\E [\nabla F(\vecy_n)]\|.
+\end{align*}
+Recall that we assume $\vecg_t=\nabla F(\vecx_t)$ for simplicity. Moreover, in later convergence analysis, we will carefully show that $\sum_{n=1}^N\sum_{t=1}^n p_{n,t} \langle\nabla F(\vecx_t),-\Delta_t\rangle \lesssim 1-\beta$ (see Appendix \ref{app:alg}). Consequently,
+\begin{align*}
+    &\frac{1}{N} \sum_{n=1}^N \|\E\nabla F(\vecy_n)\| \\
+    &= \frac{1}{DN} \sum_{n=1}^N \sum_{t=1}^n p_{n,t} \langle \nabla F(\vecx_t), \Delta_t-\vecu_n\rangle \\
+    &\quad - \frac{1}{DN} \sum_{n=1}^N \sum_{t=1}^n p_{n,t}\langle \nabla F(\vecx_t),\Delta_t\rangle \\
+    &\lesssim \frac{1-\beta}{DN} \left(1+\sum_{n=1}^N \beta^n 
+    \regret_n(\vecu_n)\right).
+    % \sum_{t=1}^n \langle \beta^{-t}\vecg_t, \Delta_t-\vecu_n\rangle.
+\end{align*}
+Here $\regret_n(\vecu_n) = \sum_{t=1}^n \langle \beta^{-t}\vecg_t,\Delta_t-\vecu_n\rangle$ denotes the regret w.r.t. the exponentiated losses $\ell_t(\Delta) = \langle \beta^{-t}\vecg_t,\Delta\rangle$ for $t=1,\ldots,n$ (assuming $\calR_n=0$) and comparator $\vecu_n$ defined in \eqref{eq:eo2nc-u}. Notably, the expected gradient is now bounded by the weighted average of the sequence of static regrets, $\regret_n(\vecu_n)$. Consequently, a good OCO algorithm that effectively minimizes the regret is closely aligned with our goal of minimizing the expected gradient.
+
+
+\paragraph{Variance Regularization}
+As aforementioned, we impose the regularizer $\calR_n(\Delta) = \frac{\mu_n}{2}\|\Delta\|^2$ to control the variance $\E\|\vecy_n-\overline\vecx_n\|^2$. Formally, the following result establishes a reduction from bounding variance to bounding the norm of $\Delta_t$, thus motivating the choice of the regularizer.
+
+\begin{restatable}{lemma}{VarianceToRegularizer}
+\label{lem:variance-regularizer}
+For any $\beta\in(0,1)$, 
+\begin{align*}
+    \Ex_s\sum_{n=1}^N \Ex_{\vecy_n} \|\vecy_n-\overline\vecx_n\|^2 \le \sum_{n=1}^N \frac{12}{(1-\beta)^2}\|\Delta_n\|^2.
+\end{align*}
+\end{restatable}
+
+This suggests that bounding $\|\Delta_n\|^2$ is sufficient to bound the variance of $\vecy_n$. Therefore, we impose the regularizer $\calR_n(\Delta) = \frac{\mu_n}{2}\|\Delta\|^2$, for some constant $\mu_n$ to be determined later, to ensure that $\|\Delta_n\|^2$ remains small, effectively controlling the variance of $\vecy_n$. 
+
+Furthermore, we'd like to highlight that Lemma \ref{lem:variance-regularizer} provides a strictly better bound on the variance of $\vecy_n$ compared to the possible maximum deviation $\max\|\vecy_n-\overline\vecx_n\|$. For illustration, assume $\Delta_t$'s are orthonormal, then $\max\|\vecy_N-\overline\vecx_N\| \approx \|\vecx_1-\vecx_N\| = O(N)$. On the other hand, Lemma \ref{lem:variance-regularizer} implies that for $n\sim\Unif([N])$, $\E_n[\Var(\vecy_n)] = O(\frac{1}{(1-\beta)^2})$. In particular, we will show that $1-\beta= N^{-1/2}$ when the objective is smooth. Consequently, $\E\|\vecy_n-\overline\vecx_n\| = O(\sqrt{N})$, which is strictly tighter than the deterministic bound of $\max\|\vecy_N-\overline\vecx_N\| = O(N)$.
+
+This further motivates why we choose this specific distribution for $\vecy_n$: the algorithm does not need to be conservative all the time and can occasionally make relatively large step, breaking the deterministic constraint that $\|\vecy_n-\overline\vecx_n\|\le\delta$, while still satisfying $\Var(\vecy_n)\le\delta^2$.
+
+
+% \paragraph{Unconstrained OCO}
+% EITHER HERE OR LATER IN SEC. 4
+
+
+
+\subsection{Convergence Analysis}
+\label{sec:alg-conv}
+
+Now we present the main convergence theorem of Algorithm \ref{alg:O2NC-exp-avg}. This is a very general theorem, and we will prove the convergence bound of a more specific algorithm (Theorem \ref{thm:sgdm}) based on this result. A more formally stated version of this theorem and its proof can be found in Appendix \ref{app:alg}.  
+
+\begin{theorem}
+\label{thm:o2nc}
+Follow Assumption \ref{as:optimization}. Let $\regret_n(\vecu_n)$ denote the regret w.r.t. $\ell_t(\Delta)=\langle\beta^{-t}\vecg_t,\Delta\rangle + \calR_t(\Delta)$ for $t=1,\ldots,n$ and comparator $\vecu_n$ defined in \eqref{eq:eo2nc-u}. Define $\calR_t(\Delta) = \frac{\mu_t}{2}\|\Delta\|^2$, $\mu_t = \frac{24cD}{\alpha^2}\beta^{-t}$, and $\alpha=1-\beta$, then
+\begin{align*}
+    &\E \|\nabla F(\overline\vecx)\|_c
+    \lesssim \frac{F^*}{DN} + \frac{G+\sigma}{\alpha N} + \sigma\sqrt{\alpha} + \frac{c D^2}{\alpha^2} \\
+    & + \E\frac{\beta^{N+1}\regret_N(\vecu_N) + \alpha \sum_{n=1}^N \beta^n \regret_n(\vecu_n)}{DN}.
+\end{align*}
+\end{theorem}
+
+Here the second line denotes the weighted average of the sequence of static regrets, $\regret_n(\vecw_n)$, w.r.t. the exponentiated and regularized loss $\ell_t(\Delta) = \langle \beta^{-t}\vecg_t,\Delta\rangle$ and comparator $\vecu_n$ defined in \eqref{eq:eo2nc-u}, as we discussed earlier. To see an immediate implication of Theorem \ref{thm:o2nc}, assume the average regret is no larger than the terms in the first line. Then by proper tuning $D=\frac{1}{\sqrt{\alpha} N}$ and $\alpha=\max\{\frac{1}{N^{2/3}}, \frac{c^{2/7}}{N^{4/7}}\}$, we have $\E\|\nabla F(\overline\vecw)\|_c \lesssim \frac{1}{N^{1/3}} + \frac{c^{1/7}}{N^{2/7}}$.
+
+% To see a quick example, consider projected online gradient descent (OGD) \cite{zinkevich2003online}, which updates $\Delta_{t+1} = \Pi_D(\Delta_t - \eta\nabla\ell_t(\Delta_t))$ 

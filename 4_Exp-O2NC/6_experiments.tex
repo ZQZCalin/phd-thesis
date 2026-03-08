@@ -1,0 +1,32 @@
+\section{Experiments}
+\label{sec:experiment}
+
+In the preceding sections, we theoretically demonstrated that scaling the learning rate by an exponential random variable $s_n$ allows SGDM to satisfy convergence guarantees for non-smooth non-convex optimization. To validate this finding empirically, we implemented the SGDM algorithm with random scaling and assessed its performance against the standard SGDM optimizer without random scaling. Our evaluation involved the ResNet-18 model \cite{he2016deep} on the CIFAR-10 image classification benchmark \cite{krizhevsky2009learning}. For the hyperparameters, we configured the learning rate at $0.01$, the momentum constant at $0.9$, and the weight decay at $5 \times 10^{-4}$. These settings are optimized for training the ResNet model on the CIFAR-10 dataset using SGDM. We use the same hyperparameters for our modified SGDM with random scaling. 
+
+For each optimizer, we ran the experiment three times under the same setting to minimize variability. We recorded the train loss, train accuracy, test loss, and test accuracy (refer to Figure \ref{fig:experiment}). We also recorded the performance of the best iterate, e.g., the lowest train/test loss and the highest train/test accuracy, in each trial (see Table \ref{tab:1}).
+
+\begin{table}[h]
+\caption{Performance of the best iterate in each trial.}
+\label{tab:1}
+\vskip 0.15in
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{lcccr}
+\toprule
+Random Scaling & No & Yes  \\
+\midrule
+Train loss ($\times10^{-4}$)     & 9.82 $\pm$ 0.21  & 9.55 $\pm$ 0.37 \\
+Train accuracy ($\%$)            & 100.0 $\pm$ 0.0  & 100.0 $\pm$ 0.0 \\
+Test loss ($\times10^{-2})$      & 21.6 $\pm$ 0.1   & 22.0 $\pm$ 0.4 \\
+Test accuracy ($\%$)             & 94.6 $\pm$ 0.1   & 94.4 $\pm$ 0.2 \\
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\vskip -0.1in
+\end{table}
+
+These results show that the performance of SGDM with random scaling aligns closely with that of standard SGDM. 
+% Notably, adding random scaling to SGDM improves its performance on training loss over standard SGDM without random scaling.

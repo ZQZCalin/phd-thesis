@@ -1,0 +1,33 @@
+\section{Reduction to Adam with AdaGrad}
+\label{sec:adam}
+
+In this section, we delve deeper into the exploration of unconstrained online gradient descent equipped with adaptive learning rates. In the spirit of the AdaGrad-style learning rate, a natural selection involves setting $\eta_t = \frac{\eta}{\sqrt{\epsilon_0 + \sum_{i=1}^t\|\beta^{-i}\vecg_i\|^2}}$ for a given constant $\eta$ and some arbitrarily small $\epsilon_0>0$. However, as highlighted by Theorem \ref{thm:OGD-brief}, the OMD algorithm requires the next iteration's learning rate, $\eta_{t+1}$, for calculating its composite loss. Unlike the fixed learning rate scheduler $\eta_t=\beta^t\eta$ discussed previously, $\eta_{t+1}$ now depends on $\vecg_{t+1}$, incorporating information not yet available at round $t$. To circumvent this issue, we propose a modification to the adaptive learning rate by substituting $\|\vecg_{t+1}\|$ with its known upper bound, $G_f$. This adjustment allows Theorem \ref{thm:OGD-brief} to establish a regret bound for the adaptive OMD algorithm, which, together with Theorem \ref{thm:o2nc}, yields an adaptive momentum algorithm.
+
+\begin{restatable}{theorem}{Adam}
+\label{thm:adam}
+Follow Assumption \ref{as:optimization} and further assume $f(\vecx,z)$ is $G_f$-Lipschitz in $\vecx$ (i.e., $\|\vecg_t\| \le G_f$ almost surely). Let $\Delta_1=0$ and update $\Delta_t$ by
+\begin{align*}
+    &\Delta_{t+1} = \frac{\Delta_t - \eta_t\beta^{-t}\vecg_t}{1+\eta_t\mu_{t+1}+\eta_t(\frac{1}{\eta_{t+1}}-\frac{1}{\eta_t})}, \\
+    &\eta_t = \frac{\eta}{\sqrt{\epsilon_0+\sum_{i=1}^{t-1}\|\beta^{-i}\vecg_i\|^2+(\beta^{-t}G_f)^2}}.
+\end{align*}
+Let $\mu_t=\beta^{-t}\mu$, $\beta=1-\alpha$, $\mu=\frac{24cD}{\alpha^2}$, $\eta=D$, $D=(\frac{F^*\alpha^2}{cN})^{1/3}$, and $\alpha=\max\{N^{-2/3}, \frac{(F^*)^{4/7}c^{2/7}}{N^{4/7}}\}$. Define
+\begin{align*}
+    &S_N^2=\frac{1}{N}\littlesum_{t=1}^N\E\|\nabla F(\vecx_t)-\vecg_t\|^2, \\
+    &V_N^2 = \frac{1}{N}\littlesum_{t=1}^N\E\|\vecg_t\|^2.
+\end{align*}
+Then for $N$ large enough such that $\alpha \le \frac{1}{2}$,
+\begin{align*}
+    \E\|\nabla F(\overline\vecx)\|_c 
+    &\lesssim \frac{G+\sigma}{N^{1/3}} + \frac{(S_N+V_N+1)(F^*)^{2/7}c^{1/7}}{N^{2/7}} \\
+    &\quad + \frac{G_f}{N^{2/3}} + \frac{G_f(F^*)^{4/7}c^{2/7}}{N^{4/7}}.
+\end{align*}
+\end{restatable}
+
+TO DO: ADD IMPLICATIONS OF ADAPTIVE LEARNING RATES
+
+Let $v_t = (1-\beta^2)(\beta^{2t}\epsilon_0 + \sum_{i=1}^{t-1}\|\beta^{t-i}\vecg_i\|^2)$, then $v_{t+1} = \beta^2v_t + (1-\beta^2)\|\vecg_t\|^2$. Consequently, we have
+\begin{align*}
+    \beta^{-t}\eta_t 
+    &= \frac{\eta}{\sqrt{\beta^{2t}\epsilon_0 + \sum_{i=1}^{t-1}\|\beta^{t-i}\vecg_i\|^2 + G_f^2}} \\
+    &= \frac{\eta\sqrt{1-\beta^2}}{\sqrt{v_t + (1-\beta^2)G_f^2}}.
+\end{align*}

@@ -1,0 +1,147 @@
+\section{Proof of Theorem \ref{thm:o2nc}}
+\label{app:alg}
+
+We restate the formal version of Theorem \ref{thm:o2nc} as follows.
+Recall that $S_n = \{\vecx_t\}_{t\in[n]}$, $\vecy_n\sim P_n$ where $P_n(\vecx_t) = \beta^{n-t}\cdot \frac{1-\beta}{1-\beta^n}$, and $\overline \vecx_n = \sum_{t=1}^n \beta^{n-t}\vecx_t\cdot \frac{1-\beta}{1-\beta^n}$.
+
+\begin{theorem}
+\label{thm:o2nc-formal}
+Suppose $F$ is $G$-Lipschitz, $F(\vecx_0)-\inf F(\vecx) \le F^*$, and the stochastic gradients satisfy $\E[\nabla f(\vecx,z)\,|\,\vecx] = \nabla F(\vecx)$ and $\E\|\nabla F(\vecx)-\nabla f(\vecx,z)\|^2\le \sigma^2$ for all $\vecx,z$. Define the comparator $\vecu_n$ and the regret $\regret_n(\vecu)$ of the regularized losses $\ell_t$ as follows:
+\begin{align*}
+    & \vecu_n = -D \cdot \frac{\sum_{t=1}^n \beta^{n-t}\nabla F(\vecx_t)}{\|\sum_{t=1}^n \beta^{n-t}\nabla F(\vecx_t)\|},
+    & \regret_n(\vecu) 
+    % = \sum_{t=1}^n \ell_t(\Delta_t)
+    = \sum_{t=1}^n \langle \beta^{-t}\vecg_t, \Delta_t - \vecu \rangle + \calR_t(\Delta_t) - \calR_t(\vecu).
+\end{align*}
+Also define the regularizor as $\calR_t(\vecw) = \frac{\mu_t}{2}\|\vecw\|^2$ where $\mu_t = \mu\beta^{-t}$, $\mu=\frac{24cD}{\alpha^2}$ and $\alpha=1-\beta$. Then
+\begin{align*}
+    \E \|\nabla F(\overline\vecx)\|_c
+    &\le \frac{F^*}{DN} + \frac{2G+\sigma}{\alpha N} + \sigma\sqrt{\alpha} + \frac{12c D^2}{\alpha^2} 
+    + \frac{1}{DN}\left( \beta^{N+1}\E\regret_N(\vecu_N) + \alpha \sum_{n=1}^N \beta^n \E\regret_n(\vecu_n). \right).
+\end{align*}
+\end{theorem}
+
+\begin{proof}
+We start with the change of summation. Note that
+\begin{align*}
+    \sum_{n=1}^N \sum_{t=1}^n \beta^{n-t}(1-\beta) (F(\vecx_t) - F(\vecx_{t-1})) 
+    &= \sum_{t=1}^N \left(\sum_{n=t}^N \beta^{n-t}\right) (1-\beta) (F(\vecx_t) - F(\vecx_{t-1})) \\
+    &= \sum_{t=1}^N (1-\beta^{N-t+1}) (F(\vecx_t) - F(\vecx_{t-1})) \\
+    &= F(\vecx_N) - F(\vecx_0) - \sum_{t=1}^N \beta^{N-t+1}(F(\vecx_t)-F(\vecx_{t-1})).
+\end{align*}
+Upon rearranging and applying the assumption that $F(\vecx_0)-F(\vecx_N) \le F(\vecx_0)-\inf F(\vecx) \le F^*$, we have
+\begin{align}
+    -F^* &\le \E\sum_{n=1}^N\sum_{t=1}^n \beta^{n-t}(1-\beta)(F(\vecx_t)-F(\vecx_{t-1})) + \E\sum_{t=1}^N \beta^{N-t+1} (F(\vecx_t) - F(\vecx_{t-1})).
+    \label{eq:exp-1}
+\end{align}
+% We first bound the first summation, then we will show the second summation is dominated by the first one.
+
+First, we bound the first summation in \eqref{eq:exp-1}. Denote $\calF_t$ as the $\sigma$-algebra of $\vecx_t$. Note that $\Delta_t\in \calF_t$ and $z_t\not\in\calF_t$, so by the assumption that $\E[\nabla f(\vecx,z) \,|\, \vecx] = \nabla F(\vecx)$,
+\begin{align*}
+    \E[\vecg_t \,| \,\calF_t] = \E[\nabla f(\vecx_t, z_t) \,| \,\calF_t] = \nabla F(\vecx_t) 
+    \implies &\E\langle \nabla F(\vecx_t),\Delta_t\rangle = \E\langle \vecg_t,\Delta_t\rangle.
+\end{align*}
+By Lemma \ref{lem:exp-scaling}, $\E[F(\vecx_t)-F(\vecx_{t-1})] = \E\langle \nabla F(\vecx_t), \Delta_t\rangle$. Upon adding and subtracting, we have
+\begin{align*}
+    \E[F(\vecx_t) - F(\vecx_{t-1})]
+    &= \E\langle \nabla F(\vecx_t) - \vecg_t + \vecg_t, \Delta_t - \vecu_n + \vecu_n \rangle \\
+    &= \E\left[ \langle \nabla F(\vecx_t), \vecu_n\rangle\rangle + \langle \nabla F(\vecx_t)-\vecg_t, -\vecu_n\rangle + \langle \vecg_t,\Delta_t-\vecu_n\rangle \right].
+\end{align*}
+Consequently, the first summation in \eqref{eq:exp-1} can be written as
+\begin{align}
+    % & \E\sum_{n=1}^N\sum_{t=1}^n \beta^{n-t}(1-\beta)(F(\vecx_t)-F(\vecx_{t-1})) \\
+    % &= 
+    \E\sum_{n=1}^N\sum_{t=1}^n \beta^{n-t}(1-\beta) \left( \langle \nabla F(\vecx_t),\vecu_n\rangle + \langle \nabla F(\vecx_t)-\vecg_t, -\vecu_n\rangle + \langle \vecg_t,\Delta_t-\vecu_n\rangle \right).
+    \label{eq:exp-2}
+\end{align}
+For the first term, upon substituting the definition of $\vecu_n$, we have
+\begin{align*}
+    \sum_{t=1}^n \beta^{n-t}(1-\beta) \langle \nabla F(\vecx_t), \vecu_n\rangle 
+    &= (1-\beta) \left\langle \sum_{t=1}^n \beta^{n-t}\nabla F(\vecx_t), -D \frac{\sum_{t=1}^n \beta^{n-t} \nabla F(\vecx_t)}{\|\sum_{t=1}^n \beta^{n-t} \nabla F(\vecx_t)\|} \right\rangle \\
+    &= (1-\beta^n)\cdot -D\left\|\frac{\sum_{t=1}^n \beta^{n-t} \nabla F(\vecx_t)}{\sum_{t=1}^n \beta^{n-t}}\right\| \\
+    &= -D (1-\beta^n) \|\Ex_{\vecy_n} \nabla F(\vecy_n) \| 
+    \intertext{Since $\|\nabla F(\vecx_t)\|\le G$ for all $t$, $\|\E_{\vecy_n} \nabla F(\vecy_n)\| \le G$ as well. Therefore, we have}
+    &\le -D\| \Ex_{\vecy_n}\nabla F(\vecy_n)\| + DG\beta^n.
+\end{align*}
+Since $\beta<1$, $\sum_{n=1}^N \beta^n \le \frac{1}{1-\beta}$. Therefore, upon summing over $n$, the first term in \eqref{eq:exp-2} becomes
+\begin{align}
+    \E\sum_{n=1}^N\sum_{t=1}^n \beta^{n-t}(1-\beta) \langle \nabla F(\vecx_t), \vecu_n\rangle 
+    \le \left(-D\sum_{n=1}^N \E \|\Ex_{\vecy_n} \nabla F(\vecy_n)\| \right) + \frac{DG}{1-\beta}.
+    \label{eq:exp-2a}
+\end{align}
+For the second term, by Cauchy-Schwarz inequality,
+\begin{align*}
+    \E \sum_{t=1}^n \beta^{n-t} \langle \nabla F(\vecx_t)-\vecg_t, -\vecu_n\rangle 
+    &\le \sqrt{\E \left\| \sum_{t=1}^n \beta^{n-t}(\nabla F(\vecx_t)-\vecg_t) \right\|^2 \E\|\vecu_n\|^2}.
+\end{align*}
+Since $\E[\nabla F(\vecx_t)-\vecg_t \,|\, \calF_t] = 0$, by martingale identity and the assumption that $\E\|\nabla F(\vecx)-\nabla f(\vecx,z)\|^2 \le\sigma^2$,
+\begin{align*}
+    \E \left\| \sum_{t=1}^n \beta^{n-t}(\nabla F(\vecx_t)-\vecg_t) \right\|^2
+    = \sum_{t=1}^n \E\|\beta^{n-t}(\nabla F(\vecx_t)-\vecg_t)\|^2 
+    &\le \sum_{t=1}^n \sigma^2 \beta^{2(n-t)}
+    \le \frac{\sigma^2}{1-\beta^2}.
+\end{align*}
+Upon substituting $\|\vecu_n\|=D$ and $\frac{1}{1-\beta^2}\le \frac{1}{1-\beta}$, the second term in \eqref{eq:exp-2} becomes
+\begin{align}
+    \E\sum_{n=1}^N\sum_{t=1}^n \beta^{n-t}(1-\beta) \langle \nabla F(\vecx_t) - \vecg_t, -\vecu_n\rangle 
+    &\le \sum_{n=1}^N (1-\beta) \cdot \frac{\sigma D}{\sqrt{1-\beta^2}}
+    \le \sigma DN\sqrt{1-\beta}.
+    \label{eq:exp-2b}
+\end{align}
+For the third term, upon adding and subtracting $\calR_t$ and substituting the definition of $\regret_n(\vecu)$, we have
+\begin{align}
+    &\E\sum_{n=1}^N\sum_{t=1}^n \beta^{n-t}(1-\beta) \langle \vecg_t,\Delta_t-\vecu_n\rangle \notag\\
+    &= \E\sum_{n=1}^N\sum_{t=1}^n (1-\beta)\beta^n \left( \langle \beta^{-t}\vecg_t,\Delta_t-\vecu_n\rangle + \calR_t(\Delta_t) - \calR_t(\vecu_n) - \calR_t(\Delta_t)+\calR_t(\vecu_n) \right) \notag\\
+    &= \E\sum_{n=1}^N (1-\beta)\beta^n \regret_n(\vecu_n) + \E\sum_{n=1}^N\sum_{t=1}^n (1-\beta)\beta^n ( -\calR_t(\Delta_t) + \calR_t(\vecu_n)).
+    \label{eq:exp-2c}
+\end{align}
+Upon substituting \eqref{eq:exp-2a}, \eqref{eq:exp-2b} and \eqref{eq:exp-2c} into \eqref{eq:exp-2}, the first summation in \eqref{eq:exp-1} becomes
+\begin{align}
+    &\sum_{n=1}^N\sum_{t=1}^n \beta^{n-t}(1-\beta)(F(\vecx_t)-F(\vecx_{t-1})) \notag\\
+    &\le \left(-D\sum_{n=1}^N \E \|\Ex_{\vecy_n} \nabla F(\vecy_n)\| \right) + \frac{DG}{1-\beta} + \sigma DN\sqrt{1-\beta} \notag\\
+    &\quad + \E\sum_{n=1}^N (1-\beta)\beta^n \regret_n(\vecu_n) + \E\sum_{n=1}^N\sum_{t=1}^n (1-\beta)\beta^n ( -\calR_t(\Delta_t) + \calR_t(\vecu_n)).
+    \label{eq:exp-2d}
+\end{align}
+
+Next, we consider the second summation in \eqref{eq:exp-1}. Since $\E\|\vecg_t\| \le \E\|\nabla F(\vecx_t)\| + \E\|\nabla F(\vecx_t)-\vecg_t\| \le G+\sigma$ and $\E\langle \nabla F(\vecx_t),\Delta_t\rangle = \E\langle \vecg_t,\Delta_t\rangle$, we have
+\begin{align*}
+    \E[F(\vecx_t) - F(\vecx_{t-1})]
+    = \E\langle \nabla F(\vecx_t),\Delta_t\rangle 
+    &= \E\langle \vecg_t, \Delta_t - \vecu_N\rangle + \E\langle \vecg_t, \vecu_N\rangle \\
+    &\le \E\langle \vecg_t,\Delta_t-\vecu_N\rangle + D(G+\sigma).
+\end{align*}
+Following the same argument in \eqref{eq:exp-2c} by adding and subtracting $\calR_t$, the second summation becomes
+\begin{align}
+    \E\sum_{t=1}^N \beta^{N-t+1} (F(\vecx_t) - F(\vecx_{t-1})) 
+    &= \E\sum_{t=1}^N \beta^{N+1} \langle \beta^{-t}\vecg_t,\Delta_t-\vecu_N\rangle + \beta^{N-t+1} D(G+\sigma) \notag\\
+    &\le \beta^{N+1} \E\regret_N(\vecu_N) + \frac{D(G+\sigma)}{1-\beta} + \E\sum_{t=1}^N \beta^{N+1} (-\calR_t(\Delta_t) + \calR_t(\vecu_N)).
+    \label{eq:exp-3}
+\end{align}
+Combining \eqref{eq:exp-2d} and \eqref{eq:exp-3} into \eqref{eq:exp-1} gives
+\begin{align}
+    -F^*
+    &\le \left(-D\sum_{n=1}^N \E \|\Ex_{\vecy_n} \nabla F(\vecy_n)\| \right) + \frac{DG}{1-\beta} + \sigma DN\sqrt{1-\beta} \notag\\
+    &\quad + \E\sum_{n=1}^N (1-\beta)\beta^n \regret_n(\vecu_n) + \E\sum_{n=1}^N\sum_{t=1}^n (1-\beta)\beta^n ( -\calR_t(\Delta_t) + \calR_t(\vecu_N)) \notag\\
+    &\quad + \beta^{N+1} \E\regret_N(\vecu_N) + \frac{D(G+\sigma)}{1-\beta} + \E\sum_{t=1}^N \beta^{N+1} (-\calR_t(\Delta_t) + \calR_t(\vecu_N)).
+    \label{eq:exp-4}
+\end{align}
+As the final step, we simplify the terms involving $\calR_t$. 
+% Note that $\|\vecu_n\|=D$ for all $n$, so $\calR_t(\vecu_n)$ is independent of $n$ (i.e., $\calR_t(\vecu_n) = \calR_t(\vecu_N)$). Consequently, upon apply change of summation, we have
+Recall that $\calR_t(\vecw) = \frac{\mu_t}{2}\|\vecw\|^2$, so $\calR_t(\vecu_n)=\frac{\mu_t}{2}D^2$ is independent of $n$. Hence, by change of summation,
+\begin{align*}
+    &\E\sum_{n=1}^N\sum_{t=1}^n (1-\beta)\beta^n ( -\calR_t(\Delta_t) + \calR_t(\vecu_n)) + \E\sum_{t=1}^N \beta^{N+1} (-\calR_t(\Delta_t) + \calR_t(\vecu_N)) \\
+    &= \E\sum_{t=1}^N \vecunderbrace{\left(\sum_{n=t}^N \beta^n\right) (1-\beta)}_{=\beta^t - \beta^{N+1}} \left( -\frac{\mu_t}{2}\|\Delta_t\|^2 + \frac{\mu_t}{2}D^2\right) + \E\sum_{t=1}^N \beta^{N+1} \left( -\frac{\mu_t}{2}\|\Delta_t\|^2 + \frac{\mu_t}{2}D^2\right) \\
+    &= \E\sum_{t=1}^N \beta^t \left( -\frac{\mu_t}{2}\|\Delta_t\|^2 + \frac{\mu_t}{2}D^2\right) 
+    \intertext{Recall Lemma \ref{lem:variance-regularizer} that $\E\sum_{n=1}^N \E_{\vecy_n}\|\vecy_n-\overline\vecx_n\|^2 \le \E\sum_{t=1}^N\frac{12}{(1-\beta)^2}\|\Delta_t\|^2$. Upon substituting $\mu_t=\frac{24cD^2}{(1-\beta)^2}\beta^{-t}$, we have}
+    &= \E\sum_{t=1}^N \left( -\frac{12cD}{(1-\beta)^2} \|\Delta_t\|^2 + \frac{12c D^3}{(1-\beta)^2}\right) \\
+    &\le \left(-cD \E\sum_{n=1}^N\E_{\vecy_n}\|\vecy_n-\overline\vecx_n\|^2\right) + \frac{12cD^3N}{(1-\beta)^2}.
+    \label{eq:exp-4a}
+\end{align*}
+Substituting this back into \eqref{eq:exp-4} with $\alpha=1-\beta$, we have
+\begin{align*}
+    -F^* 
+    &\le - D \E\left[ \sum_{n=1}^N \|\Ex_{\vecy_n} \nabla F(\vecy_n)\| + c\cdot \Ex_{\vecy_n}\|\vecy_n-\overline\vecx_n\|^2 \right] + \frac{DG}{\alpha} + \sigma DN\sqrt{\alpha} + \frac{D(G+\sigma)}{\alpha} + \frac{12cD^3N}{\alpha^2} \\
+    &\quad + \beta^{N+1}\E\regret_N(\vecu_N) + \alpha \sum_{n=1}^N \beta^n \E\regret_n(\vecu_n).
+\end{align*}
+By definition of $\|\nabla F(\cdot)\|_c$ defined in Definition \ref{def:stationary-point}, $\|\nabla F(\overline\vecx_n)\|_c \le \|\Ex_{\vecy_n} \nabla F(\vecy_n)\| + c\cdot \Ex_{\vecy_n}\|\vecy_n-\overline\vecx_n\|^2$. Moreover, since $\overline\vecx$ is uniform over $\overline\vecx_n$, $\E\|\nabla F(\overline\vecx)\|_{2,c} = \frac{1}{N}\sum_{n=1}^N \E\|\nabla F(\overline\vecx_n)\|_{2,c}$ We then conclude the proof by rearranging the equation and dividing both sides by $DN$.
+\end{proof}

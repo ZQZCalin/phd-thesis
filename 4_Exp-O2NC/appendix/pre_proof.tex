@@ -1,0 +1,52 @@
+\section{Proofs in Section \ref{sec:pre}}
+\label{app:pre}
+
+\subsection{Proof of Lemma \ref{lem:criterion-reduction}}
+
+\CriterionReduction*
+
+\begin{proof}
+Suppose $\|\nabla F(\vecx)\|_c \le \epsilon$, then there exists $P\in\calP(S), y\sim P$ such that $\E[\vecy]=\vecx$, $\|\E \nabla F(\vecy)\| \le \epsilon$ and $c\E\|\vecy-\vecx\|^2 \le \epsilon$. 
+
+Assume $F$ is $H$-smooth. By Jensen's inequality, $\E\|\vecy-\vecx\| \le \sqrt{\epsilon/c} = \epsilon/H$ with $c=H^2\epsilon^{-1}$. Consequently,
+\begin{align*}
+    \|\nabla F(\vecx)\|
+    &\le \|\E\nabla F(\vecy)\| + \|\E[\nabla F(\vecx) - \nabla F(\vecy)]\| \\
+    &\le \|\E\nabla F(\vecy)\| + \E\|\nabla F(\vecx) - \nabla F(\vecy)\| \tag{Jensen's inequality}\\
+    &\le \|\E\nabla F(\vecy)\| + H\E\|\vecx-\vecy\| \tag{smoothness}\\
+    &\le \epsilon + H \cdot \epsilon/H = 2\epsilon. 
+    % \tag{$\delta=\frac{\epsilon}{H}$}
+\end{align*}
+Next, assume $F$ is $\rho$-second-order smooth. By Taylor approximation, there exists some $\z$ such that $\nabla F(\vecx) = \nabla F(\vecy) + \nabla^2F(\vecx)(\vecx-\vecy) + \frac{1}{2}(\vecx-\vecy)^T\nabla^3F(\z)(\vecx-\vecy)$. Note that $\E[\nabla^2F(\vecx)(\vecx-\vecy)]=\nabla^2F(\vecx)\E[\vecx-\vecy]=0$. Consequently,
+\begin{align*}
+    \|\nabla F(\vecx)\|
+    &\le \|\E\nabla F(\vecy)\| + \|\E[\nabla F(\vecx)-\nabla F(\vecy)]\| \\
+    &\le \|\E\nabla F(\vecy)\| + \E\|\tfrac{1}{2}(\vecx-\vecy)^T\nabla^3F(\z)(\vecx-\vecy)\| \tag{Jensen's inequality}\\
+    &\le \|\E\nabla F(\vecy)\| + \tfrac{\rho}{2} \E\|\vecx-\vecy\|^2 \tag{second-order-smooth}\\
+    &\le \epsilon + \tfrac{\rho}{2}\cdot \epsilon/c = 2\epsilon. \tag{$c=\rho/2$}
+\end{align*}
+Together these prove the reduction from a $(c,\epsilon)$-stationary point to an $\epsilon$-stationary point.
+\end{proof}
+
+
+\subsection{Proof of Lemma \ref{lem:goldstein-reduction}}
+
+\GoldsteinReduction*
+
+\begin{proof}
+By definition of $(c,\epsilon)$-stationary, there exists some distribution of $\vecy$ such that $\E[\vecy]=\vecx$, $\sigma^2:=\E\|\vecy-\vecx\|^2 \le \epsilon/c$, and $\|\E \nabla F(\vecy)\| \le \epsilon$. By Chebyshev’s inequality, 
+\begin{align*}
+    \P\{ \|\vecy-\vecx\| \ge \delta \}
+    &= \P\left\{ \|\vecy-\E[\vecy]\| \ge \frac{\delta}{\sigma} \cdot\sigma \right\} \\
+    &\le \P\left\{ \|\vecy-\E[\vecy]\| \ge \frac{\delta}{\sqrt{\epsilon/c}} \cdot\sigma \right\} 
+    \le \frac{\epsilon}{c\delta^2}.
+\end{align*}
+Next, we can construct a clipped random vector $\hat \vecy$ of $\vecy$ such that $\hat\vecy = \vecy$ if $\|\vecy-\vecx\|<\delta$, $\|\hat \vecy-\vecx\| \le\delta$ almost surely, and $\E[\hat \vecy]=\vecx$. In particular, note that $\P\{\hat \vecy\ne \vecy\} \le \P\{\|\vecy-\vecx\|\ge \delta\} \le \frac{\epsilon}{c\delta^2}$. Since $F$ is $G$-Lipschitz,
+\begin{align*}
+    \|\E[\nabla F(\hat\vecy) - \nabla F(\vecy)]\| 
+    &= \P\{\hat \vecy \ne \vecy\} \|\E[\nabla F(\hat \vecy)-\nabla F(\vecy) | \hat\vecy\ne \vecy]\| \\
+    &\le 2G\cdot \P\{\hat\vecy\ne \vecy\}
+    \le 2G \cdot \frac{\epsilon}{c\delta^2}.
+\end{align*}
+Consequently $\|\E[\nabla F(\hat \vecy)]\| \le \|\E[\nabla F(\vecy)]\| + \|\E[\nabla F(\hat \vecy) - \nabla F(\vecy)]\| \le \epsilon +\frac{2G\epsilon}{c\delta^2}$. This proves that $x$ is also a $(\delta, \epsilon + \frac{2G\epsilon}{c\delta^2})$-Goldstein stationary point. 
+\end{proof}

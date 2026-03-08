@@ -1,0 +1,18 @@
+\section{Lower Bounds for finding $(c,\epsilon)$-stationary points}
+\label{sec:lower}
+
+% \begin{remark}
+In this section we leverage Lemma~\ref{lem:criterion-reduction} to build a lower bound for finding  $(c,\epsilon)$-stationary points. Inuitively, Lemma~\ref{lem:criterion-reduction} suggests that $O(c^{1/2}\epsilon^{-7/2})$ is the optimal rate for finding $(c,\epsilon)$-stationary point. We can indeed prove its optimality using the lower bound construction by \citet{arjevani2019lower} and \citet{cutkosky2023optimal}.
+
+Specifically, \citet{arjevani2019lower} proved the following result: For any constants $H,F^*,\sigma,\epsilon$, there exists objective $F$ and stochastic gradient estimator $\nabla f$ such that (i) $F$ is $H$-smooth, $F(\vecx_0)-\inf F(\vecx) \le F^*$, and $\E\|\nabla F(\vecx) - \nabla f(\vecx,z)\|^2 \le\sigma^2$; and (ii) any randomized algorithm using $\nabla f$ requires $O(F^*\sigma^2H\epsilon^{-4})$ iterations to find an $\epsilon$-stationary point of $F$.
+As a caveat, such construction does not ensure that $F$ is Lipschitz. Fortunately, \citet{cutkosky2023optimal} extended the lower bound construction so that the same lower holds and $F$ is in addition $\sqrt{F^*H}$-Lipschitz.
+
+Consequently, for any $F^*,G,c,\epsilon$, define $H=\sqrt{c\epsilon}$ and $\sigma=G$ and assume $\sqrt{F^*H}\le G$. Then by the lower bound construction, there exists $F$ and $\calO$ such that $F$ is $H$-smooth, $G$-Lipschitz, $F(\vecx_0)-\inf F(\vecx) \le F^*$, and $\E\|\nabla F(\vecx)-\nabla f(\vecx,z)\|^2 \le G^2$. Lipschitzness and variance bound together imply $\E\|\nabla f(\vecx,z)\|^2 \le 2G^2$. Moreover, finding an $\epsilon$-stationary of $F$ requires $\Omega(F^*\sigma^2H\epsilon^{-4}) = \Omega(F^*G^2c^{1/2}\epsilon^{-7/2})$ iterations (since $\sigma=G$, $H=\sqrt{c\epsilon}$). 
+
+Finally, note that $H=\sqrt{c\epsilon}$ satisfies $c=H^2\epsilon^{-1}$. Therefore by Lemma \ref{lem:criterion-reduction}, a $(c, \epsilon)$-stationary point of $F$ is also an $\epsilon$-stationary of $F$, implying that finding $(c,\epsilon)$-stationary requires at least $\Omega(F^*G^2c^{1/2}\epsilon^{-7/2})$ iterations as well. Putting these together, we have the following result:
+% \end{remark}
+
+\begin{corollary}
+\label{cor:lower-bound}
+For any $F^*, c, \epsilon$ and $G\ge \sqrt{F^*}(c\epsilon)^{1/4}$, there exists objective $F$ and stochastic gradient $\nabla f$ such that (i) $F$ is $G$-Lipschitz, $F(\vecx_0)-\inf F(\vecx) \le F^*$, and $\E\|\nabla f(\vecx,z)\|^2 \le 2G^2$; and (ii) any randomized algorithm using $\nabla f$ requires $\Omega(F^*G^2c^{1/2}\epsilon^{-7/2})$ iterations to find $(c,\epsilon)$-stationary point of $F$.
+\end{corollary}

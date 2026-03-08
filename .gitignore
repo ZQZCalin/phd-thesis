@@ -12,3 +12,5 @@
 *.lot
 *.lol
 *.pdf
+
+.vscode/

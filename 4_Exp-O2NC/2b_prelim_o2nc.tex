@@ -1,0 +1,25 @@
+\subsection{Online-to-non-convex Conversion}
+
+\begin{algorithm}[t]
+\caption{O2NC \cite{cutkosky2023optimal}}
+\label{alg:o2nc-original}
+\begin{algorithmic}[1]
+    \STATE \textbf{Input:} OCO algorithm $\calA$, initial state $\vecx_0$, parameters $N,K,T\in\NN$ such that $N=KT$.
+    \FOR {$n\gets 1,2,\ldots,N$}
+        \STATE Receive $\Delta_n$ from $\calA$.
+        \STATE Update $\vecx_n \gets \vecx_{n-1} + \Delta_n$ and $\vecw_n\gets\vecx_{n-1}+s_n\Delta_n$, where $s_n\sim\Unif([0,1])$ i.i.d.
+        \STATE Compute $\vecg_n \gets \nabla f(\vecx_n, z_n)$.
+        \STATE Send loss $\ell_n(\Delta) = \langle \vecg_n,\Delta\rangle$ to $\calA$.
+        
+        % \STATE 
+        // For output only (update every $T$ iteration):
+        \STATE If $n=kT$, compute $\overline\vecw_k = \frac{1}{T}\sum_{t=0}^{T-1} \vecw_{n-t}$.
+    \ENDFOR
+    % \State Compute $\vecx^k \gets \frac{1}{T} \sum_{n\in I_k} \vecx_n$ where $I_k=[(k-1)T+1,kT]$.
+    \STATE Output $\overline \vecw \sim \Unif(\{\overline\vecw_k:k\in[K]\})$.
+\end{algorithmic}
+\end{algorithm}
+
+Since our algorithm is an extension of the online-to-non-convex conversion (O2NC) technique proposed by \cite{cutkosky2023optimal}, we briefly review the original O2NC algorithm. The pseudocode is outlined in Algorithm \ref{alg:o2nc-original}, with minor adjustments in notations for consistency with our presentation. 
+
+At its essence, O2NC shifts the challenge of optimizing a non-convex and non-smooth objective into minimizing regret. The intuition is as follows. By adding a uniform perturbation $s_n\in[0,1]$, $\langle \nabla f(\vecx_{n-1}+s_n\Delta_n,z_n), \Delta_n\rangle = \langle \vecg_n,\Delta_n\rangle$ is an unbiased estimator of $F(\vecx_n)-F(\vecx_{n-1})$, effectively capturing the ``training progress''. Consequently, by minimizing the regret, which is equivalent to minimizing $\sum_{n=1}^N\langle \vecg_n,\Delta_n\rangle$, the algorithm automatically identifies the most effective update step $\Delta_n$.

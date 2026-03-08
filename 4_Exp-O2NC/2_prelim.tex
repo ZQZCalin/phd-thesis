@@ -1,0 +1,44 @@
+\section{Preliminaries}
+\label{sec:pre}
+
+\paragraph{Notations}
+Bold font $\vecx$ denotes a vector in $\RR^d$ and $\|\vecx\|$ denotes its Euclidean norm. We define $B_d(\vecx,r)=\{\vecy\in\RR^d:\|\vecx-\vecy\|\le r\}$ and sometimes drop the subscript $d$ when the context is clear. We use $[n]$ as an abbreviation for $\{1,2,\ldots,n\}$. We adopt the standard big-$O$ notation, and $f\lesssim g$ denotes $f=O(g)$. $\calP(S)$ denotes the set of all distributions over a measurable set $S$.
+
+
+\paragraph{Stochastic Optimization}
+Given a function $F:\RR^d\to\RR$, $F$ is $G$-Lipschitz if $|F(\vecx)-F(\vecy)| \le G\|\vecx-\vecy\|, \forall \vecx,\vecy$. Equivalently, when $F$ is differentiable, $F$ is $G$-Lipschitz if $\|\nabla F(\vecx)\|\le G, \forall \vecx$. $F$ is $H$-smooth if $F$ is differentiable and $\nabla F$ is $H$-Lipschitz; $F$ is $\rho$-second-order-smooth if $F$ is twice differentiable and $\nabla^2 F$ is $\rho$-Lipschitz.
+
+\begin{assumption}
+\label{as:optimization}
+We assume that our objective function $F:\RR^d\to \RR$ is differentiable and $G$ Lipschitz, and given an initial point $\vecx_0$, $F(\vecx_0)-\inf F(\vecx) \le F^*$ for some known $F^*$. We also assume the stochastic gradient satisfies $\E[\nabla f(\vecx,z)\,|\,\vecx]=\nabla F(\vecx), \E\|\nabla F(\vecx)-\nabla f(\vecx,z)\|^2 \le \sigma^2$ for all $\vecx,z$. Finally, we assume that $F$ is \emph{well-behaved} in the sense of \cite{cutkosky2023optimal}: for any points $\vecx$ and $\vecy$, $F(\vecx)-F(\vecy) = \int_0^1 \langle \nabla F(\vecx+t(\vecy-\vecx)), \vecy-\vecx\rangle \ dt$.
+% Following the convention in literature, we assume $F$ is $G$-Lipschitz, $F(\vecx_0)-\inf F(\vecx) \le F^*$ and $\E[\nabla f(\vecx,z)\,|\,\vecx]=\nabla F(\vecx), \E\|\nabla F(\vecx)-\nabla f(\vecx,z)\|^2 \le \sigma^2$ for all $\vecx,z$.
+\end{assumption}
+
+
+\paragraph{Online Learning}
+An online convex optimization (OCO) algorithm is an iterative algorithm that uses the following procedure: in each iteration $n$, the algorithm plays an action $\Delta_n$ and then receives a convex  loss function $\ell_n$ The goal is to minimize the regret w.r.t. some comparator $\vecu$, defined as
+\begin{equation*}
+    \regret_n(\vecu) := \littlesum_{t=1}^n \ell_t(\Delta_t) - \ell_t(\vecu).
+\end{equation*}
+The most basic OCO algorithm is online gradient  descent: $\Delta_{n+1} = \Delta_n - \eta \nabla \ell_n(\Delta_n)$, which guarantees $\regret_N(\vecu) =O(\sqrt{N})$ for appropriate $\eta$. Notably, in OCO we make \emph{no assumptions} about the dynamics of $\ell_n$. They need not be stochastic, and could even be adversarially generated. We will be making use of algorithms that obtain \emph{anytime} regret bounds. That is, for all $n$ and any sequence of $\vecu_1,\vecu_2,\dots$, it is possible to bound $\regret_n(\vecu_n)$ by some appropriate quantities (that may be function of $n$). This is no great burden: almost all online convex optimization algorithms have anytime regret bounds.
+% Note that formulation above is technically a simplified description of OCO sometimes called ``online \emph{linear} optimization'' or OLO. 
+For readers interested in more details, please refer to \cite{cesa2006prediction, hazan2019introduction, orabona2019modern}.
+
+
+% \paragraph{Momentum Algorithms}
+% We recall the update formula of two popular momentum algorithms, SGDM and Adam. Given stochastic gradient $\vecg_t=\nabla f(\vecx_t,z_t)$, SGDM updates $\m_{t+1} = \beta\m_t + (1-\beta)\vecg_t$ and $\vecx_{t+1} = \vecx_t - \eta\m_{t+1}$.\footnote{The original update in \cite{sutskever2013importance} is $\vecv_{t+1} = \beta\vecv_t - \mu\vecg_t$ and $\vecx_{t+1}=\vecx_t+\vecv_{t+1}$. However, substituting $\mu=(1-\beta)\eta$ and $\vecv_t = \frac{-\mu}{1-\beta}\m_t$ recovers the same update.} Here $\beta$ denotes the momentum constant and $\eta$ denotes the learning rate.
+
+% Similarly, Adam updates $\m_{t+1} = \beta_1\m_t + (1-\beta_1)\vecg_t$, $\vecv_{t+1} = \beta_2\vecv_t + (1-\beta_2)\vecg_t^2$ and $\vecx_{t+1} = \vecx_t - \eta \frac{\m_{t+1}/(1-\beta_1^t)}{\sqrt{\vecv_{t+1}/(1-\beta_2^t)}}$. Here $\vecv_t$ is updated coordinate-wise.
+
+
+\input{4_Exp-O2NC/2a_prelim_nonsmooth}
+
+\input{4_Exp-O2NC/2b_prelim_o2nc}
+
+
+\subsection{Paper Organization}
+
+In Section \ref{sec:alg}, we present the general online-to-non-convex framework, \alg. We  first explain the intuitions behind the algorithm design, and then we provide the convergence analysis in Section \ref{sec:alg-conv}. In Section \ref{sec:sgdm}, we provide an explicit instantiation of our framework, and see that the resulting algorithm is essentially the standard SGDM.
+% In section \ref{sec:adam}, we further apply adaptive learning rate.
+In Section \ref{sec:lower}, we present a lower bound for finding $(c,\epsilon)$-stationary point.
+In Section \ref{sec:experiment}, we present empirical evaluations.
