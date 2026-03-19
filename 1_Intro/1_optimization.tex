@@ -1,0 +1,61 @@
+\section{Stochastic Optimization}
+\label{sec:ch1:intro}
+
+Machine learning has seen a rapid development in recent years. For example, the recent outbreak of large language models (LLMs) has significantly improved the daily life of many people and has brought significant attention to the field of machine learning \cite{transformer, gpt2,3, chatgpt, llama, deepseek, etc}.
+At the core of its success, machine learning consists of three important components: data collection, model design, and optimization. Data collection is the process of gathering data from various sources, model design is the process of designing a model to solve a specific problem, and optimization is the process of training the model to minimize a loss function. While the first two components have gained significant attention in both the literature and the industry, the third component is equally important and has been the focus of this thesis. 
+
+Formally, the optimization problem can be generally formulated as follows: given an objective function $f: \RR^d \to \RR$, the problem is to solve
+\begin{equation}
+    \min_{\vecx\in\RR^d} f(\vecx),
+    \label{eqn:ch1:optimization}
+\end{equation}
+where $\vecx$ denotes the parameters of the model and $\xi$ denotes data randomly sampled from an unknown distribution. Specifically, the problem where the objective $f$ is explicitly known is called the \emph{deterministic optimization problem}. Under this setting, algorithms are assumed to have access to the exact objective function $f(\vecx)$ and/or its gradient $\nabla f(\vecx)$. While there has been extensive research on this problem \cite{XXX}, it is not the focus of this thesis because of its discrepancy between the pratical setting of training modern machine learning models. 
+
+In most settings, training models often requires minimizing a generalization loss over an unknown data distribution. This problem is known as the \emph{stochastic optimization problem} and can be formally defined as follows:
+\begin{equation}
+    \min_{\vecx\in\RR^d} f(\vecx) = \E_{\xi}[F(\vecx,\xi)],
+    \label{eqn:ch1:stochastic-optimization}
+\end{equation}
+where $F$ dentoes a stochastic estimator of the objective function $f$ and $\xi$ denotes some data randomly sampled from an unknown distribution. For example, suppose we want to train a vision model to classify images into different categories. Then $\vecx$ could be the parameters of the model, the data $\xi$ could be a tuple of an image and its ground truth label, and $F$ could be the cross-entropy loss between the model prediction and its corresponding label. 
+
+To solve this problem, an algorithm is given access to an (stochastic) \emph{oracle} that can evaluate the stochastic estimator $F$. In particular, given a pair $(\vecx,\xi)$, we can query the value of $F(\vecx,\xi)$ and its (sub)gradient with respect to $\vecx$. This black-box access model is standard in stochastic optimization and captures many practical learning scenarios where the loss is defined as an expectation over data.
+
+Stochastic optimization methods aim to solve \eqref{eqn:ch1:optimization-objective} using such noisy information. The most classical and widely used algorithm is stochastic gradient descent (SGD), which updates the parameter iteratively according to
+\begin{equation}
+    \vecx_{t+1} = \vecx_t - \eta_t \, g_t, \qquad g_t \approx \nabla F(\vecx_t, \xi_t),
+    \label{eqn:ch1:sgd-update}
+\end{equation}
+where $\eta_t$ is the step size (or learning rate) and $g_t$ is a stochastic gradient obtained from a fresh sample $\xi_t$. Despite its simplicity, SGD and its variants are the workhorse behind modern large-scale machine learning, due to their low per-iteration cost and good empirical performance.
+
+From a theoretical perspective, the behavior of stochastic optimization algorithms crucially depends on the structure of the objective function. When $f$ is convex or even strongly convex, one can often obtain convergence rates that characterize how fast the optimality gap $f(\vecx_t) - f(\vecx^\star)$ shrinks over time, where $\vecx^\star$ denotes a minimizer of \eqref{eqn:ch1:optimization-objective}. In nonconvex settings, which are typical for deep learning, the goal is usually to bound the gradient norm $\|\nabla f(\vecx_t)\|$ and show that the algorithm finds an approximate stationary point. These guarantees are further influenced by assumptions on the noise, such as bounded variance or sub-Gaussian tails.
+
+% TODO: add more recent developments
+
+Beyond vanilla SGD, a rich family of algorithms has been developed to cope with practical challenges. For instance, variance-reduction techniques (e.g., SVRG, SAGA, and their variants) aim to reduce the stochastic noise in the gradient estimates and thus accelerate convergence, especially in finite-sum problems where $f$ is an average over a fixed dataset. Momentum-based methods, such as classical momentum and Nesterov's accelerated gradient, introduce a running average of past gradients to stabilize updates and improve optimization in ill-conditioned landscapes. Adaptive methods like AdaGrad, RMSProp, and Adam further adjust the learning rate for each coordinate based on historical gradient information, which is particularly useful when different parameters have very different scales.
+
+Stochastic optimization also faces fundamental trade-offs between optimization accuracy, generalization, and computational efficiency. Smaller batch sizes and higher noise levels may slow down convergence but sometimes help to escape sharp local minima and improve generalization in deep networks. On the other hand, larger batch sizes yield more accurate gradient estimates and allow better parallelization, but may require careful tuning of the learning rate and other hyperparameters. Understanding these trade-offs and designing algorithms that achieve favorable guarantees is a central theme of the optimization literature in machine learning.
+
+
+Non-convex stochastic optimization is fundamental to modern machine learning. For example, in deep learning, $\vecx$ is the weight of some neural network model, $z$ is a datapoint, and $f(\vecx,z)$ represents the loss of the model evaluated on $\vecx$ and $z$.
+% For example, we can think of $\vecx$ as the weights of a neural network model and $z$ as the data. In this case, $f(\vecx,z)$ represents the loss of the model with weight $\vecx$ on data $z$. 
+Consequently, training the machine learning model equates to minimizing the non-convex objective $F(\vecx)$.
+Given its significant role, there has been a marked increase in research focusing on non-convex optimization in recent years \citep{ghadimi2013stochastic, arjevani2019lower, arjevani2020second, carmon2019lower, fang2018spider, cutkosky2019momentum}. 
+Since finding a global minimum of non-convex $F(\vecx)$ is intractable, many previous works assume that $F$ is smooth, and their goal is to find an $\epsilon$-stationary point $\vecx$ where $\|\nabla F(\vecx)\| \le \epsilon$. 
+% It is well-known that SGD finds an $\epsilon$-stationary point in $O(\epsilon^{-4})$ iterations, which is proven optimal \citep{arjevani2019lower}. Moreover, if the stochastic function $f$ is smooth, variance reduction algorithms require only $O(\epsilon^{-3}$) iterations \citep{fang2018spider, cutkosky2019momentum, arjevani2022lower}. 
+However, objectives are not always smooth, especially with the ever-increasing complexity of modern machine learning models.
+% , thus making the problem of finding $\epsilon-$stationary point even more difficult \citep{zhang2020complexity, kornowski2022oracle}.
+Making the problem even more difficult, 
+recent research shows that 
+finding an $\epsilon$-stationary point of a non-smooth objective might be intractable \citep{zhang2020complexity, kornowski2022oracle}.
+
+To address this issue, \cite{zhang2020complexity} introduces an alternative objective for the convergence analysis of non-smooth non-convex optimization. Specifically, they propose the notion of Goldstein stationary point \citep{goldstein1977optimization}: $\vecx$ is said to be an $(\delta,\epsilon)$-stationary point of $F$ if there exists a subset $S$ in the ball of radius $\delta$ centered at $\vecx$ such that $\left\|\E\left[\nabla F(\vecy)\right]\right\| \le \epsilon$ where $\vecy$ is uniformly distributed over $S$.
+Recently, there have been many works on first-order algorithms using this framework \citep{zhang2020complexity, tian2022finite, cutkosky2023optimal}. Notably, \cite{cutkosky2023optimal} designs an ``Online-to-non-convex Conversion'' algorithm that finds a $(\delta,\epsilon)$-stationary point with $O(\delta^{-1}\epsilon^{-3})$ samples, which is proven to be the optimal rate.
+However, first-order algorithms have their own limitations. 
+For many applications, computing first-order gradients can be computationally expensive or even impossible \citep{nelson2010optimization,mania2018simple}.
+% \todo{rephrase + cite some evidence}
+% For example, in deep learning tasks, computing the stochastic gradients can be computationally expensive and susceptible to numerical errors. 
+% Yet, as a practical limitation of first-order algorithms, computing the stochastic gradients can be computationally expensive and can induce numerical errors. 
+Hence, there are many recent results focusing on designing efficient zeroth-order algorithms for non-smooth non-convex optimization \citep{lin2022gradientfree, chen2023faster, kornowski2023algorithm}. Recently, \cite{kornowski2023algorithm} proposes a zeroth-order algorithm that requires only $O(d\delta^{-1}\epsilon^{-3})$ samples, which is the current state-of-the-art rate for zeroth-order optimization on non-smooth non-convex objectives. The additional dimension dependence is an inevitable cost of zeroth-order algorithms even when the objective is smooth or convex \citep{duchi2015optimal}.
+
+This thesis focuses on several aspects of stochastic optimization that are particularly relevant to modern learning problems. In later chapters, we will study (i) how to design algorithms with improved convergence guarantees under realistic noise assumptions, (ii) how to incorporate structural properties of the objective (such as smoothness or curvature) to obtain faster rates, and (iii) how to adapt step sizes or algorithmic parameters automatically to reduce the burden of hyperparameter tuning. The results in those chapters build on the basic setup introduced here and connect stochastic optimization theory with practical algorithm design.
+

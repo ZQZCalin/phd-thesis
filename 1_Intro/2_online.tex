@@ -1,0 +1,23 @@
+\section{Online Learning}
+\label{sec:ch1:online}
+
+While stochastic optimization provides a powerful framework for training models on randomly sampled data, many theoretical results are actually based on a similar problem called \emph{online learning}. In such settings, data are not drawn i.i.d.\ from a fixed distribution in advance; instead, the algorithm receives a stream of inputs over time and must make decisions on the fly. The performance of the algorityhm is then judged relative to the best possible strategy in hindsight.
+
+The formal framework of online learning can be considered as the following game. At each round $t$, the learner chooses a prediction or action $\vecx_t$ from some decision set $\mathcal{X}$. Then, the environment reveals a loss function $\ell_t : \mathcal{X} \to \RR$, and the learner incurs loss $\ell_t(\vecx_t)$. The environment may be stochastic, adversarial, or somewhere in between, and crucially, the learner must choose $\vecx_t$ based only on the past information $(\vecx_s, \ell_s)_{s < t}$ without seeing $\ell_t$ beforehand. Ath the end of the game, the performance of the learner is measured by \emph{regret}, defined as
+\begin{equation}
+    \regret_T(\vecu)
+    = \sum_{t=1}^T \ell_t(\vecx_t) - \sum_{t=1}^T \ell_t(\vecu),
+    \label{eqn:ch1:regret-def}
+\end{equation}
+where $\vecu \in \mathcal{X}$ is a comparator, often chosen as the best fixed decision in hindsight. The goal of the learner is to ensure that the regret grows sublinearly in $T$ for all $\vecu$ in a suitable class, so that the average regret $\regret_T(\vecu) / T$ vanishes as $T$ increases. When this is achieved, the learner performs asymptotically as well as the best fixed strategy that could have been chosen with full knowledge of the future.
+
+Online learning has deep connections to optimization. When the loss functions $\ell_t$ are convex, many classical algorithms for online learning can be interpreted as variants of gradient-based optimization methods applied in an incremental manner. For example, online gradient descent updates the decision according to
+\begin{equation}
+    \vecx_{t+1} = \Pi_{\mathcal{X}}\bigl(\vecx_t - \eta_t \nabla \ell_t(\vecx_t)\bigr),
+    \label{eqn:ch1:ogd-update}
+\end{equation}
+where $\Pi_{\mathcal{X}}$ denotes projection onto the feasible set and $\eta_t$ is a step size. Mirror descent and follow-the-regularized-leader (FTRL) are more general frameworks that encompass a wide range of online learning algorithms, including many adaptive and second-order methods. Through these connections, regret bounds in online learning often translate into convergence guarantees for corresponding optimization procedures, and vice versa.
+
+Beyond their theoretical elegance, online learning models a variety of real-world applications where decisions must be made repeatedly under uncertainty. Examples include online advertising, portfolio selection, recommendation systems, and adaptive routing, where the environment may change over time and may even react to the learner's previous actions. In such nonstationary or adversarial environments, classical stochastic optimization assumptions (such as i.i.d.\ data) may be violated, and online learning provides a more robust basis for algorithm design and analysis.
+
+This thesis draws on tools and ideas from online learning to analyze and design optimization algorithms that operate in sequential settings. In particular, the regret-based perspective will appear in later chapters when we study adaptive step-size schemes, online-to-batch conversions, and algorithms that must cope with changing or adversarial data. By viewing stochastic optimization through the lens of online learning, we obtain a unified framework that clarifies the relationships between convergence guarantees in offline training and performance guarantees in sequential decision making.
