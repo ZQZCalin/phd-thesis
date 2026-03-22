@@ -14,3 +14,4 @@
 *.pdf
 
 .vscode/
+*.py
