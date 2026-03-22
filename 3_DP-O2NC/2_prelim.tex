@@ -56,7 +56,7 @@ There are many OCO algorithms that achieve the minimax optimal $O(\sqrt{T})$ reg
 
 \paragraph{Uniform Smoothing}
 
-Randomized smoothing is a well known technique that converts a possibly non-smooth function to a smooth approximation \citep{flaxman2005online, duchi2012randomized, lin2022gradientfree}.
+Randomized smoothing is a well known technique that converts a possibly non-smooth function to a smooth approximation \citep{flaxman2005online, duchi2012randomized, lin2022gradient}.
 Given a Lipschitz function $h:\RR^d\to\RR$ and $\delta>0$, we define the \textit{uniform smoothing} of $h$ as $\hat h_\delta(\vecx) = \E_{\vecv\sim\calU_\bfB}[h(\vecx+\delta\vecv)]$. In later sections, we denote $\hat F_\delta(\vecx)$ and $\hat f_\delta(\vecx,z)$ as the uniform smoothing of the objective $F(\vecx)$ and $f(\vecx,z)$ respectively. 
 % Uniform smoothing has the following properties.
 As shown in prior works (see \citep{yousefian2012stochastic} and \citet[Section E]{duchi2012randomized}), uniform smoothing is a smooth approximation whose gradient can be estimated by finite differentiation. We rephrase the key properties in the following lemma, whose proof is presented in the appendix for completeness.

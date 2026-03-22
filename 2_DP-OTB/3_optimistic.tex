@@ -1,7 +1,7 @@
 \section{The Optimistic Case}
 \label{sec:DP-OTB_optimistic}
 
-In this section, we show that choosing an optimistic online learner \citep{chiang2012online, rakhlin2013online, steinhardt2014eg} will accelerate our DP online-to-batch algorithm. Optimistic algorithms  are provided with additional ``hints'' in the form of $\hat \ell_t(w)=\langle \hat g_t, w\rangle$ as an approximation of the true loss $\ell_t(w)=\langle g_t,w\rangle$, and they can incorporate $\hat \ell_t$ to decide $w_t$. The regret of an optimistic algorithm depends on the quality of hints: if $\hat{g}_t\approx g_t$, then it achieves a low regret.  Formally, in this paper, we say an online learning algorithm is \textit{optimistic w.r.t. norm $\|\cdot\|$} if its regret is the following:
+In this section, we show that choosing an optimistic online learner \citep{chiang2012online, rakhlin2013online, steinhardt2014adaptivity} will accelerate our DP online-to-batch algorithm. Optimistic algorithms  are provided with additional ``hints'' in the form of $\hat \ell_t(w)=\langle \hat g_t, w\rangle$ as an approximation of the true loss $\ell_t(w)=\langle g_t,w\rangle$, and they can incorporate $\hat \ell_t$ to decide $w_t$. The regret of an optimistic algorithm depends on the quality of hints: if $\hat{g}_t\approx g_t$, then it achieves a low regret.  Formally, in this paper, we say an online learning algorithm is \textit{optimistic w.r.t. norm $\|\cdot\|$} if its regret is the following:
 \begin{equation}
     \regret_T(x^*) \leq O\left( D\sqrt{\sum_{t=1}^T \| \hat{g}_t - g_t\|_*^2 } \right), \label{eq:DP-OTB:optimistic-OL}
 \end{equation}
