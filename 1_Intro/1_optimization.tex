@@ -44,29 +44,38 @@ As aforementioned, stochastic optimization algorithms aim to find an approximate
 \end{equation}
 where $\eta_t$ is the learning rate (or step size) and $\vecg_t$ is a stochastic gradient at $\vecx_t$ obtained from a random sample $\xi_t$. Remarkably, SGD and its variants have been the most popular optimizers for training machine learning models, due to their simple implementation and good empirical performance.
 
-The theoretical performance of SGD has been extensively studied and is well-known by far. When the objective is convex, SGD finds an $\epsilon$-suboptimal point defined in \eqref{eqn:ch1:eps-suboptimal} with $T=O(\epsilon^2)$ oracle complexity \cite{zinkevich2003online}. In non-convex but smooth setting, it finds an $\epsilon$-stationary point defined in \eqref{eqn:ch1:eps-stationary} with $T=O(\epsilon^4)$ complexity. Notably, both rates are proven to be the lower bound in their corresponding setting, suggesting that SGD, although simple, achieves the tight oracle complexity in theory. 
+The theoretical performance of SGD has been extensively studied and is well-known by far. When the objective is convex, SGD finds an $\epsilon$-suboptimal point defined in \eqref{eqn:ch1:eps-suboptimal} with $T=O(\epsilon^2)$ oracle complexity \citep{zinkevich2003online}. In non-convex but smooth setting, \cite{ghadimi2013stochastic} proved that SGD finds an $\epsilon$-stationary point defined in \eqref{eqn:ch1:eps-stationary} with $T=O(\epsilon^4)$ complexity. Notably, both rates are proven to be the lower bound in their corresponding setting \citep{,arjevani2022lower}, suggesting that SGD achieves the tight oracle complexity in theory although being a very simple algorithm. 
 
-Despite the fact that SGD has achieved the optimal complexity, a rich family of algorithms beyond vanilla SGD has been developed and has shown empirical improvements. For instance, momentum methods \citep{} aggregates a running average of past gradients to stabilize updates:
+Despite the fact that SGD has achieved the optimal complexity, a rich family of algorithms beyond vanilla SGD has been continuously developed, and they have shown great empirical performances. Among all, one line of algorithm focuses on the \emph{momentum methods} \citep{polyak1964speeding,sutskever2013importance}. Instead of using the instantaneous gradient as the update, momentum methods aggregate a running average of past gradients to stabilize updates\footnote{There are different ways to formulate the momentum update. Here we choose the notion that is most common in later algorithms.}:
 \begin{equation}
     \vecx_{t+1} = \vecx_t - \eta_t\, \vecm_t,
-    \qquad \vecm_t = \vecm_{t-1} + \beta \vecg_t.
+    \qquad \vecm_t = (1-\beta)\, \vecm_{t-1} + \beta\, \vecg_t.
     \label{eqn:ch1:momentum-update}
 \end{equation}
-Here $\beta$ is the momentum constant: as $\beta$ becomes closer to $0$, the momentum puts more weight on past gradients.
+Here $\beta$ is the momentum constant: as $\beta$ becomes closer to $0$, the momentum puts more weight on past gradients. \cite{sutskever2013importance} observed that SGD with momentum (SGDM) outperforms vanilla SGD when training various models, especially by accelerating the training through smooth loss landscapes. Later, various works have proposed many variants of SGDM, including but not limited to Lars \citep{you2017scaling}, Lamb \citep{you2019large}, LaProp \citep{ziyin2020laprop}, Lion \citep{chen2023symbolic}, Sophia \citep{liu2023sophia} etc. All of them have shown better performance than vanilla SGD and SGDM.
 
-In addition, AdaGrad proposed by \cite{} uses an adaptive method that adjust the learning rate on-the-fly:
+% Theory explanations for momentum? e.g., reduce batch size (Cutkosk2020momentum)
+
+Besides momentum, another line of research studies algorithm adaptivity, which started with the AdaGrad algorithm developed independently by \citep{duchi10adagrad,mcmahan2010adaptive}. In particular, AdaGrad adjusts the learning rate on-the-fly:
 \begin{equation}
     \vecx_{t+1} = \vecx_t - \eta_t\, \vecg_t,
-    \qquad \eta_t = \frac{c}{\sqrt{\epsilon + \sum_{i=1}^t \g_t^2}}.
+    \qquad \eta_t = \frac{c}{\sqrt{\epsilon + \sum_{i=1}^t \vecg_t^2}}.
     \label{eqn:ch1:adagrad-update}
 \end{equation}
-where the operation in $\eta_t$ is computed coordinate-wise. Such adaptive method effectively improves the performance when the objective is ill-conditioned, e.g., when the gradients are sparse.
+where the operation in $\eta_t$ is computed coordinate-wise. Such adaptive method effectively improves the performance when the objective is ill-conditioned. For example, when the stochastic gradients are sparse, AdaGrad could effectively optimize all coordinates by decreasing the learning rates in the frequently observed coordinates while keeping that of the sparse coordinates relatively larger. 
 
-Combining the intution of momentum methods and AdaGrad, \cite{} proposed the Adam optimizer, which has been the go-to choice for most of the machine learning problems. 
+AdaGrad has also inspired many new algorithms. Notably, Adam \citep{kingma2014adam} combines the intuition of momentum and AdaGrad, and it has become one of the most popular optimizer in both literature and industry. Other subsequent works focus on designing more efficient preconditioning method, such as Shampoo \citep{gupta2018shampoo}, signed SGD \citep{bernstein2018signsgd}, AdaBelief \citep{zhuang2020adabelief}, SOAP \citep{vyas2025soap}, Muon \citep{jordan2024muon}, etc.
 
-For instance, variance-reduction techniques (e.g., SVRG, SAGA, and their variants) aim to reduce the stochastic noise in the gradient estimates and thus accelerate convergence, especially in finite-sum problems where $f$ is an average over a fixed dataset. Momentum-based methods, such as classical momentum and Nesterov's accelerated gradient, introduce a running average of past gradients to stabilize updates and improve optimization in ill-conditioned landscapes. Adaptive methods like AdaGrad, RMSProp, and Adam further adjust the learning rate for each coordinate based on historical gradient information, which is particularly useful when different parameters have very different scales.
+% Again, add theoretical development for preconditioning
 
-Stochastic optimization also faces fundamental trade-offs between optimization accuracy, generalization, and computational efficiency. Smaller batch sizes and higher noise levels may slow down convergence but sometimes help to escape sharp local minima and improve generalization in deep networks. On the other hand, larger batch sizes yield more accurate gradient estimates and allow better parallelization, but may require careful tuning of the learning rate and other hyperparameters. Understanding these trade-offs and designing algorithms that achieve favorable guarantees is a central theme of the optimization literature in machine learning.
+Another key development in stochastic optimization is the advent of variance-reduction techniques, which aim to improve the efficiency of stochastic gradient methods by reducing the noise inherent in gradient estimates. These algorithms include SAG \citep{schmidt2017minimizing}, SVRG \citep{johnson2013accelerating}, SAGA \citep{defazio2014saga}, Natasha \citep{allenzhu2018natasha}, Spider \citep{fang2018spider}, Storm \citep{cutkosky2019momentum}, etc. At its core, variance-reduction algorithms use the sum of gradient difference estimators to estimate the gradient:
+\begin{equation}
+    \vecg_t = \sum_{i=1}^t \vecd_i, \qquad \vecd_i = \nabla F(\vecx_i,\xi_i) - \nabla F(\vecx_{i-1}, \xi_i).
+    \label{eqn:ch1:variance-reduction}
+\end{equation}
+Under a slightly stronger smoothness assumption called \emph{mean-squared smoothness}, this estimator has reduced variance, allowing the algorithms to achieve $O(\epsilon^3)$ complexity, improving from the $O(\epsilon^4)$ under standard first-order smoothness assumption. On the other hand, although variance-reduction algorithms have better theoretical convergence rate, they are not favored in pratice due to its additional computation cost---two gradient computations in each iteration are required in order to compute the gradient difference. It is also observed that SVRG does not perform well in pratical trainining tasks \citep{defazio2019ineffectiveness}.
 
-This thesis focuses on several aspects of stochastic optimization that are particularly relevant to modern learning problems. In later chapters, we will study (i) how to design algorithms with improved convergence guarantees under realistic noise assumptions, (ii) how to incorporate structural properties of the objective (such as smoothness or curvature) to obtain faster rates, and (iii) how to adapt step sizes or algorithmic parameters automatically to reduce the burden of hyperparameter tuning. The results in those chapters build on the basic setup introduced here and connect stochastic optimization theory with practical algorithm design.
+% Maybe second-order methods? 
+
+This thesis focuses on several aspects of stochastic optimization that are particularly relevant to modern learning problems. In later chapters, we will study (i) how to design algorithms with differential privacy guarantees under both convex and non-convex scenarios and (ii) how to develop realistic algorithms that close the gap between theory and practice. The results in those chapters build on the basic setup introduced here and connect stochastic optimization theory with practical algorithm design.
 
