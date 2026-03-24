@@ -1,7 +1,8 @@
 \section{Stochastic Optimization}
 \label{sec:ch1:intro}
 
-Machine learning has seen a rapid development in recent years. For example, the recent outbreak of large language models (LLMs) has significantly improved the daily life of many people and has brought significant attention to the field of machine learning \cite{transformer, gpt2,3, chatgpt, llama, deepseek, etc}.
+Machine learning has seen a rapid development in recent years. For example, the recent outbreak of large language models (LLMs) has significantly improved the daily life of many people, including medical diagnosis and clinical decision support \citep{clusmann2023future,thirunavukarasu2023large}, accelerating scientific discovery \citep{lin2022evolutionary}, enhancing developer productivity in software engineering \citep{peng2023impact}, improving quality and accessibility of education \citep{kasneci2023chatgpt}.
+
 At the core of its success, machine learning consists of three important components: data collection, model design, and optimization. Data collection is the process of gathering data from various sources, model design is the process of designing a model to solve a specific problem, and optimization is the process of training the model to minimize a loss function. While the first two components have gained significant attention in both the literature and the industry, the third component is equally important and has been the focus of this thesis. 
 
 Formally, the optimization problem can be generally formulated as follows: given an objective function $f: \RR^d \to \RR$, the problem is to solve
@@ -9,7 +10,7 @@ Formally, the optimization problem can be generally formulated as follows: given
     \min_{\vecx\in\RR^d} f(\vecx),
     \label{eqn:ch1:optimization}
 \end{equation}
-where $\vecx$ denotes the parameters of the model and $\xi$ denotes data randomly sampled from an unknown distribution. Specifically, the problem where the objective $f$ is explicitly known is called the \emph{deterministic optimization problem}. Under this setting, algorithms are assumed to have access to the exact objective function $f(\vecx)$ and/or its gradient $\nabla f(\vecx)$. While there has been extensive research on this problem \cite{XXX}, it is not the focus of this thesis because of its discrepancy between the pratical setting of training modern machine learning models. 
+where $\vecx$ denotes the parameters of the model and $\xi$ denotes data randomly sampled from an unknown distribution. Specifically, the problem where the objective $f$ is explicitly known is called the \emph{deterministic optimization problem}. Under this setting, algorithms are assumed to have access to the exact objective function $f(\vecx)$ and/or its gradient $\nabla f(\vecx)$. While there has been extensive research on this problem \cite{nemirovskii1979complexity,nesterov1983method,boyd2004convex}, it is not the focus of this thesis because of its discrepancy between the pratical setting of training modern machine learning models. 
 
 In most of the practical settings, training models often requires minimizing a generalization loss over an unknown data distribution. This problem is known as the \emph{stochastic optimization problem} and can be formally defined as follows:
 \begin{equation}

@@ -2,11 +2,39 @@
 \label{sec:ch1:prelim}
 
 \paragraph{General Notations}
-
+For $N\in\NN$, we denote the set $\{1.\ldots,N\}$ by $[N]$; given a sequence $a_1,\ldots,a_N$, we use $a_{1:N}\coloneqq \sum_{i=1}^N a_i$ as a shorthand summation notation. We use the standard big-O notation, that is, given two scalar function $f,g$, $f(x) = O(g(x))$ if $f(x) < c\, g(x)$ for some $c>0$. We interchangeably use $f(x) \lesssim g(x)$ to denote $f(x) = O(g(x))$, and we use $\tilde O$ to hide additional logarithmic factors.
 
 \paragraph{Linear Algebra}
+We use bold font to denote a vector, e.g., $\vecx\in\calX$, where $\calX$ is a Banach space with norm $\|\cdot\|$. The dual space is denoted by $\calX^\ast$ and is equipped with dual norm $\|\cdot\|_\ast\coloneqq \sup_{\|\vecx\|\le 1} \langle \cdot, \vecx\rangle$. Here we use the notation $\langle \vecx^\ast,\vecx\rangle\coloneqq \vecx^\ast(\vecx)$ to denote the dual pairing of $\vecx\in\calX,\vecx^\ast\in\calX^\ast$. 
+
+In most cases, we consider the Euclidean space $\calX=\RR^d$ with the standard $\ell_2$ norm $\|\cdot\|_2$ and the Euclidean inner product $\langle\cdot,\cdot\rangle_2$. We denote an open ball centered at $\vecx$ of radius $r$ by $\calB(\vecx,r) \coloneqq \{\vecy : \|\vecx-\vecy\| < r\}$. 
+
+\paragraph{Stochastic Optimization}
+We denote $f:\calX\to\RR$ as the objective function of the stochastic optimization problem, where $\calX$ is the domain and $\calX=\RR^d$ in most cases. $F:\calX\times\calZ \to \RR^d$ is the stochastic estimator of $f$, where $\calZ$ is the sample space and $\xi\in\calZ$ is an i.i.d. data sampled from an unknown distribution on $\calZ$. In particular, $f(\vecx) = \E_\xi[F(\vecx,\xi)]$, and $\nabla f(\vecx) = \E_\xi[\nabla F(\vecx,\xi)]$ if $F$ is differentiable.
 
 \paragraph{Convex Analysis}
+Convexity and smoothness plays a significant role in optimization theory. Consider a function $f:\calX\to\RR$. $f$ is said to be \emph{convex} if 
+\begin{equation}
+    f(\alpha \vecx + (1-\alpha)\vecy) \le \alpha f(\vecx) + (1-\alpha) f(\vecy), \qquad \forall \vecx,\vecy\in\calX, \, \alpha\in(0,1).
+\end{equation}
+Besides the standard definition, the following equivalent definition is more convenient in the context of optimization theory. First, a dual vector $\vecg\in\calX^*$ is a \emph{subgradient} of a convex function $f$ at $\vecx$ if
+\begin{equation}
+    f(\vecy) \ge f(\vecx) + \langle \vecg, \vecy-\vecx\rangle, \quad \forall \vecy\in\calX.
+    \label{eqn:ch1:subgradient}
+\end{equation}
+The set of all subgradients of $f$ at $\vecx$ is called the \emph{subdifferential} and is denoted by $\partial f(\vecx)$. Notably, if $f$ is differentiable, then $\partial f(\vecx) = \{\nabla f(\vecx)\}$.
+With this definition, the equivalent definition of convexity states  that a function $f:\calX\to\RR$ if and only if
+\begin{equation}
+    f(\vecy) \ge f(\vecx) + \langle \vecg, \vecy-\vecx\rangle, \quad \forall \vecx,\vecy\in\calX,\, \vecg \in \partial f(\vecx).
+    \label{eqn:ch1:convex-defn}
+\end{equation}
+Moreover, $f$ is \emph{$\lambda$-strongly convex} if 
+\begin{equation}
+    f(\vecy) \ge f(\vecx) + \langle \vecg, \vecy-\vecx\rangle, \quad \forall \vecx,\vecy\in\calX,\, \vecg \in \partial f(\vecx).
+    \label{eqn:ch1:strongly-convex-defn}
+\end{equation}
+
+More details and useful results can be found in \citep{rockafellar1997convex}.
 
 
 \paragraph{Probability Theory}
