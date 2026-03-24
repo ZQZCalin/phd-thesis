@@ -15,4 +15,4 @@
 
 .vscode/
 *.py
-*.sh
+# *.sh
