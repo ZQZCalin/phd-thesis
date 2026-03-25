@@ -17,11 +17,11 @@ Assume $F$ is $H$-smooth. By Jensen's inequality, $\E\|\vecy-\vecx\| \le \sqrt{\
     &\le \epsilon + H \cdot \epsilon/H = 2\epsilon. 
     % \tag{$\delta=\frac{\epsilon}{H}$}
 \end{align*}
-Next, assume $F$ is $\rho$-second-order smooth. By Taylor approximation, there exists some $\z$ such that $\nabla F(\vecx) = \nabla F(\vecy) + \nabla^2F(\vecx)(\vecx-\vecy) + \frac{1}{2}(\vecx-\vecy)^T\nabla^3F(\z)(\vecx-\vecy)$. Note that $\E[\nabla^2F(\vecx)(\vecx-\vecy)]=\nabla^2F(\vecx)\E[\vecx-\vecy]=0$. Consequently,
+Next, assume $F$ is $\rho$-second-order smooth. By Taylor approximation, there exists some $\vecz$ such that $\nabla F(\vecx) = \nabla F(\vecy) + \nabla^2F(\vecx)(\vecx-\vecy) + \frac{1}{2}(\vecx-\vecy)^T\nabla^3F(\vecz)(\vecx-\vecy)$. Note that $\E[\nabla^2F(\vecx)(\vecx-\vecy)]=\nabla^2F(\vecx)\E[\vecx-\vecy]=0$. Consequently,
 \begin{align*}
     \|\nabla F(\vecx)\|
     &\le \|\E\nabla F(\vecy)\| + \|\E[\nabla F(\vecx)-\nabla F(\vecy)]\| \\
-    &\le \|\E\nabla F(\vecy)\| + \E\|\tfrac{1}{2}(\vecx-\vecy)^T\nabla^3F(\z)(\vecx-\vecy)\| \tag{Jensen's inequality}\\
+    &\le \|\E\nabla F(\vecy)\| + \E\|\tfrac{1}{2}(\vecx-\vecy)^T\nabla^3F(\vecz)(\vecx-\vecy)\| \tag{Jensen's inequality}\\
     &\le \|\E\nabla F(\vecy)\| + \tfrac{\rho}{2} \E\|\vecx-\vecy\|^2 \tag{second-order-smooth}\\
     &\le \epsilon + \tfrac{\rho}{2}\cdot \epsilon/c = 2\epsilon. \tag{$c=\rho/2$}
 \end{align*}

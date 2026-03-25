@@ -28,7 +28,7 @@ By distribution of $\vecy_n$, we have
     &\le \sum_{i=1}^n\sum_{i'=1}^n p_{n,i}p_{n,i'} \|\vecx_i-\vecx_{i'}\|^2 
     = 2\sum_{i=1}^n\sum_{i'=1}^{i-1} p_{n,i}p_{n,i'}\|\vecx_i-\vecx_{i'}\|^2.
 \end{align*}
-The inequality uses convexity of $\|\cdot\|^2$. Next, upon unrolling the recursive update $\vecx_t = \vecx_{t-1} + \s_t\Delta_t$,
+The inequality uses convexity of $\|\cdot\|^2$. Next, upon unrolling the recursive update $\vecx_t = \vecx_{t-1} + s_t\Delta_t$,
 \begin{align*}
     \|\vecx_i-\vecx_{i'}\|^2
     &= \left\| \sum_{t=i'+1}^i s_t\Delta_t\right\|^2 

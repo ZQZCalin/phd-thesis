@@ -1,4 +1,4 @@
-\section{Recovering SGDM: \\ {\alg} with OMD}
+\section{Recovering SGDM with Online Mirror Descent}
 \label{sec:Exp-O2NC_sgdm}
 
 In the previous sections, we have shown that Exponentiated O2NC can convert any OCO algorithm into a non-convex optimization algorithm in such a way that small regret bounds transform into convergence guarantees. So, the natural next step is to instantiate \alg\ with some particular OCO algorithm. In this section we carry out this task and discover that the resulting method not only achieves optimal convergence guarantees, but is also \emph{nearly identical} to the standard SGDM optimization algorithm!
@@ -82,7 +82,7 @@ Remarkably, this update formula recovers the standard SGDM update, with the slig
 \begin{align}
     &\vecm_{t+1} = \tilde\beta \vecm_t + (1-\tilde\beta)\vecg_t, \notag\\
     &\vecx_{t+1} = \vecx_t - s_{t+1}\cdot \tilde\eta \vecm_{t+1}.
-    \label{eq:Exp-O2NC:sgdm-1}
+    \label{eq:Exp-O2NC:sgdm-2}
 \end{align}
 
 \paragraph{Smooth case}

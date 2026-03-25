@@ -36,4 +36,17 @@ Moreover, $f$ is \emph{$\lambda$-strongly convex} if
 More details and useful results can be found in \citep{rockafellar1997convex}.
 
 
-% \paragraph{Probability Theory}
+% % \paragraph{Probability Theory}
+
+% \paragraph{Differential Privacy}
+% Differential privacy measures how much information is leaked during the training process.
+
+
+\section{Summary}
+\label{sec:ch1:summary}
+
+As a brief overview , this thesis is structured as follows. First, Chapter~\ref{chapter:dp-otb} presents a \emph{differentially private online-to-batch} conversion algorithm. Any OCO algorithm with $O(\sqrt{T})$ regret can be converted in linear time into an $\rho$-differentially private stochastic convex optimization algorithm achieving the optimal convergence rate $\tilde O(1/\sqrt{T} + \sqrt{d}/\rho T)$ on smooth losses. This decouples privacy analysis from algorithm design and yields adaptive private algorithms whose rates depend on unknown gradient variance or parameter norms.
+
+Chapter~\ref{chapter:dp-o2nc} continues this line on the non-convex, non-smooth setting under privacy. It presents a zeroth-order algorithm that is $(\alpha,\alpha\rho^2/2)$-R\'enyi differentially private and finds $(\delta,\epsilon)$-stationary points with $\tilde O(d/\delta\epsilon^3 + d^{3/2}/\rho\delta\epsilon^2)$ data complexity, matching the optimal non-private zeroth-order rate and implying that privacy can be ``for free'' when $\rho \ge \sqrt{d}\epsilon$. At its core, the conversion algorithm combines the online-to-non-convex (O2NC) framework with a variance-reduced zeroth-order oracle and the tree mechanism.
+
+Finally, Chapter~\ref{chapter:exp-o2nc} introduces an \emph{exponentiated online-to-non-convex} framework that extends O2NC with a relaxed stationarity criterion and gradient evaluations at iterates (no intermediate states). Applying this framework to a specific online mirror descent yields an algorithm that is essentially stochastic gradient descent with momentum (SGDM) with an exponential random scaling, and achieves optimal convergence guarantees for non-smooth non-convex optimization---thereby bridging the gap between classical analysis, which assumes smooth or convex objectives, and the empirical success of SGDM in training neural networks.

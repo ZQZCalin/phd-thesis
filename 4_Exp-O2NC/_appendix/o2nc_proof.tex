@@ -130,7 +130,7 @@ As the final step, we simplify the terms involving $\calR_t$.
 Recall that $\calR_t(\vecw) = \frac{\mu_t}{2}\|\vecw\|^2$, so $\calR_t(\vecu_n)=\frac{\mu_t}{2}D^2$ is independent of $n$. Hence, by change of summation,
 \begin{align*}
     &\E\sum_{n=1}^N\sum_{t=1}^n (1-\beta)\beta^n ( -\calR_t(\Delta_t) + \calR_t(\vecu_n)) + \E\sum_{t=1}^N \beta^{N+1} (-\calR_t(\Delta_t) + \calR_t(\vecu_N)) \\
-    &= \E\sum_{t=1}^N \vecunderbrace{\left(\sum_{n=t}^N \beta^n\right) (1-\beta)}_{=\beta^t - \beta^{N+1}} \left( -\frac{\mu_t}{2}\|\Delta_t\|^2 + \frac{\mu_t}{2}D^2\right) + \E\sum_{t=1}^N \beta^{N+1} \left( -\frac{\mu_t}{2}\|\Delta_t\|^2 + \frac{\mu_t}{2}D^2\right) \\
+    &= \E\sum_{t=1}^N \underbrace{\left(\sum_{n=t}^N \beta^n\right) (1-\beta)}_{=\beta^t - \beta^{N+1}} \left( -\frac{\mu_t}{2}\|\Delta_t\|^2 + \frac{\mu_t}{2}D^2\right) + \E\sum_{t=1}^N \beta^{N+1} \left( -\frac{\mu_t}{2}\|\Delta_t\|^2 + \frac{\mu_t}{2}D^2\right) \\
     &= \E\sum_{t=1}^N \beta^t \left( -\frac{\mu_t}{2}\|\Delta_t\|^2 + \frac{\mu_t}{2}D^2\right) 
     \intertext{Recall Lemma \ref{lem:Exp-O2NC:variance-regularizer} that $\E\sum_{n=1}^N \E_{\vecy_n}\|\vecy_n-\overline\vecx_n\|^2 \le \E\sum_{t=1}^N\frac{12}{(1-\beta)^2}\|\Delta_t\|^2$. Upon substituting $\mu_t=\frac{24cD^2}{(1-\beta)^2}\beta^{-t}$, we have}
     &= \E\sum_{t=1}^N \left( -\frac{12cD}{(1-\beta)^2} \|\Delta_t\|^2 + \frac{12c D^3}{(1-\beta)^2}\right) \\

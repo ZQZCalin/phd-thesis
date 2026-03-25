@@ -2,7 +2,7 @@
 \label{chapter:conclusion}
 \thispagestyle{myheadings}
 
-This thesis provides new perspectives on stochastic optimization through online-to-batch style techniques, with a focus on settings that are common in practical modern learning training such as differential privacy, non-convexity, and non-smoothness. Across Chapters 2--4, the main message is that carefully designed reductions can transfer algorithmic structure from online learning to challenging stochastic optimization problems while preserving desirable complexity guarantees.
+This thesis provides new perspectives on stochastic optimization through online-to-batch style techniques, with a focus on settings that are common in practical machine learning training such as differential privacy, non-convexity, and non-smoothness. Across Chapters 2--4, the main message is that carefully designed reductions can transfer algorithmic structure from online learning to challenging stochastic optimization problems while preserving desirable complexity guarantees.
 
 Chapter 2 establishes a differentially private online-to-batch conversion for stochastic optimization with convex and smooth losses. The conversion framework transforms any online convex optimization method with $O(\sqrt{T})$ regret into an $\epsilon$-differentially private algorithm achieving the optimal rate $\tilde O(1/\sqrt{T} + \sqrt{d}/(\epsilon T))$ in linear time. Beyond this baseline guarantee, the framework supports adaptive variants whose rates depend on unknown variance or parameter norms, showing that private optimization can systematically inherit adaptivity from the online learning literature.
 

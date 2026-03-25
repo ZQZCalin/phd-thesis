@@ -11,7 +11,7 @@ To prove the regret bound, we first provide a one-step inequality of OMD with co
 \end{equation*}
 Note that $\nabla_\vecx D_\psi(\vecx,\vecy) = \nabla \psi(\vecx) - \nabla\psi(\vecy)$. Moreover, as proved in \cite{chen1993convergence}, $D_\psi$ satisfies the following three-point identity:
 \begin{align*}
-    D_\psi(\z,\vecx) + D_\psi(\vecx,\vecy) - D_\psi(\z,\vecy) = \langle \nabla\psi(\vecy) - \nabla\psi(\vecx), \z-\vecx\rangle.
+    D_\psi(\vecz,\vecx) + D_\psi(\vecx,\vecy) - D_\psi(\vecz,\vecy) = \langle \nabla\psi(\vecy) - \nabla\psi(\vecx), \vecz-\vecx\rangle.
 \end{align*}
 
 \begin{lemma}
@@ -31,7 +31,7 @@ Let $f(\vecw) = \langle \tilde\vecg_t,\vecw\rangle + D_\psi(\vecw,\vecw_t) + \ph
     &= \langle \tilde\vecg_t + \nabla\psi(\vecw_{t+1}) - \nabla\psi(\vecw_t) + \nabla\phi(\vecw_{t+1}), \vecu-\vecw_{t+1}\rangle \\
     &= \langle\tilde\vecg_t, \vecu-\vecw_t\rangle + \langle\tilde\vecg_t,\vecw_t-\vecw_{t+1}\rangle + \langle \nabla\psi(\vecw_{t+1})-\nabla\psi(\vecw_t),\vecu-\vecw_{t+1}\rangle + \langle\nabla \phi(\vecw_{t+1}),\vecu-\vecw_{t+1}\rangle.
 \end{align*}
-Since $\phi$ is convex, $\langle \phi(\vecw_{t+1}),\vecu-\vecw_{t+1}\rangle \le \phi(\vecu)-\phi(\vecw_{t+1})$. Moreover, by the three-point identity with $\z=\vecu, \vecx=\vecw_{t+1}, \vecy=\vecw_t$, we have
+Since $\phi$ is convex, $\langle \phi(\vecw_{t+1}),\vecu-\vecw_{t+1}\rangle \le \phi(\vecu)-\phi(\vecw_{t+1})$. Moreover, by the three-point identity with $\vecz=\vecu, \vecx=\vecw_{t+1}, \vecy=\vecw_t$, we have
 \begin{align*}
     \langle \nabla\psi(\vecw_t) - \nabla\psi(\vecw_{t+1}),\vecu-\vecw_{t+1}\rangle 
     &= D_\psi(\vecu,\vecw_{t+1}) + D_\psi(\vecw_{t+1},\vecw) - D_\psi(\vecu,\vecw_t).
