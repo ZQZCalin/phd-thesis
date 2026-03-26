@@ -1,29 +1,23 @@
 \begin{algorithm}[!t]
     \begin{algorithmic}[1]
-        \Statex \textbf{Input:} Index $t\in[T]$, global variables $\sigma_1,\ldots,\sigma_T$.
-        % \If {$r = 1$}
-        %     \State Reset $\textsc{Noise} = \{\}$.
-        % \EndIf
-        \State If $t=1$, set $\textsc{Noise}\gets\{\}$.
-        \State Sample $\xi_t \sim N(0,\sigma_t^2 I)$ and store $\xi_t$ in $\textsc{Noise}$.
-        % $\textsc{Noise} \gets \textsc{Noise}\cup\{\xi_t\}$.
-        \State Return $\sum_{(\cdot,i)\in \textsc{Node}(t)} \xi_i$.
-    
-        \vspace{1em}
-    
-        \Function{Node}{t}
-            % \State Set $k\gets 0$, $S\gets$ binary expression of $r$, $L\gets |S|=\lfloor \log_2(r)\rfloor + 1$, and $\textsc{Node}=\{\}$.
-            % \For {$i=1,\ldots,L$ such that $S[i]=1$}
-            %     \State Set $k' \gets k+2^{L-i}$, store $\textsc{Node}\gets \textsc{Node}\cup\{(k+1,k')\}$, and update $k\gets k'$.
-            % \EndFor
-            % \State Return $\textsc{Node}$.
-            \State \textbf{Initialize:} Set $k\gets 0$ and $S\gets\{\}$.
-            \For {$i=0,\ldots,\lceil\log_2(t)\rceil$ while $k<t$}
-                \State Set $k'\gets k+2^{\lceil\log_2(t)\rceil-i}$. If $k' \le t$, store $S\gets S\cup\{(k+1),k'\}$ and update $k\gets k'$.
-            \EndFor
-            \State Return $S$.
-        \EndFunction
+        \Statex \textbf{Input:} Index $t\in[T]$; noises $\vecr_1,\ldots,\vecr_T$ where $\vecr_i\sim\calN(0,\sigma_i^2\matI)$ independently.
+        \Statex \textbf{Return:} $\tree(t;\vecr_1,\ldots,\vecr_T) = \sum_{i\in \node(t)} \vecr_i$.
     \end{algorithmic}
-    \caption{Tree Mechanism}
+    \caption{The {\tree} Mechanism}
     \label{alg:DP-OTB:tree}
+\end{algorithm}
+
+\begin{algorithm}[!t]
+    \begin{algorithmic}[1]
+        \Statex \textbf{Input:} A natural number $t\in\NN$.
+        \State Initialize $\node(t) \gets \{\}$. 
+        \State Let $(b_m b_{m-1} \dots b_1)_2$ be the binary representation of $t$.
+        \Comment{e.g., $7 = (111)_2$}
+        \For {$j=1,\ldots,m$}
+            \State Store $i=(b_m \ldots b_j 0 \ldots 0)_2$ in $\node(t)$ if bit $b_j=1$.
+        \EndFor
+        \Statex \textbf{Return:} $\node(t)$.
+    \end{algorithmic}
+    \caption{The {\node} Subroutine}
+    \label{alg:DP=ORB:node}
 \end{algorithm}

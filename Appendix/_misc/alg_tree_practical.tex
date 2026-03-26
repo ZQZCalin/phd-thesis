@@ -1,0 +1,16 @@
+\begin{algorithm}[!ht]
+    \begin{algorithmic}[1]
+        \Statex \textbf{Input:} Natural number $T\in\NN$; constants $\sigma_1,\ldots,\sigma_T$.
+        \State Initialize $\calR_0 \gets \{\}$.
+        \For {$t=1,\ldots,T$}
+            \State Sample $\vecr_t \sim \calN(0,\sigma_t^2\matI)$ independently.
+            {\color{green}
+            \State Buffer $\calR_t \gets \calR_{t-1} + \{\vecr_t\}$.
+            \State Update $\calR_t \gets \calR_t - \{\vecr_i: i \in \node(t-1)-\node(t)\}$.
+            }
+        \EndFor
+        \Statex \textbf{Return:} $\tree(t;\sigma_1,\ldots,\sigma_T) = \sum_{\vecr\in\calR} \vecr$.
+    \end{algorithmic}
+    \caption{Practical Implementation of the {\tree} Mechanism}
+    \label{alg:app:tree-practical}
+\end{algorithm}
