@@ -16,22 +16,44 @@ We denote $f:\calX\to\RR$ as the objective function of the stochastic optimizati
 Convexity and smoothness plays a significant role in optimization theory. Consider a function $f:\calX\to\RR$. $f$ is said to be \emph{convex} if 
 \begin{equation}
     f(\alpha \vecx + (1-\alpha)\vecy) \le \alpha f(\vecx) + (1-\alpha) f(\vecy), \qquad \forall \vecx,\vecy\in\calX, \, \alpha\in(0,1).
+    \label{eqn:ch1:convex-defn}
 \end{equation}
 Besides the standard definition, the following equivalent definition is more convenient in the context of optimization theory. First, a dual vector $\vecg\in\calX^*$ is a \emph{subgradient} of a convex function $f$ at $\vecx$ if
 \begin{equation}
-    f(\vecy) \ge f(\vecx) + \langle \vecg, \vecy-\vecx\rangle, \quad \forall \vecy\in\calX.
+    f(\vecy) \ge f(\vecx) + \langle \vecg, \vecy-\vecx\rangle, \qquad \forall \vecy\in\calX.
     \label{eqn:ch1:subgradient}
 \end{equation}
 The set of all subgradients of $f$ at $\vecx$ is called the \emph{subdifferential} and is denoted by $\partial f(\vecx)$. Notably, if $f$ is differentiable, then $\partial f(\vecx) = \{\nabla f(\vecx)\}$.
 With this definition, the equivalent definition of convexity states  that a function $f:\calX\to\RR$ if and only if
 \begin{equation}
-    f(\vecy) \ge f(\vecx) + \langle \vecg, \vecy-\vecx\rangle, \quad \forall \vecx,\vecy\in\calX,\, \vecg \in \partial f(\vecx).
-    \label{eqn:ch1:convex-defn}
+    f(\vecy) \ge f(\vecx) + \langle \vecg, \vecy-\vecx\rangle, \qquad \forall \vecx,\vecy\in\calX,\, \vecg \in \partial f(\vecx).
+    \label{eqn:ch1:convexity}
 \end{equation}
 Moreover, $f$ is \emph{$\lambda$-strongly convex} if 
 \begin{equation}
-    f(\vecy) \ge f(\vecx) + \langle \vecg, \vecy-\vecx\rangle, \quad \forall \vecx,\vecy\in\calX,\, \vecg \in \partial f(\vecx).
-    \label{eqn:ch1:strongly-convex-defn}
+    f(\vecy) \ge f(\vecx) + \langle \vecg, \vecy-\vecx\rangle + \frac{\lambda}{2}\|\vecy-\vecx\|^2, \qquad \forall \vecx,\vecy\in\calX,\, \vecg \in \partial f(\vecx).
+    \label{eqn:ch1:strong-convexity}
+\end{equation}
+Intuitively, a convex (strongly convex) function can be lower bounded by a linear (quadratic) function at any point.
+
+Next, function $f$ is said to be \emph{$G$-Lipschitz} if 
+\begin{equation}
+    |f(\vecx) - f(\vecy)| \le G\|\vecx - \vecy\|, \qquad \forall \vecx,\vecy\in\calX.
+    \label{eqn:ch1:Lipschitz-defn}
+\end{equation}
+Equivalently, if $f$ is differentiable, then it is $G$-Lipschitz if and only if 
+\begin{equation}
+    \|\nabla f(\vecx)\|_\ast \le G, \qquad \forall \vecx \in \calX.
+    \label{eqn:ch1:Lipschitz}
+\end{equation}
+$f$ is said to be \emph{$H$-smooth} if it is differentiable and 
+\begin{equation}
+    \|\nabla f(\vecx) - \nabla f(\vecy)\|_\ast \le H \|\vecx-\vecy\|, \qquad \forall \vecx,\vecy\in\calX.
+    \label{eqn:ch1:smooth}
+\end{equation}
+Similarly, if $f$ is twice differentiable, then it is $H$-smooth if and only If
+\begin{equation}
+    \|\nabla^2 f(\vecx)\|_\op \le H, \qquad \forall \vecx\in\calX.
 \end{equation}
 More details and useful results can be found in \citep{rockafellar1997convex}.
 
