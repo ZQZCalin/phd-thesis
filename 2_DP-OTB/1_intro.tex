@@ -101,20 +101,76 @@ The formal definition of DP hinges on the notion of \emph{neighboring datasets}.
 An alternative (and almost equivalent) definition is \emph{R\'enyi differential privacy} (RDP), which allows to compose privacy mechanisms more easily and achieve tighter privacy bounds in certain cases. 
 
 \begin{definition}[$(\alpha,\epsilon)$-RDP \citep{mironov2017renyi}] A randomized algorithm $\calM: \Xi^T \to \RR^d$ is said to be $(\alpha,\rho)$-R\'enyi differentially private for $\alpha>1,\epsilon\ge0$ if for any neighboring datasets $\calZ_T,\calZ_T' \in \Xi^T$,
-\begin{align*}
+\begin{align}
     D_{\alpha}(\calM(\calZ_T)\|\calM(\calZ_T'))\le \epsilon,
-\end{align*}
+    \label{eq:DP-OTB:RDP}
+\end{align}
 where $D_{\alpha}(P\|Q) \coloneqq \frac{1}{\alpha-1}\log \left(\E_{x \sim Q} \left[\frac{p(x)}{q(x)}\right]\right)$ is the \emph{R\'enyi divergence} between two distributions $P,Q$ with corresponding PDFs $p,q$.
 \end{definition}
 
-RDP can be easily converted to the usual $(\rho,\gamma)$-DP as follows \citep{mironov2017renyi}: if $\calM$ is $(\alpha, \alpha\rho^2/2)$-RDP for all $\alpha>1$, then it is also $(2\rho\sqrt{\log(1/\gamma)}, \gamma)$-DP for all $\gamma\ge \exp(-\rho^2)$. For this reason, we stick to the notion of RDP instead of DP throughout this thesis.
+RDP can be easily converted to the usual $(\rho,\gamma)$-DP as follows \citep{mironov2017renyi}: if $\calM$ is $(\alpha, \alpha\rho^2/2)$-RDP for all $\alpha>1$, then it is also $(2\rho\sqrt{\log(1/\gamma)}, \gamma)$-DP for all $\gamma\ge \exp(-\rho^2)$. For this reason, we stick to the notion of RDP throughout this thesis.
 
-Throughout the paper, we also frequently use the notion of sensitivity:
+Finally, we introduce the definition of \emph{sensitivity}. Almost all methods for ensuring differential privacy involve injecting noise whose scale increases with the sensitivity of the output. In other words, small sensitivity implies high privacy.
 
 \begin{definition}[Sensitivity] 
-The sensitivity of a function $f: \calZ^T \to \RR^d $ w.r.t. norm $\|\cdot\|$ is:
-\begin{align*}
-    \Delta_f = \sup_{|Z-Z'|=1}\|f(Z) - f(Z')\|_*.
-\end{align*}
-Almost all methods for ensuring differential privacy involve injecting noise whose scale increases with the sensitivity of the output. In other words, small sensitivity implies high privacy.
+The sensitivity of a randomized algorithm $\calM: \Xi^T \to (\calX,\|\cdot\|)$, where $(\calX,\|\cdot\|)$ is a Banach space, is defined as
+\begin{align}
+    \sens(\calM) \coloneqq \sup_{|\calZ_T - \calZ_T'|=1} \|\calM(\calZ_T) - \calM(\calZ_T')\|.
+    \label{eq:DP-OTB:sensitivity}
+\end{align}
 \end{definition}
+
+
+\subsection{The Tree Mechanism}
+
+At the core of our proposed conversion algorithms, it incorporates a variant of the tree mechanism, which is an advanced privacy mechanism to aggregate the streaming sum of a sequence of outputs. This mechanism is presented in Algorithm \ref{alg:DP-OTB:tree}, whose privacy guarantee is stated in Theorem \ref{thm:DP-O2NC:tree} and proved in Appendix \ref{app:DP-O2NC:tree}. 
+
+
+
+Intuitively, the tree mechanism says if each of the algorithms $\calM_1,\ldots,\calM_n$ requires $\sigma^2$ noise for privacy, then the sum $\sum_{i=1}^n\calM_i$ only needs $O(\ln(n)\sigma^2)$ noise for the same level of privacy. With Theorem \ref{thm:DP-O2NC:tree}, we determine the minimal noise required to ensure privacy for Algorithm \ref{alg:DP-O2NC:PONC} in Corollary \ref{cor:DP-O2NC:privacy}, and we evaluate the total noise added by the tree mechanism in Corollary \ref{cor:DP-O2NC:tree-noise}.
+
+\input{2_DP-OTB/_misc/alg_tree_mechanism}
+
+\begin{remark}
+\label{rmk:DP-OTB:tree}
+To better understand the \textsc{Node} function in Algorithm \ref{alg:DP-OTB:tree}, consider a binary tree of depth $\lceil\log_2(t)\rceil$. $\textsc{Node}(t)$ returns the largest node $n_i$ in each layer $i$, if exists, such that $n_j<n_i\le t$ starting from the top level. As an example, $\textsc{Node}(7)=\{(1,4),(5,6),(7,7)\}$ and $\textsc{Node}(8)=\{(1,8)\}$. In particular, note that $|\textsc{node}(t)| \le \lceil\log_2(t)\rceil \le 2\ln(t)$.
+% Note that $\sum_{(i,j)\in\textsc{Node}(t)}\sum_{k=i}^j = \sum_{k=1}^t$.
+\end{remark}
+
+Next, we present the main privacy theorem for the tree mechanism as presented in Algorithm \ref{alg:DP-OTB:tree}. 
+% Let $\calX$ be a state space and $\calZ^{(1)},\ldots,\calZ^{(n)}$ be dataset spaces. In our case, $\calX$ is the collection of weights $\vecx$ for $f(\vecx,z)$, $\calZ^{(1)}$ is the collection of all possible batches $Z_1^k$ of size $B_1$ defined in Algorithm \ref{alg:DP-O2NC:PONC} and $\calZ^{(i)}$ for $i\ge 2$ is the collection of all possible batches $Z_i^k$ of size $B_2$. 
+% We would like to highlight that Theorem \ref{thm:DP-O2NC:tree} holds for any arbitrary $\calX, \calZ, \calM$.
+
+\begin{theorem}
+\label{thm:DP-OTB:tree}
+Let $\calX$ be state space and $\calZ^{(1)},\ldots,\calZ^{(n)}$ be dataset spaces, and denote $\calZ^{(1:i)}=\calZ^{(1)}\times\dotsm\times\calZ^{(i)}$. Let $\calM^{(i)}:\calX^{i-1}\times\calZ^{(i)} \to \calX$ be a sequence of algorithms for $i\in[n]$, and let $\calA:\calZ^{(1:n)} \to \calX^n$ be the algorithm that, given a dataset $Z_{1:n} \in \calZ^{(1:n)}$, sequentially computes $\vecx_i = \sum_{j=1}^i\calM^{(j)}(\vecx_{1:j-1},Z_i)+\textsc{Tree}(i)$ for $i\in[n]$ and then outputs $\vecx_{1:n}$.
+Suppose for all $i\in[n]$ and neighboring $Z_{1:n},Z_{1:n}'\in\calZ^{(1:n)}$, $\|\calM^{(i)}(\vecx_{1:i-1},Z_i)-\calM^{(i)}(\vecx_{1:i-1},Z_i')\| \le s_i$ for all auxiliary inputs $\vecx_{1:i-1}\in\calX^{i-1}$.
+Then for all $\alpha>1$, $\calA$ is $(\alpha, \alpha\rho^2/2)$-RDP where
+\begin{equation*}
+    \rho \le \sqrt{2\ln n} \cdot \max_{b\in[n], i\le b} \frac{s_i}{\sigma_b}.
+\end{equation*}
+% $\delta\in(0,1)$, $\calA$ is $(\epsilon, \delta)$-DP where
+% \begin{equation*}
+%     \epsilon \le \sqrt{\log_2(2n)\log 1/\delta} \sup_{b\in[n],i\le b} \frac{\gamma_i}{\sigma_b}.
+% \end{equation*}
+\end{theorem}
+
+In our case, $\calX$ is the collection of weights $\vecx$ for $f(\vecx,z)$, $\calZ^{(1)}$ is the collection of all possible batches $Z_1^k$ of size $B_1$ defined in Algorithm \ref{alg:DP-O2NC:PONC} and $\calZ^{(t)}$ for $t\ge 2$ is the collection of all possible batches $Z_t^k$ of size $B_2$. Moreover, $\calM^{(1)}$ corresponds to $\grad$ that computes $\vecg_1^k$ and $\calM^{(t)}$ corresponds to $\diff$ that computes $\vecd_t^k$. Upon substituting these specific definition into Theorem \ref{thm:DP-O2NC:tree}, we have the following privacy guarantees.
+
+\begin{lemma}
+\label{cor:DP-O2NC:privacy}
+Suppose $f(\vecx,z)$ is differentiable and $L$-Lipschitz in $\vecx$ and the domain of $\calA$ is bounded by $D={\delta}/{T}$. Let $B_1,B_2$ satisfies $B_1\ge TB_2/2$. Then for any $\alpha>1, \rho>0$, Algorithm \ref{alg:DP-O2NC:PONC} is $(\alpha,\alpha\rho^2/2)$-RDP if we set the noises $\sigma_{1:T}$ in the tree mechanism as
+\begin{equation*}
+    % \sigma_1 = \frac{\sqrt{2\ln T}2L}{B_1\rho}, \quad 
+    \sigma_t = \sigma := \frac{\sqrt{2\ln T}4dL}{B_2T\rho}.
+    % , t=2,\ldots,T.
+\end{equation*}
+\end{lemma}
+
+\begin{corollary}
+\label{cor:DP-O2NC:tree-noise}
+Following the assumptions and definitions in Corollary \ref{cor:DP-O2NC:privacy}, for all $t\in [T]$,
+\begin{equation*}
+    \E\|\textsc{Tree}(t)\|^2 \le 2\ln(t) d\sigma^2 \le \left( \frac{8\ln(T) d^{3/2}L}{B_2T\rho} \right)^2.
+\end{equation*}
+\end{corollary}
