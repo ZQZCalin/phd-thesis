@@ -1,15 +1,15 @@
 \begin{algorithm}[!ht]
     \begin{algorithmic}[1]
-        \Statex \textbf{Input:} Natural number $T\in\NN$; constants $\sigma_1,\ldots,\sigma_T$.
-        \State Initialize $\calR_0 \gets \{\}$.
-        \For {$t=1,\ldots,T$}
-            \State Sample $\vecr_t \sim \calN(0,\sigma_t^2\matI)$ independently.
+        \Statex \textbf{Input:} Natural number $n\in\NN$; distributions $\calR_1,\ldots,\calR_n$
+        \State Initialize $R_0 \gets \{\}$.
+        \For {$k=1,\ldots,n$}
+            \State Sample $\vecr_k \sim \calR_k$ independently.
             {\color{green}
-            \State Buffer $\calR_t \gets \calR_{t-1} + \{\vecr_t\}$.
-            \State Update $\calR_t \gets \calR_t - \{\vecr_i: i \in \node(t-1)-\node(t)\}$.
+            \State Buffer $R_k \gets R_{k-1} + \{\vecr_k\}$.
+            \State Update $R_k \gets R_k - \{\vecr_i: i \in \node(k-1)-\node(k)\}$.
             }
         \EndFor
-        \Statex \textbf{Return:} $\tree(t;\sigma_1,\ldots,\sigma_T) = \sum_{\vecr\in\calR} \vecr$.
+        \Statex \textbf{Return:} $\tree(k;\sigma_1,\ldots,\sigma_T) = \sum_{\vecr\in R_k} \vecr$.
     \end{algorithmic}
     \caption{Practical Implementation of the {\tree} Mechanism}
     \label{alg:app:tree-practical}

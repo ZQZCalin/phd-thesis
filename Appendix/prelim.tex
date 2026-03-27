@@ -16,20 +16,20 @@ We denote $a_{(c,d)<(a,b)}$ as a short-hand notation of $\{a_{(c,d)}:(c,d)<(a,b)
 
 \input{Appendix/_misc/alg_tree_practical.tex}
 
-Algorithm \ref{alg:app:tree-practical} presents a practical implementation of the {\tree} mechanism that is essentially equivalent to the presentation in the main body (Algorithm \ref{alg:DP-OTB:tree}) and requires only $O(\log(T))$ memory space. The key is to sample random noises on-the-fly, and to prune unnecessary noises in the memory buffer (highlighted in green). 
+Algorithm \ref{alg:app:tree-practical} presents a practical implementation of the {\tree} mechanism that is essentially equivalent to the presentation in the main body (Algorithm \ref{alg:DP-OTB:tree}) and requires only $O(\log(n))$ memory space. The key is to sample random noises on-the-fly, and to prune unnecessary noises in the memory buffer (highlighted in green). 
 
-To prove this implementation is equivalent to Algorithm \ref{alg:DP-OTB:tree}, it suffices to show that $\calI_t=\node(t)$ by induction, where $\calI_t\coloneqq\{i:\vecr_i\in\calR_t\}$ is the index set of all noises buffered in $\calR_t$. For $t=1$, it's trivial that $\calI_1=\{1\}$. Now suppose $\calI_{t-1}=\node(t-1)$, then the highlighted code implies
+To prove this implementation is equivalent to Algorithm \ref{alg:DP-OTB:tree}, it suffices to show that $\calI_k=\node(k)$ by induction, where $\calI_k\coloneqq\{i:\vecr_i\in R_k\}$ is the index set of all noises buffered in $R_k$. For $k=1$, it's trivial that $\calI_1=\{1\}$. Now suppose $\calI_{k-1}=\node(k-1)$, then the highlighted code implies
 \begin{align}
-    \calI_t 
-    &= \calI_{t-1} + \{t\} - (\node(t-1) - \node(t)) \notag\\
-    &= \node(t-1) \cap \node(t) + \{t\},
+    \calI_k 
+    &= \calI_{k-1} + \{k\} - (\node(k-1) - \node(k)) \notag\\
+    &= \node(k-1) \cap \node(k) + \{k\},
     \label{eq:app:tree-mechanism:1}
 \end{align}
 where the second line is from $A-(A-B)=A\cap B$ for set $A,B$.
-Clearly, $\calI_t\subseteq \node(t)$ because $t\in\node(t)$. For the converse direction, the key identity is that $\node(t) = \{i=(b_m b_{m-1} \ldots b_1)_2 : i\le t, m\in\NN, b_m \ge \cdots \ge b_1, b_j\in\{0,1\}\}$ by construction. Hence, $\node(t)-\{t\} \subseteq \node(t-1)$.
-Altogether, we prove that $\calI_t=\node(t)$.
+Clearly, $\calI_k\subseteq \node(k)$ because $k\in\node(k)$. For the converse direction, the key identity is that $\node(k) = \{i=(b_m b_{m-1} \ldots b_1)_2 : i\le k, m\in\NN, b_m \ge \cdots \ge b_1, b_j\in\{0,1\}\}$ by construction. Hence, $\node(k)-\{k\} \subseteq \node(k-1)$.
+Altogether, we prove that $\calI_k=\node(k)$.
 
-Moreover, this also implies the buffer size is $|\calR_t| = |\node(t)| = O(\log(t))$.
+Moreover, this also implies the buffer size is $|R_k| = |\node(k)| = O(\log(k))$.
 
 
 \subsection{Privacy Guarantee: Proof of Theorem \ref{thm:DP-OTB:tree}}
@@ -37,39 +37,39 @@ Moreover, this also implies the buffer size is $|\calR_t| = |\node(t)| = O(\log(
 
 Before we prove the main theorem, we first prove a more general composition of RDP mechanisms. For two datasets $\calZ_T,\calZ_T'\in\Xi^T$, we denote $\calZ_T\simeq_k \calZ_T'$ if $\calZ_T,\calZ_T'$ are neighbors and they differ at the $k$-th entry. We consider the following setup. Let $\calX_i$ be auxiliary domains which are Banach spaces. Let $\calM_1,\ldots,\calM_n$ be a sequence of randomized algorithms such that $\calM_1:\calZ_T\mapsto \vecx_1\in\calX_1$ and $\calM_i:(\vecx_1,\ldots,\vecx_{i-1},\calZ_T)\mapsto \vecx_i\in\calX_i$ iteratively. $\calM$ is the composition such that $\calM:\calZ_T\mapsto (\vecx_1,\ldots,\vecx_n)$.
 
-Let $P_i(\vecy_1,\ldots,\vecy_{i-1},\calZ_T)$ be the output distribution of $\calM_i$. Note that $\vecy_j$'s are arbitrary auxiliary inputs and are not necessarily previous outputs. In this chapter, we reserve $\vecx_i$ for the output of $\calM_i$ to avoid confusion. For $k\in[T]$, define
+Let $P_i(\vecy_1,\ldots,\vecy_{i-1},\calZ_T)$ be the output distribution of $\calM_i$. Note that $\vecy_j$'s are arbitrary auxiliary inputs and are not necessarily previous outputs. In this chapter, we reserve $\vecx_i$ for the output of $\calM_i$ to avoid confusion. For $t\in[T]$, define
 \begin{align*}
-    \IN(k) &\coloneqq \{ i\in[n] : P_i(\ldots,\calZ_T) = P_i(\ldots,\calZ_T'), \, \forall \vecy_j\in\calX_j, \forall \calZ_T\simeq_k \calZ_T' \}, \\
-    \OUT(k) &\coloneqq [n]-\IN(k).
+    \IN(t) &\coloneqq \{ i\in[n] : P_i(\ldots,\calZ_T) = P_i(\ldots,\calZ_T'), \, \forall \vecy_j\in\calX_j, \forall \calZ_T\simeq_t \calZ_T' \}, \\
+    \OUT(t) &\coloneqq [n]-\IN(t).
 \end{align*} 
-In other words, $\IN(k)$ denotes the index set of sub-algorithms that are \emph{independent} of the $k$-th entry. Under this setup, we have the following privacy guarantee, which states that the privacy budget of the composition is bounded by the total privacy budget of all sub-algorithms that are \emph{dependent} on a single data.
+In other words, $\IN(t)$ denotes the index set of sub-algorithms that are \emph{independent} of the $k$-th entry. Under this setup, we have the following privacy guarantee, which states that the privacy budget of the composition is bounded by the total privacy budget of all sub-algorithms that are \emph{dependent} on a single data.
 
 \begin{lemma}[Advanced Composition]
 \label{lem:app:tree-mechanism:RDP-composition}
 If $\calM_i(\vecx_1,\ldots,\vecx_{i-1},\cdot)$ is $(\alpha,\rho_i)$-RDP for any auxiliary inputs, then $\calM$ is $(\alpha, \rho)$-RDP, where
 \begin{equation}
-    \rho \le \max_{k\in[T]} \sum_{i\in \OUT(k)} \rho_i.
+    \rho \le \max_{t\in[T]} \sum_{i\in \OUT(t)} \rho_i.
     \label{eq:app:tree-mechanism:advanced-composition}
 \end{equation}
 \end{lemma}
 
 \begin{proof}
-Suppose $\calZ_T\simeq_k \calZ_T'$ for an arbitrary $k$. With a slight abuse of notation, let $P_i(\vecx_i|\vecx_1,\ldots,\vecx_{i-1})$ be the output distribution of $\calM_i$ given the previous outputs and dataset $\calZ_T$. Then $P=P_1\times\dotsm\times P_n$ is the output distribution of $\calM(\calZ_T)$. We define $Q_i$ and $Q$ similarly with respect to $\calZ_T'$.
+Suppose $\calZ_T\simeq_t \calZ_T'$ for an arbitrary $t$. With a slight abuse of notation, let $P_i(\vecx_i|\vecx_1,\ldots,\vecx_{i-1})$ be the output distribution of $\calM_i$ given the previous outputs and dataset $\calZ_T$. Then $P=P_1\times\dotsm\times P_n$ is the output distribution of $\calM(\calZ_T)$. We define $Q_i$ and $Q$ similarly with respect to $\calZ_T'$.
 
-For each $i\in[n]$, if $i\in\IN(k)$, then $P_i=Q_i$; if $i\in\OUT(k)$, since $\calM_i$ is $(\alpha,\rho_i)$-RDP, $D_\alpha(P_i\|Q_i)\le \rho_i$. Therefore, upon applying additivity of R\'enyi divergence \citep[Theorem 28]{mironov2017renyi},
+For each $i\in[n]$, if $i\in\IN(t)$, then $P_i=Q_i$; if $i\in\OUT(t)$, since $\calM_i$ is $(\alpha,\rho_i)$-RDP, $D_\alpha(P_i\|Q_i)\le \rho_i$. Therefore, upon applying additivity of R\'enyi divergence \citep[Theorem 28]{mironov2017renyi},
 \begin{equation*}
-    D_\alpha(P \| Q) = \sum_{i=1}^n D_\alpha(P_i\|Q_i) \le \sum_{i\in\OUT(k)} \rho_i.
+    D_\alpha(P \| Q) = \sum_{i=1}^n D_\alpha(P_i\|Q_i) \le \sum_{i\in\OUT(t)} \rho_i.
     \qedhere
 \end{equation*}
 \end{proof}
 
-Now we are ready to prove the theorem.
+Now we are ready to prove the main theorem (Theorem \ref{thm:DP-OTB:tree}).
 
 % \TreeMechanism*
 
 \begin{proof}
-% [Proof of Theorem \ref{thm:DP-O2NC:tree}]
-For any $n\in\NN$, define $\sT$ as he tree set with $2^{\lceil\log_2 n\rceil}$ leaves.
+The proof sketch is to reduce the streaming sum setup into the advanced composition setup in Lemma \ref{lem:app:tree-mechanism:RDP-composition}.
+Let $(T,<)$ be the set of nodes of a binary tree of $n=2^m$ leaf nodes. 
 Let $\calZ = \calZ^{(1:n)}$ and $S^{(a,b)}=\calX$ for all $(a,b)\in\sT$. For each $(a,b)\in \sT$, define $\calR^{(a,b)}: ( \prod_{(c,d)<(a,b)} \calS^{(c,d)} ) \times \calZ \to \calS^{(a,b)}$ as
 \begin{equation}
     \calR^{(a,b)}(\vecy_{(c,d)<(a,b)},Z_{1:n}) = \sum_{i=a}^b \calM^{(i)}(\vecx_{1:i-1},Z_i)

@@ -1,7 +1,7 @@
 \begin{algorithm}[!t]
     \begin{algorithmic}[1]
-        \Statex \textbf{Input:} Index $t\in[T]$; noises $\vecr_1,\ldots,\vecr_T$ where $\vecr_i\sim\calN(0,\sigma_i^2\matI)$ independently.
-        \Statex \textbf{Return:} $\tree(t;\vecr_1,\ldots,\vecr_T) = \sum_{i\in \node(t)} \vecr_i$.
+        \Statex \textbf{Input:} Index $k\in[n]$; noises $\vecr_1,\ldots,\vecr_n$ where $\vecr_i\sim\calN(0,\sigma_i^2\matI)$ independently.
+        \Statex \textbf{Return:} $\tree(k;\vecr_1,\ldots,\vecr_n) = \sum_{i\in \node(k)} \vecr_i$.
     \end{algorithmic}
     \caption{The {\tree} Mechanism}
     \label{alg:DP-OTB:tree}
@@ -9,14 +9,14 @@
 
 \begin{algorithm}[!t]
     \begin{algorithmic}[1]
-        \Statex \textbf{Input:} A natural number $t\in\NN$.
-        \State Initialize $\node(t) \gets \{\}$. 
-        \State Let $(b_m b_{m-1} \dots b_1)_2$ be the binary representation of $t$.
+        \Statex \textbf{Input:} A natural number $k\in\NN$.
+        \State Initialize $\node(k) \gets \{\}$. 
+        \State Let $(b_m b_{m-1} \dots b_1)_2$ be the binary representation of $k$.
         \Comment{e.g., $7 = (111)_2$}
         \For {$j=1,\ldots,m$}
-            \State Store $i=(b_m \ldots b_j 0 \ldots 0)_2$ in $\node(t)$ if bit $b_j=1$.
+            \State Store $i=(b_m \ldots b_j 0 \ldots 0)_2$ in $\node(n)$ if bit $b_j=1$.
         \EndFor
-        \Statex \textbf{Return:} $\node(t)$.
+        \Statex \textbf{Return:} $\node(k)$.
     \end{algorithmic}
     \caption{The {\node} Subroutine}
     \label{alg:DP=ORB:node}
