@@ -5,9 +5,11 @@
 
 \input{Appendix/_misc/fig_tree}
 
-We introduce several notations for analyzing the tree mechanism. Consider a complete binary tree with $n=2^m$ leaves. We index each node in the tree as follows: the leaf nodes are indexed by $(i,i)$ in an ascending order $i=1,\ldots,n$ from left to right, and every other node is indexed by $(i,j)$ where $i$ is its left-most child leaf and $j$ is its right-most child leaf (see Figure \ref{fig:tree-illustration} for illustration). It's worth noting that the {\node} subroutine picks at most one node per layer, thus $|\node(n)|=O(\log(n))$.
+We introduce several notations for analyzing the tree mechanism. Consider a complete binary tree with $n=2^m$ leaves. We index each node in the tree as follows: the leaf nodes are indexed by $(i,i)$ in an ascending order $i=1,\ldots,n$ from left to right, and every other node is indexed by $(i,j)$ where $i$ is its left-most child leaf and $j$ is its right-most child leaf (see Figure \ref{fig:tree-illustration} for illustration). 
 
-Let $\setT$ be the set of all nodes in this tree. We can define a total order $<$ on $\setT$ such that $(a,b) < (c,d)$ if either $b < d$ or $b=d, a<c$. In other words, we compare rightmost child first and break tie with leftmost child. We assume $(\setT,<)$ is sorted in ascending order.
+Let $\setT$ be the set of all nodes in this tree. It's worth noting that there exists an injective mapping $\phi:[n]\mapsto \setT$ that maps $i\in[n]$ into a node by iteratively moving the leaf $(i,i)$ upwards untill it is a left child. For example, $1\mapsto (1,1) 4 \mapsto (1,4), 6\mapsto (5,6)$, etc. Under this mapping, the {\node} subroutine picks at most one node per layer, thus $|\node(n)|=O(\log(n))$.
+
+% Let $\setT$ be the set of all nodes in this tree. We can define a total order $<$ on $\setT$ such that $(a,b) < (c,d)$ if either $b < d$ or $b=d, a<c$. In other words, we compare rightmost child first and break tie with leftmost child. We assume $(\setT,<)$ is sorted in ascending order.
 
 
 \subsection{Implementation Details}
@@ -68,15 +70,23 @@ Now we are ready to prove the main theorem (Theorem \ref{thm:DP-OTB:tree}).
 
 \begin{proof}
 The proof sketch is to reduce the streaming sum composition into the advanced composition setup in Lemma \ref{lem:app:tree-mechanism:RDP-composition}.
-Let $(\setT,<)$ be the set of nodes of a binary tree of $n=2^m$ leaf nodes. 
-Let $\calZ = \calZ^{(1:n)}$ and $S^{(a,b)}=\calX$ for all $(a,b)\in\sT$. For each $(a,b)\in \sT$, define $\calR^{(a,b)}: ( \prod_{(c,d)<(a,b)} \calS^{(c,d)} ) \times \calZ \to \calS^{(a,b)}$ as
-\begin{equation}
-    \calR^{(a,b)}(\vecy_{(c,d)<(a,b)},Z_{1:n}) = \sum_{i=a}^b \calM^{(i)}(\vecx_{1:i-1},Z_i)
-    + \xi_b, 
-    % \quad \tilde\calR^{(a,b)} = \calR^{(a,b)} + \xi_b,
-    \label{eq:DP-O2NC:1-tree-1}
-\end{equation}
-where $\vecx_j = \sum_{(c,d)\in \textsc{Node}(j)} \vecy_{(c,d)}$ for each $j\in[i-1]$ and $\xi_b\sim N(0,\sigma_b^2I)$. We can check that $\vecx_j$ is well-defined: for all $j \le b$ and for all $(c,d)\in \textsc{Node}(j)$, we have $(c,d)<(a,b)$ by definition of $\textsc{Node}$ and thus $\vecx_{1:i-1}$ can be computed from $\vecy_{(i,j)<(a,b)}$ for all $i\in[a,b]$.
+Let $\setT$ be set of all nodes of the binary tree with $n=2^m$ leaf nodes, and $\phi:[n]\mapsto \setT$ be the aforementioned injective mapping. We can rewrite each streaming sum $\calS_k$ as follows:
+\begin{align*}
+    \calS_k(\vecx_{i:k-1},\calZ_T) = \sum_{i=1}^k \vecx_i = \sum_{\substack{i\in\node(k),\\(a,i)=\phi(i)}} \sum_{j=a}^i \vecx_j.
+\end{align*}
+Consequently, for each $i\in[n]$ and $\phi(i)=(a,i)$, by defining 
+\begin{align*}
+    \calA_i:(\vecx_1,\ldots,\vecx_{i-1},\calZ_T) \mapsto \sum_{j=a}^i \calM_j(\vecx_1,\ldots,\vecx_{j-1},\calZ_T),
+\end{align*}
+we establish that 
+\begin{align*}
+    \calS_k(\vecx_{i:k-1},\calZ_T) = \sum_{i\in\node(k)} \calA_i(\vecx_1,\ldots,\vecx_{i-1},\calZ_T).
+\end{align*}
+Clearly, the composition $(\calS_1,\ldots,\calS_n)$ is a post-processing of $(\calA_1,\ldots,\calA_n)$. Therefore, the problem reduces to making the composition $(\calA_1,\ldots,\calA_n)$ RDP via Lemma \ref{lem:app:tree-mechanism:RDP-composition}.
+
+Let $\tilde\calA_i = \calA_i + \vecr_i$, where $\vecr_i\sim\calR_i$ independently. 
+
+% TODO: complete the proof: use general distribution \calR_i that makes \calA_i RDP.
 
 Next, since for all neighboring $Z_{1:n},Z_{1:n}'\in\calZ$, $\|\calM^{(i)}(\vecx_{1:i-1},Z_i)-\calM^{(i)}(\vecx_{1:i-1},Z_i')\| \le s_i$, $\calR^{(a,b)}(\vecy_{(c,d)<(a,b)},\cdot)$ has sensitivity bounded by $s_{(a,b)} := \max_{i\in[a,b]} s_i$. Therefore, upon adding Gaussian noise $\calN(0,\sigma_b^2I)$, $\calR^{(a,b)}(\vecy_{(c,d)<(a,b)},\cdot)$ is $(\alpha, \epsilon_{(a,b)})$-RDP where $\epsilon_{(a,b)} = {\alpha s_{(a,b)}^2}/{2\sigma_b^2}$.
 % Also recall that adding Gaussian noise $N(0,\sigma^2I)$ to an algorithm with $\ell_2$-sensitivity $\gamma$ makes it $(\alpha, \alpha\gamma^2/2\sigma^2)$-RDP. Therefore, $\tilde\calR^{\sT_{(a,b)}}$ is $(\alpha,\epsilon_{\sT_{(a,b)}})$-RDP where $\epsilon_{\sT_{(a,b)}} = \alpha\sup_{i\in[a,b]} \gamma_i^2/2\sigma_b^2$. 
