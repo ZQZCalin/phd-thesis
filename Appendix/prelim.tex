@@ -7,8 +7,7 @@
 
 We introduce several notations for analyzing the tree mechanism. Consider a complete binary tree with $n=2^m$ leaves. We index each node in the tree as follows: the leaf nodes are indexed by $(i,i)$ in an ascending order $i=1,\ldots,n$ from left to right, and every other node is indexed by $(i,j)$ where $i$ is its left-most child leaf and $j$ is its right-most child leaf (see Figure \ref{fig:tree-illustration} for illustration). It's worth noting that the {\node} subroutine picks at most one node per layer, thus $|\node(n)|=O(\log(n))$.
 
-Let $\sT$ be the set of all nodes in this tree. We can define a total order $<$ on $\sT$ such that $(a,b) < (c,d)$ if either $b < d$ or $b=d, a<c$. In other words, we compare rightmost child first and break tie with leftmost child. We assume $(\sT,<)$ is sorted in ascending order.
-We denote $a_{(c,d)<(a,b)}$ as a short-hand notation of $\{a_{(c,d)}:(c,d)<(a,b)\}$.
+Let $\setT$ be the set of all nodes in this tree. We can define a total order $<$ on $\setT$ such that $(a,b) < (c,d)$ if either $b < d$ or $b=d, a<c$. In other words, we compare rightmost child first and break tie with leftmost child. We assume $(\setT,<)$ is sorted in ascending order.
 
 
 \subsection{Implementation Details}
@@ -68,8 +67,8 @@ Now we are ready to prove the main theorem (Theorem \ref{thm:DP-OTB:tree}).
 % \TreeMechanism*
 
 \begin{proof}
-The proof sketch is to reduce the streaming sum setup into the advanced composition setup in Lemma \ref{lem:app:tree-mechanism:RDP-composition}.
-Let $(T,<)$ be the set of nodes of a binary tree of $n=2^m$ leaf nodes. 
+The proof sketch is to reduce the streaming sum composition into the advanced composition setup in Lemma \ref{lem:app:tree-mechanism:RDP-composition}.
+Let $(\setT,<)$ be the set of nodes of a binary tree of $n=2^m$ leaf nodes. 
 Let $\calZ = \calZ^{(1:n)}$ and $S^{(a,b)}=\calX$ for all $(a,b)\in\sT$. For each $(a,b)\in \sT$, define $\calR^{(a,b)}: ( \prod_{(c,d)<(a,b)} \calS^{(c,d)} ) \times \calZ \to \calS^{(a,b)}$ as
 \begin{equation}
     \calR^{(a,b)}(\vecy_{(c,d)<(a,b)},Z_{1:n}) = \sum_{i=a}^b \calM^{(i)}(\vecx_{1:i-1},Z_i)

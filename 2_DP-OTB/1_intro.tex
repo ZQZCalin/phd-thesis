@@ -130,10 +130,10 @@ If $\calM:\Xi^T\to (\RR^d,\|\cdot\|_2)$ has sensitivity $s$ and $\vecr\sim \calN
 \label{thm:DP-OTB:guassian-mechanism}
 \end{theorem}
 
-Next, the \emph{standard composition mechanism} states that if a randomized algorithm consists of several \emph{independent} sub-algorithms such that changing a data point only changes the output of one sub-algorithm, then the privacy guarantee of all sub-algorithms aggregates.
+Next, the \emph{standard composition mechanism} states that the privacy budget of the composition of randomized algorithms is equal to the sum of privacy budget of all the sub-algorithms.
 
 \begin{theorem}[Composition]
-Suppose a dataset $\calZ_T=\calZ_{i_1}\sqcup \ldots\sqcup\calZ_{i_n}$ is partitioned into $n$ parts, and $\calM_k:\calZ_{i_k}\mapsto \vecx_k$ is $(\alpha, \rho_k)$-RDP for each $k\in[n]$. Then the composition $\calM:\calZ_T \mapsto (\vecx_1,\ldots,\vecx_k)$ is $(\alpha, \rho_{1:n})$-RDP where $\rho_{1:n}=\sum_{k=1}^n \rho_k$.
+If $\calM_k:\calZ_{i_k}\mapsto \vecx_k$ is $(\alpha, \rho_k)$-RDP, then the composition $\calM:\calZ_T \mapsto (\vecx_1,\ldots,\vecx_k)$ is $(\alpha, \rho_{1:n})$-RDP where $\rho_{1:n}=\sum_{k=1}^n \rho_k$.
 \label{thm:DP-OTB:composition}
 \end{theorem}
 
@@ -149,9 +149,9 @@ More details of these results and more privacy mechanisms to achieve RDP can be 
 
 \subsection{The Tree Mechanism}
 
-At the core of our proposed conversion algorithms, it incorporates a variant of the tree mechanism, which is an advanced privacy mechanism to aggregate the streaming sum of a sequence of outputs. The formal setup of this problem is as follows. Consider a Banach space $(\calX,\|\cdot\|)$ and a dataset $\calZ_T=(\xi_1,\ldots,\xi_T)\in\Xi^T$, which is partitioned into $n$ parts $\calZ_T = \calZ_{i_1} \sqcup \ldots \sqcup \calZ_{i_n}$. There is a sequence of algorithms $\calM_1,\ldots,\calM_n$ such that $\calM_1:\calZ_{i_1}\mapsto \vecx_1\in\calX$ and $\calM_{k+1}:\vecx_{1:k}\times \calZ_{i_k} \mapsto \vecx_{k+1}\in\calX$ iteratively. The \emph{streaming sum} is the algorithm $\calM: \calZ_T \mapsto \vecx_{1:n}$.
+At the core of our proposed conversion algorithms, it incorporates a variant of the tree mechanism, which is an advanced privacy mechanism to aggregate the streaming sum of a sequence of outputs. The formal setup of this problem is as follows. Consider a Banach space $(\calX,\|\cdot\|)$ and a dataset $\calZ_T=(\xi_1,\ldots,\xi_T)\in\Xi^T$, which is partitioned into $n$ parts $\calZ_T = \calZ_{i_1} \sqcup \ldots \sqcup \calZ_{i_n}$. There is a sequence of algorithms $\calM_1,\ldots,\calM_n$ such that $\calM_1:\calZ_{i_1}\mapsto \vecx_1\in\calX$ and $\calM_{k+1}:\vecx_{1:k}\times \calZ_{i_k} \mapsto \vecx_{k+1}\in\calX$ iteratively. The \emph{streaming sum} of these algorithms is $\calS_k: \calZ_T \mapsto \vecx_{1:k}$, and their composition is the algorithm $\calS: \Xi^T\to \calX^n$ such that $\calZ_T\mapsto (\vecx_1,\ldots,\vecx_{1:n})$.
 
-Standard composition (Theorem \ref{thm:DP-OTB:composition}) does not apply: the sub-algorithms $\calM_k$'s are not independent, since later algorithms depend on earlier outputs. Consequently, it requires adding noise to every $\calM_k$, i.e. $\tilde\calM_k = \calM_k + \vecr_k$, in order to keep $\calM$ private, resulting in a total noise of order $n$. On the other hand, via the tree mechanism presented in Algorithm \ref{alg:DP-OTB:tree}, $\tilde\calM = \calM + \tree(n)$ only requires noise of order $\log(n)$ to achieve the same level of privacy, because $|\node(n)|\lesssim \log(n)$ (e.g., $\node(7)=\{4,6,7\}$).\footnote{The tree mechanism seems to require $O(T)$ memory space to store all random noises. However, in practice, it only requires $O(\log(T))$ by sampling the noises in a streaming order and discarding unnecessary noises. See Appendix \ref{app:prelim:tree-mechanism:implementation} for more detailed discussion. In tha main text, we choose the simplest presentation for better understanding.}
+Standard composition (Theorem \ref{thm:DP-OTB:composition}) yields sub-optimal privacy guarantee for the streaming sum problem: each summation $\calS_k$ requires $O(n)$ noise to be achieve privacy level $\rho/n$ in order to make the composition $\rho$-private. On the other hand, via the tree mechanism presented in Algorithm \ref{alg:DP-OTB:tree}, $\tilde\calS_k = \calS_k + \tree(k)$ only requires noise of order $\log(n)$ to achieve the same level of privacy, because $|\node(n)|\lesssim \log(n)$ (e.g., $\node(7)=\{4,6,7\}$).\footnote{The tree mechanism seems to require $O(n)$ memory space to store all random noises. However, in practice, it only requires $O(\log(n))$ by sampling the noises in a streaming order and discarding unnecessary noises. See Appendix \ref{app:prelim:tree-mechanism:implementation} for more detailed discussion. In tha main text, we choose the simplest presentation for better understanding.}
 
 \input{2_DP-OTB/_misc/alg_tree_mechanism}
 
@@ -159,8 +159,12 @@ The following result formally states the privacy guarantee of the tree mechanism
 
 \begin{theorem}
 \label{thm:DP-OTB:tree}
-Let $\tilde\calM_k: \tilde\vecx_{1:k-1}\times\calZ_T \mapsto \tilde\vecx_k = \calM_k(\tilde\vecx_{1:k-1},\calZ_T) + \tree(k)$, and let $\tilde\calM$ be the streaming sum of $\tilde\calM_1,\ldots,\tilde\calM_n$. If $\calM_k(\vecx,\cdot)$ has sensitivity $s_k$ for all $\vecx\in\calX$, then for all $\alpha>1$, $\tilde\calM$ is $(\alpha, \alpha\rho^2/2)$-RDP where
+Let $\tilde\calS_k = \calS_k + \tree(k)$ and let $\tilde\calS=(\tilde\calS_1,\ldots,\tilde\calS_n)$ be their composition. If $\calM_k+\calR_k$ is $(\alpha,\alpha\rho_k^2/2)$-RDP, then
+
+If $\calM_k(\vecx,\cdot)$ has sensitivity $s_k$ for all $\vecx\in\calX$, then for all $\alpha>1$, $\tilde\calS$ is $(\alpha, \alpha\rho^2/2)$-RDP where
 \begin{equation*}
     \rho \le \sqrt{2\ln n} \cdot \max_{b\in[n], i\le b} \frac{s_i}{\sigma_b}.
 \end{equation*}
 \end{theorem}
+
+As a remark, when $\calX$ is the Euclidean space, $\calR_k=\calN(0,\sigma_k^2\matI)$ (i.e., the Gaussian mechanism) makes each $\calM_k$ $(\alpha, \alpha\rho_k^2/2)$-RDP, where $\rho_k = s_k/\sigma_k$ and $s_k$ is the sensitivity of $\calM_k(\vecx,\cdot)$ for any $\vecx\in\calX$.
