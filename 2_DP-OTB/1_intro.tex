@@ -130,6 +130,21 @@ If $\calM:\Xi^T\to (\RR^d,\|\cdot\|_2)$ has sensitivity $s$ and $\vecr\sim \calN
 \label{thm:DP-OTB:guassian-mechanism}
 \end{theorem}
 
+For a general Banach space $(\calX,\|\cdot\|)$, we can extend the Gaussian mechansim via the following definition.
+
+% TODO: fix definition, and use that to update tree mechanism and its proofs
+\begin{definition}[$(\alpha,???)$-RDP distribution]
+\label{def:DP-OTB:RDP-noise}
+Let $\calR$ be a distribution on $(\calX,\|\cdot\|)$ and $\vecr\sim\calR$. $\calR$ is said to be a \emph{$(\alpha,???)$-RDP distribution} if (i) $\E[\vecr]=0$, (ii) $\E[\|\vecr\|^2]=1$, and (iii) for all $\sigma>0$ and $\vecmu,\vecmu'\in\calX$ such that $\sigma^2\ge \|\vecmu-\vecmu'\|^2/\rho^2$, then $D_\alpha(\sigma \vecr+\vecmu \| \sigma \vecr+\vecmu')\le \alpha\rho^2/2$.
+\end{definition}
+
+Clearly, the Guassian distribution $\calN(0,\matI)$ is an $(\alpha,1)$-RDP distribution on the Euclidean space. Moreover, the following result states a generalization of the Gaussian distribution using this new definition.
+
+\begin{theorem}
+Suppose $\calM:\Xi^T\to(\calX,\|\cdot\|)$ has senstivity $s$ and $\calR$ is a $(\alpha,???)$-RDP distribution on $\calX$. Then $\tilde\calM = \calM + \sigma \vecr$ is $(\alpha, \alpha\rho^2/2)$-RDP where $\vecr\sim\calR$ and $\sigma = s/\rho$.
+\label{eq:DP-OTB:RDP-mechanism}
+\end{theorem}
+
 Next, the \emph{standard composition mechanism} states that the privacy budget of the composition of randomized algorithms is equal to the sum of privacy budget of all the sub-algorithms.
 
 \begin{theorem}[Composition]
@@ -157,6 +172,7 @@ Standard composition (Theorem \ref{thm:DP-OTB:composition}) yields sub-optimal p
 
 The following result formally states the privacy guarantee of the tree mechanism. The proof can be found in Appendix \ref{app:prelim:tree-mechanism:privacy}.
 
+% TODO: update theormem statement
 \begin{theorem}
 \label{thm:DP-OTB:tree}
 Let $\tilde\calS_k = \calS_k + \tree(k)$ and let $\tilde\calS=(\tilde\calS_1,\ldots,\tilde\calS_n)$ be their composition. If $\calM_k+\calR_k$ is $(\alpha,\alpha\rho_k^2/2)$-RDP, then
