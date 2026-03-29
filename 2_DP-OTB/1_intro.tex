@@ -123,6 +123,7 @@ The sensitivity of a randomized algorithm $\calM: \Xi^T \to (\calX,\|\cdot\|)$, 
 
 \subsection{Privacy Mechanisms}
 
+\paragraph{Gaussian Mechanism}
 When the output space $\calX$ is the Euclidean space, a simple yet effective privacy mechanism is the \emph{Gaussian mechanism}, which adds a Gaussian noise to the output to a randomized algorithm to make it private.
 
 \begin{theorem}[Gaussian Mechanism]
@@ -130,29 +131,31 @@ If $\calM:\Xi^T\to (\RR^d,\|\cdot\|_2)$ has sensitivity $s$ and $\vecr\sim \calN
 \label{thm:DP-OTB:guassian-mechanism}
 \end{theorem}
 
-For a general Banach space $(\calX,\|\cdot\|)$, we can extend the Gaussian mechansim via the following definition.
+\paragraph{Generalized Mechanism}
+We can extend the Gaussian mechansim for a general Banach space $(\calX,\|\cdot\|)$ beyond Euclidean space. 
 
-% TODO: fix definition, and use that to update tree mechanism and its proofs
-\begin{definition}[$(\alpha,???)$-RDP distribution]
+\begin{definition}[$(\alpha,\RDPdist)$-RDP distribution]
 \label{def:DP-OTB:RDP-noise}
-Let $\calR$ be a distribution on $(\calX,\|\cdot\|)$ and $\vecr\sim\calR$. $\calR$ is said to be a \emph{$(\alpha,???)$-RDP distribution} if (i) $\E[\vecr]=0$, (ii) $\E[\|\vecr\|^2]=1$, and (iii) for all $\sigma>0$ and $\vecmu,\vecmu'\in\calX$ such that $\sigma^2\ge \|\vecmu-\vecmu'\|^2/\rho^2$, then $D_\alpha(\sigma \vecr+\vecmu \| \sigma \vecr+\vecmu')\le \alpha\rho^2/2$.
+Let $\calR$ be a distribution on $(\calX,\|\cdot\|)$ and $\vecr\sim\calR$. $\calR$ is said to be an \emph{$(\alpha,\RDPdist)$-RDP distribution} if (i) $\E[\vecr]=0$, (ii) $\E[\|\vecr\|^2]=1$, and (iii) for all $\sigma, \rho>0$ and $\vecmu,\vecmu'\in\calX$ such that $\sigma/\RDPdist\ge \|\vecmu-\vecmu'\|/\rho$, then $D_\alpha(\sigma \vecr+\vecmu \| \sigma \vecr+\vecmu')\le \alpha\rho^2/2$.
 \end{definition}
 
-Clearly, the Guassian distribution $\calN(0,\matI)$ is an $(\alpha,1)$-RDP distribution on the Euclidean space. Moreover, the following result states a generalization of the Gaussian distribution using this new definition.
-
 \begin{theorem}
-Suppose $\calM:\Xi^T\to(\calX,\|\cdot\|)$ has senstivity $s$ and $\calR$ is a $(\alpha,???)$-RDP distribution on $\calX$. Then $\tilde\calM = \calM + \sigma \vecr$ is $(\alpha, \alpha\rho^2/2)$-RDP where $\vecr\sim\calR$ and $\sigma = s/\rho$.
+If $\calM:\Xi^T\to(\calX,\|\cdot\|)$ has senstivity $s$ and $\calR$ is a $(\alpha,\RDPdist)$-RDP distribution on $\calX$, then $\tilde\calM = \calM + \vecr$ is $(\alpha, \alpha\rho^2/2)$-RDP where $\vecr\sim \sigma\calR$ and $\sigma = \RDPdist \cdot s/\rho$.
 \label{eq:DP-OTB:RDP-mechanism}
 \end{theorem}
 
-Next, the \emph{standard composition mechanism} states that the privacy budget of the composition of randomized algorithms is equal to the sum of privacy budget of all the sub-algorithms.
+Clearly, the Guassian distribution $\calN(0,\matI)$ is an $(\alpha,1)$-RDP distribution on the Euclidean space. 
+$(\alpha, \RDPdist)$-RDP distribution extends Gaussian mechanism to general Banach space, and $\RDPdist$ is the additional noise factor to achieve privacy depending on the distribution. Since the goal of this thesis does not focus on privacy mechanism design, we treat this as a general definition and does not provide mechanisms on non-Eucliean spaces. Notably, this definition decouples privacy mechanism from the subsequent convergence analysis.
+
+\paragraph{Composition and Post-Processing}
+The \emph{standard composition mechanism} states that the privacy budget of the composition of randomized algorithms is equal to the sum of privacy budget of all the sub-algorithms.
 
 \begin{theorem}[Composition]
 If $\calM_k:\calZ_{i_k}\mapsto \vecx_k$ is $(\alpha, \rho_k)$-RDP, then the composition $\calM:\calZ_T \mapsto (\vecx_1,\ldots,\vecx_k)$ is $(\alpha, \rho_{1:n})$-RDP where $\rho_{1:n}=\sum_{k=1}^n \rho_k$.
 \label{thm:DP-OTB:composition}
 \end{theorem}
 
-Lastly, the \emph{post-processing} rule states that if a randomized algorithm is private, then any post-processing of its output remains the same privacy level.
+The \emph{post-processing} rule states that if a randomized algorithm is private, then any post-processing of its output remains the same privacy level.
 
 \begin{theorem}[Post-Processing]
 If $\calM$ is $(\alpha,\rho)$-RDP, then for any deterministic function $\phi$, $\calM': \calZ_T \mapsto \phi(\calM(\calZ_T))$ is $(\alpha,\rho)$-RDP.
@@ -175,12 +178,8 @@ The following result formally states the privacy guarantee of the tree mechanism
 % TODO: update theormem statement
 \begin{theorem}
 \label{thm:DP-OTB:tree}
-Let $\tilde\calS_k = \calS_k + \tree(k)$ and let $\tilde\calS=(\tilde\calS_1,\ldots,\tilde\calS_n)$ be their composition. If $\calM_k+\calR_k$ is $(\alpha,\alpha\rho_k^2/2)$-RDP, then
-
-If $\calM_k(\vecx,\cdot)$ has sensitivity $s_k$ for all $\vecx\in\calX$, then for all $\alpha>1$, $\tilde\calS$ is $(\alpha, \alpha\rho^2/2)$-RDP where
+Let $\tilde\calS_k = \calS_k + \tree(k)$ and let $\tilde\calS=(\tilde\calS_1,\ldots,\tilde\calS_n)$ be their composition. Suppose $\calM_k(\vecx,\cdot)$ has sensitivity $s_k$ for all $\vecx\in\calX$ and $\calR$ is an $(\alpha,\RDPdist)$-RDP distribution. Then the composition $\tilde\calS$ is $(\alpha, \alpha\rho^2/2)$-RDP where
 \begin{equation*}
-    \rho \le \sqrt{2\ln n} \cdot \max_{b\in[n], i\le b} \frac{s_i}{\sigma_b}.
+    \rho \le \RDPdist\sqrt{2\ln n} \cdot \max_{k\in[n]} \frac{\max_{i\le k} s_i}{\sigma_k}.
 \end{equation*}
 \end{theorem}
-
-As a remark, when $\calX$ is the Euclidean space, $\calR_k=\calN(0,\sigma_k^2\matI)$ (i.e., the Gaussian mechanism) makes each $\calM_k$ $(\alpha, \alpha\rho_k^2/2)$-RDP, where $\rho_k = s_k/\sigma_k$ and $s_k$ is the sensitivity of $\calM_k(\vecx,\cdot)$ for any $\vecx\in\calX$.
