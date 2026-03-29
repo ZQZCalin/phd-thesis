@@ -135,13 +135,13 @@ If $\calM:\Xi^T\to (\RR^d,\|\cdot\|_2)$ has sensitivity $s$ and $\vecr\sim \calN
 We can extend the Gaussian mechansim for a general Banach space $(\calX,\|\cdot\|)$ beyond Euclidean space. 
 
 \begin{definition}[$(\alpha,\RDPdist)$-RDP distribution]
-\label{def:DP-OTB:RDP-noise}
 Let $\calR$ be a distribution on $(\calX,\|\cdot\|)$ and $\vecr\sim\calR$. $\calR$ is said to be an \emph{$(\alpha,\RDPdist)$-RDP distribution} if (i) $\E[\vecr]=0$, (ii) $\E[\|\vecr\|^2]=1$, and (iii) for all $\sigma, \rho>0$ and $\vecmu,\vecmu'\in\calX$ such that $\sigma/\RDPdist\ge \|\vecmu-\vecmu'\|/\rho$, then $D_\alpha(\sigma \vecr+\vecmu \| \sigma \vecr+\vecmu')\le \alpha\rho^2/2$.
+\label{def:DP-OTB:RDP-noise}
 \end{definition}
 
 \begin{theorem}
 If $\calM:\Xi^T\to(\calX,\|\cdot\|)$ has senstivity $s$ and $\calR$ is a $(\alpha,\RDPdist)$-RDP distribution on $\calX$, then $\tilde\calM = \calM + \vecr$ is $(\alpha, \alpha\rho^2/2)$-RDP where $\vecr\sim \sigma\calR$ and $\sigma = \RDPdist \cdot s/\rho$.
-\label{eq:DP-OTB:RDP-mechanism}
+\label{thm:DP-OTB:RDP-mechanism}
 \end{theorem}
 
 Clearly, the Guassian distribution $\calN(0,\matI)$ is an $(\alpha,1)$-RDP distribution on the Euclidean space. 
@@ -151,7 +151,7 @@ $(\alpha, \RDPdist)$-RDP distribution extends Gaussian mechanism to general Bana
 The \emph{standard composition mechanism} states that the privacy budget of the composition of randomized algorithms is equal to the sum of privacy budget of all the sub-algorithms.
 
 \begin{theorem}[Composition]
-If $\calM_k:\calZ_{i_k}\mapsto \vecx_k$ is $(\alpha, \rho_k)$-RDP, then the composition $\calM:\calZ_T \mapsto (\vecx_1,\ldots,\vecx_k)$ is $(\alpha, \rho_{1:n})$-RDP where $\rho_{1:n}=\sum_{k=1}^n \rho_k$.
+If $\calM_k:\calZ_T\mapsto \vecx_k$ is $(\alpha, \rho_k)$-RDP, then the composition $\calM:\calZ_T \mapsto (\vecx_1,\ldots,\vecx_k)$ is $(\alpha, \rho_{1:n})$-RDP where $\rho_{1:n}=\sum_{k=1}^n \rho_k$.
 \label{thm:DP-OTB:composition}
 \end{theorem}
 
@@ -167,7 +167,7 @@ More details of these results and more privacy mechanisms to achieve RDP can be 
 
 \subsection{The Tree Mechanism}
 
-At the core of our proposed conversion algorithms, it incorporates a variant of the tree mechanism, which is an advanced privacy mechanism to aggregate the streaming sum of a sequence of outputs. The formal setup of this problem is as follows. Consider a Banach space $(\calX,\|\cdot\|)$ and a dataset $\calZ_T=(\xi_1,\ldots,\xi_T)\in\Xi^T$, which is partitioned into $n$ parts $\calZ_T = \calZ_{i_1} \sqcup \ldots \sqcup \calZ_{i_n}$. There is a sequence of algorithms $\calM_1,\ldots,\calM_n$ such that $\calM_1:\calZ_{i_1}\mapsto \vecx_1\in\calX$ and $\calM_{k+1}:\vecx_{1:k}\times \calZ_{i_k} \mapsto \vecx_{k+1}\in\calX$ iteratively. The \emph{streaming sum} of these algorithms is $\calS_k: \calZ_T \mapsto \vecx_{1:k}$, and their composition is the algorithm $\calS: \Xi^T\to \calX^n$ such that $\calZ_T\mapsto (\vecx_1,\ldots,\vecx_{1:n})$.
+At the core of our proposed conversion algorithms, it incorporates a variant of the tree mechanism, which is an advanced privacy mechanism to aggregate the streaming sum of a sequence of outputs. The formal setup of this problem is as follows. Consider a Banach space $(\calX,\|\cdot\|)$ and a dataset $\calZ_T=(\xi_1,\ldots,\xi_T)\in\Xi^T$, which is partitioned into $n$ parts $\calZ_T = \calZ_{p_1} \sqcup \ldots \sqcup \calZ_{p_n}$. There is a sequence of algorithms $\calM_1,\ldots,\calM_n$ such that $\calM_1:\calZ_{p_1}\mapsto \vecx_1\in\calX$ and $\calM_{k+1}:\vecx_{1:k}\times \calZ_{p_k} \mapsto \vecx_{k+1}\in\calX$ iteratively. The \emph{streaming sum} of these algorithms is $\calS_k: \calZ_T \mapsto \vecx_{1:k}$, and their composition is the algorithm $\calS: \Xi^T\to \calX^n$ such that $\calZ_T\mapsto (\vecx_1,\ldots,\vecx_{1:n})$.
 
 Standard composition (Theorem \ref{thm:DP-OTB:composition}) yields sub-optimal privacy guarantee for the streaming sum problem: each summation $\calS_k$ requires $O(n)$ noise to be achieve privacy level $\rho/n$ in order to make the composition $\rho$-private. On the other hand, via the tree mechanism presented in Algorithm \ref{alg:DP-OTB:tree}, $\tilde\calS_k = \calS_k + \tree(k)$ only requires noise of order $\log(n)$ to achieve the same level of privacy, because $|\node(n)|\lesssim \log(n)$ (e.g., $\node(7)=\{4,6,7\}$).\footnote{The tree mechanism seems to require $O(n)$ memory space to store all random noises. However, in practice, it only requires $O(\log(n))$ by sampling the noises in a streaming order and discarding unnecessary noises. See Appendix \ref{app:prelim:tree-mechanism:implementation} for more detailed discussion. In tha main text, we choose the simplest presentation for better understanding.}
 
@@ -180,6 +180,6 @@ The following result formally states the privacy guarantee of the tree mechanism
 \label{thm:DP-OTB:tree}
 Let $\tilde\calS_k = \calS_k + \tree(k)$ and let $\tilde\calS=(\tilde\calS_1,\ldots,\tilde\calS_n)$ be their composition. Suppose $\calM_k(\vecx,\cdot)$ has sensitivity $s_k$ for all $\vecx\in\calX$ and $\calR$ is an $(\alpha,\RDPdist)$-RDP distribution. Then the composition $\tilde\calS$ is $(\alpha, \alpha\rho^2/2)$-RDP where
 \begin{equation*}
-    \rho \le \RDPdist\sqrt{2\ln n} \cdot \max_{k\in[n]} \frac{\max_{i\le k} s_i}{\sigma_k}.
+    \rho \le \RDPdist\sqrt{2\log_2(n)} \cdot \max_{k\in[n]} \frac{\max_{i\le k} s_i}{\sigma_k}.
 \end{equation*}
 \end{theorem}
