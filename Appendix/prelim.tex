@@ -141,7 +141,7 @@ we establish that
 \end{align*}
 Clearly, the composition $(\calS_1,\ldots,\calS_n)$ is a post-processing of $(\calA_1,\ldots,\calA_n)$. Therefore, the problem reduces to making the composition $(\calA_1,\ldots,\calA_n)$ RDP via Lemma \ref{lem:app:tree-mechanism:RDP-composition}.
 
-Let $\tilde\calA_i = \calA_i + \vecr_i$, where $\vecr_i\sim \sigma_i\calR$ independently, $\calR$ be an $(\alpha,\RDPdist)$-RDP distribution, and $\phi(i)=(a,i)$. Note that $\calM_j$'s use independent data $\calZ_{p_j}$, so the sensitivity of $\calA_i$ is bounded by $\max_{j\in [a,i]} s_j$, where $s_j=\sens(\calM_j)$. Consequently, $\tilde\calA_i$ is $(\alpha,\alpha\rho_i^2/2)$-RDP, where $\rho_i = \RDPdist\cdot \max_{j\in [a,i]}s_j / \sigma_i$ (by Theorem \ref{thm:DP-OTB:RDP-mechanism}). Also note that 
+Let $\tilde\calA_i = \calA_i + \vecr_i$, where $\vecr_i\sim \sigma_i\calR$ independently, $\calR$ be an $(\alpha,\RDPdist)$-RDP distribution, and $\phi(i)=(a,i)$. Note that $\calM_j$'s use independent data $\calZ_{p_j}$, so the sensitivity of $\calA_i$ is bounded by $\max_{j\in [a,i]} s_j$, where $s_j=\sens(\calM_j)$. Consequently, $\tilde\calA_i$ is $(\alpha,\alpha\rho_i^2/2)$-RDP, where $\rho_i = \max_{j\in [a,i]}s_j / \sigma_i$ (by Theorem \ref{thm:DP-OTB:RDP-mechanism}). Also note that 
 \begin{align*}
     \tilde\calS_k 
     &= \sum_{i\in\node(k)} \left(\calA_i + \vecr_i\right) 
@@ -151,9 +151,9 @@ Hence, by Lemma \ref{lem:app:tree-mechanism:RDP-composition}, $\tilde\calS$ is $
 \begin{align*}
     \alpha\rho^2/2 
     &\le \max_{t\in[T]}\sum_{i\in \OUT(t)} \alpha\rho_i^2/2 \\
-    &\le \max_{t\in[T]}\sum_{i\in \OUT(t)} \alpha \left(\frac{\RDPdist\cdot \max_{j\in [a,i]}s_j}{\sigma_i}\right)^2 /2, \\
+    &\le \max_{t\in[T]}\sum_{i\in \OUT(t)} \alpha \left(\frac{\max_{j\in [a,i]}s_j}{\sigma_i}\right)^2 /2, \\
     \iff \rho 
-    &\le \RDPdist \cdot \max_{t\in[T]} \sqrt{|\OUT(t)|} \max_{i\in\OUT(t)} \frac{\max_{j\in [a,i]}s_j}{\sigma_i}.
+    &\le \max_{t\in[T]} \sqrt{|\OUT(t)|} \max_{i\in\OUT(t)} \frac{\max_{j\in [a,i]}s_j}{\sigma_i}.
 \end{align*}
 Note that $\calA_i$ depends on data $\xi_t$ if and only if $\xi_t\in\calZ_{p_j}$ where $(j,j)$ is a leaf node of the node $\phi(i)$. Hence, $|\OUT(t)|\le \log_2(2n)$. This concludes the proof.
 \end{proof}

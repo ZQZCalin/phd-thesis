@@ -1,7 +1,7 @@
 \section{Diffentially Private Online-to-Batch}
 \label{sec:DP-OTB_OTB}
 
-In this section, we present our main differentially private online-to-batch algorithm. As a brief recap, online convex optimization (OCO) is a ``game'' in which for $T$ rounds, $t=1,\ldots,T$, an algorithms predicts a parameter $\vecw_t\in W$. It then receives a convex loss $\ell_t:\calW\to \RR$ and pays the loss $\ell_t(\vecw_t)$. The quality of the algorithm is measured by the regre defined as $\regret_T(\vecu)=\sum_{t=1}^T \ell_t(\vecw_t)-\ell_t(\vecu)$.
+In this section, we present our main differentially private online-to-batch algorithm. As a brief recap, online convex optimization (OCO) is a ``game'' in which for $T$ rounds, $t=1,\ldots,T$, an algorithms predicts a parameter $\vecw_t\in \calX$. It then receives a convex loss $\ell_t:\calX\to \RR$ and pays the loss $\ell_t(\vecw_t)$. The quality of the algorithm is measured by the regre defined as $\regret_T(\vecu)=\sum_{t=1}^T \ell_t(\vecw_t)-\ell_t(\vecu)$.
 
 Online-to-batch algorithms \citep{cesa2004generalization} convert OCO algorithms (online learners) into stochastic convex optimization algorithms. In particular, for $\weight_1,\ldots,\weight_T>0$, the anytime online-to-batch conversion \citep{cutkosky2019anytime} defines the $t$-th loss as $\ell_t(\vecw)=\langle \weight_t\nabla F(\vecx_t,\xi_t), \vecw\rangle$, where $\vecx_t=\sum_{i=1}^t \frac{\weight_i}{\weight_{1:t}}\cdot \vecw_i$. Convergence of anytime online-to-batch builds on the following key result, and its proof is in Appendix \ref{app:DP-OTB:proof-A} for completeness.
 
@@ -42,9 +42,7 @@ Following Theorem \ref{lem:DP-OTB:basic-lemma} and Fenchel-Young's inequality, A
     \label{eq:DP-OTB:basic-decomposition-2}
 \end{align}
 
-\eqref{eq:DP-OTB:basic-decomposition-2} decomposes the suboptimality gap $f(\vecx_T)-f(\vecx_\ast)$ into three components: (i) regret $\regret_T(\vecx_\ast)$, (ii) error associated with variance of $\vecg_t$, measured by $\|\weight_t\nabla f(\vecx_t)-\vecg_t\|_*$, and (iii) noise from the tree mechanism, measured by $\|\overline\vecr_t\|_*$. While the first regret term depends on the OCO subroutine, the other two terms could be bounded as follows.
-
-To get a tight bound, we observe that $\weight_t\nabla f(\vecx_t)-\vecg_t$ and $\overline\vecr_t$ are sums of conditionally mean-zero random vectors. With a martingale bound in high dimension with general norm (formally stated as Lemma \ref{lem:DP-OTB:martingale-bound-general-norm}), we can derive the following bounds. 
+\eqref{eq:DP-OTB:basic-decomposition-2} decomposes the suboptimality gap $f(\vecx_T)-f(\vecx_\ast)$ into three components: (i) regret $\regret_T(\vecx_\ast)$, (ii) error associated with variance of $\vecg_t$, measured by $\|\weight_t\nabla f(\vecx_t)-\vecg_t\|_*$, and (iii) noise from the tree mechanism, measured by $\|\overline\vecr_t\|_*$. The first regret term depends on the OCO subroutine and could not be simplified further; the third noise term follows the bound in Theorem \ref{thm:tree-mechanism:noise}; the second term can be bounded using a general martingale difference concentration bound (formally stated as Theorem \ref{thm:concentration:martingale-difference}).
 
 \begin{lemma}[DP-OTB Variance Bound]
 \label{lem:DP-OTB:variance-expectation-bound}
@@ -55,68 +53,66 @@ If Assumptions \ref{as:DP-OTB:sc-norm}--\ref{as:DP-OTB:sigma-H} hold and $\weigh
 \end{equation}
 \end{lemma}
 
-\begin{restatable}[DP-OTB Privacy Noise Bound]{lemma}{LemDpOtbNoiseBound}
-\label{lem:DP-OTB:privacy-expectation}
-Suppose $\E[R_t]=0$ and $\E[\|R_t\|_*^2]\leq \bar\sigma_t^2$, then
-\begin{equation}
-    \E[\|\overline\vecr_t\|_*^2] \leq 2(\max_{i\leq t}\bar \sigma_i^2)\log_2(2t)/\lambda. \label{eq:DP-OTB:privacy-norm}
-\end{equation}
-\end{restatable}
-
 
 \paragraph{Privacy}
 
-Suppose $F$ is $G$-Lipschitz, $H$-smooth, and the domain $\calX$ has bounded diameter $D$. Let $\weight_t=t^k$ and define the noise constant $\sigma_t$ in Algorithm \ref{alg:DP-OTB:main} as 
-\begin{align}
-    \sigma_t
-    &= \frac{2(k+1)}{\rho}(G+H\max_{i\in[t]}\|w_i-x_{i-1}\|)\log_2(2T)t^{2k-2}, 
-    \label{eq:DP-OTB:RDP-noise}
-\end{align}
-% Since we assume domain $W$ is bounded by diameter $D$, $\|w_i-x_{i-1}\|\leq D$. 
-We assume $\|w_i-x_{i-1}\|\leq D$. 
-Upon substituting \eqref{eq:DP-OTB:RDP-noise} into \eqref{eq:DP-OTB:privacy-norm}, we get $\E[\|R_t\|_*^2] \leq \bar \sigma_t^2 \leq V\sigma_t^2$ and:
-\begin{align}
-    \E[\|\gamma_t\|_*^2]
-    % &\leq \frac{2K\log_2(2t)}{\lambda}\left(\frac{2(k+1)(G+DH)t^{k-1}\log_2(2T)}{\rho}\right)^2. \\
-    &\leq \frac{8(k+1)^2V(G+DH)^2}{\lambda\rho^2} \log_2^2(2T)t^{2k-2}.
-    \label{eq:DP-OTB:gamma-bound}
-\end{align}
-The following theorem shows that Algorithm \ref{alg:DP-OTB:main} is R\'enyi differentially private if we define $\sigma_t^2$ as in \eqref{eq:DP-OTB:RDP-noise}. Its proof is presented in Appendix \ref{app:DP-OTB:tree-aggregation-RDP}. Note that the privacy guarantee does \emph{not} require i.i.d. $Z$.
-% \begin{restatable}{theorem}{TreeRDP}
-% \label{thm:main-privacy}
-% Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex, $W$ is bounded by $D$, and $\ell$ is $G$-Lipschitz and $H$-smooth. Also assume $\calD$ is a $(V,\alpha)$-RDP distribution. If we set $\weight_t=t^k$ and set $\sigma_t^2$ as: 
+% TODO: uncomment if necessary
+% Suppose $F$ is $G$-Lipschitz, $H$-smooth, and the domain $\calX$ has bounded diameter $D$. Let $\weight_t=t^k$ and define the noise constant $\sigma_t$ in the {\tree} mechanism as 
 % \begin{align}
-%     \sigma_t^2 
-%     &= \frac{4(k+1)^2}{\rho^2}(G+H\max_{i\in[t]}\|w_i-x_{i-1}\|)^2\log_2(2T)t^{2(k-1)}, \label{eq:DP-OTB:RDP-noise}
+%     \sigma_t
+%     &= \frac{2(k+1)}{\rho}(G+H\max_{i\in[t]}\|w_i-x_{i-1}\|)\log_2(2T)t^{2k-2}, 
+%     \label{eq:DP-OTB:RDP-noise}
 % \end{align}
-% then Algorithm \ref{alg:DP-OTB:main} is $(\alpha,\alpha\rho^2/2)$-DP.
-% \end{restatable}
-\input{2_DP-OTB/_theorems/thm_tree_dp}
+% We assume $\|w_i-x_{i-1}\|\leq D$. 
+% Upon substituting \eqref{eq:DP-OTB:RDP-noise} into \eqref{eq:DP-OTB:privacy-norm}, we get $\E[\|R_t\|_*^2] \leq \bar \sigma_t^2 \leq V\sigma_t^2$ and:
+% \begin{align}
+%     \E[\|\gamma_t\|_*^2]
+%     % &\leq \frac{2K\log_2(2t)}{\lambda}\left(\frac{2(k+1)(G+DH)t^{k-1}\log_2(2T)}{\rho}\right)^2. \\
+%     &\leq \frac{8(k+1)^2V(G+DH)^2}{\lambda\rho^2} \log_2^2(2T)t^{2k-2}.
+%     \label{eq:DP-OTB:gamma-bound}
+% \end{align}
+% The following theorem shows that Algorithm \ref{alg:DP-OTB:main} is R\'enyi differentially private if we define $\sigma_t^2$ as in \eqref{eq:DP-OTB:RDP-noise}. Its proof is presented in Appendix \ref{app:DP-OTB:tree-aggregation-RDP}. Note that the privacy guarantee does \emph{not} require i.i.d. $Z$.
+
+Upon using the {\tree} mechanism with carefully chosen noises, we can ensure that DP-OTB (Algorithm \ref{alg:DP-OTB:main}) is RDP. The proof is deferred to Appendix \ref{app:DP-OTB:tree-aggregation-RDP}.
+
+\begin{restatable}[DP-OTB Privacy]{theorem}{ThmDpOtbPrivacy}
+\label{thm:main-privacy}
+Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex, $\calX$ is bounded by $D$, $F$ is $G$-Lipschitz and $H$-smooth, and $\calR$ is a $(\alpha,\RDPdist)$-RDP distribution. 
+Then Algorithm \ref{alg:DP-OTB:main} is $(\alpha,\alpha\rho^2/2)$-RDP if we define $\weight_t=t^k$ and $\sigma_t^2$ in {\tree} as 
+\begin{equation}
+    \sigma_t = 2(k+1)\RDPdist(G+DH)\sqrt{\log_2(2T)}t^{2k-2} / \rho, 
+    \label{eq:DP-OTB:RDP-noise}
+\end{equation}
+\end{restatable}
 
 \paragraph{Main Result.} Now we can combine all the previous results to prove the privacy and convergence guarantee of our algorithm.
 
 \begin{theorem}
 \label{thm:DP-OTB:general-norm}
-Suppose Assumption \ref{as:DP-OTB:sc-norm} - \ref{as:DP-OTB:sigma-H} hold, and $\calD$ is a $(V,\alpha)$-RDP distribution. If we set $\weight_t=t^k$ and define $\sigma_t^2$ as in \eqref{eq:DP-OTB:RDP-noise}, then Algorithm \ref{alg:DP-OTB:main} is $(\alpha,\alpha\rho^2/2)$-RDP and $\E[f(x_T) - f(\vecx_\ast)]$ is bounded by:
+Suppose Assumption \ref{as:DP-OTB:sc-norm}--\ref{as:DP-OTB:sigma-H} hold, and $\calR$ is a $(\alpha,\RDPdist)$-RDP distribution. With $\weight_t=t^k$ and $\sigma_t^2$ defined in \eqref{eq:DP-OTB:RDP-noise}, DP-OTB is $(\alpha,\alpha\rho^2/2)$-RDP and 
+% $\E[f(\vecx_T) - f(\vecx_\ast)]$ is bounded by:
 \begin{align*}
-    % \E[f(x_T) - f(\vecx_\ast)] \leq & 
-    \frac{(k+1)\E[\regret_T(\vecx_\ast)]}{T^{k+1}}
-    + \frac{2(k+1)^2D}{\sqrt{\lambda}}\left(\frac{\sigma_G+D\sigma_H}{\sqrt{T}}+\frac{\sqrt{2V}(G+DH)\log_2(2T)}{\rho T}\right).
+    \E[f(\vecx_T) - f(\vecx_\ast)] \lesssim 
+    \frac{\E[\regret_T(\vecx_\ast)]}{T^{k+1}}
+    + \frac{D}{\sqrt{\lambda}}\left(\frac{\sigma_G+D\sigma_H}{\sqrt{T}}+\frac{\RDPdist(G+DH)\log(T)}{\rho T}\right).
+    % NOTE: exact bound
+    % \frac{(k+1)\E[\regret_T(\vecx_\ast)]}{T^{k+1}}
+    % + \frac{2(k+1)^2D}{\sqrt{\lambda}}\left(\frac{\sigma_G+D\sigma_H}{\sqrt{T}}+\frac{\sqrt{2\RDPdist}(G+DH)\log_2(2T)}{\rho T}\right).
 \end{align*}
-Moreover, recall that the online learner receives $t$-th loss $\ell_t(w)=\langle g_t+\gamma_t,w\rangle$. It holds that
+% Moreover, recall that the online learner receives $t$-th loss $\ell_t(w)=\langle g_t+\gamma_t,w\rangle$. It holds that
+Moreover, the private gradient estimator $\tilde\vecg_t = \vecg_t + \tree(t)$ satisfies
 \begin{align*}
-    \E[\|g_t+\gamma_t\|_*^2] \leq 3t^{2k}\left(G^2 + \frac{4(k+1)^2}{\lambda}\left(\frac{(\sigma_G+D\sigma_H)^2}{t}+\frac{2V(G+DH)^2\log_2^2(2T)}{\rho^2t^2}\right) \right).
+    \E[\|\tilde\vecg_t\|_\ast^2] \lesssim t^{2k}\left(G^2 + \frac{1}{\lambda}\left(\frac{(\sigma_G+D\sigma_H)^2}{t}+\frac{\RDPdist^2(G+DH)^2\log(T)}{\rho^2t^2}\right) \right).
+    % NOTE: exact bound
+    % \E[\|g_t+\gamma_t\|_*^2] \leq 3t^{2k}\left(G^2 + \frac{4(k+1)^2}{\lambda}\left(\frac{(\sigma_G+D\sigma_H)^2}{t}+\frac{2V(G+DH)^2\log_2^2(2T)}{\rho^2t^2}\right) \right).
 \end{align*}
 \end{theorem}
 
-\begin{remark}
-\label{rmk:DP-OTB:base-result}
-As an example, let's consider the Gaussian distribution $\calN(0,I)$ on the 2-norm, which is a $(d,\alpha)$-RDP distribution for all $\alpha>1$ (Remark \ref{rmk:DP-OTB:Gaussian-RDP-dist}). For many popular online learners (OSD, OMD, FTRL), if $\E[\|\nabla\ell_t(w_t)\|_*^2]\leq \hat G^2$ for all $t$, then $\E[\regret_T(\vecx_\ast)] \leq O(D\hat{G}\sqrt{T})$. Hence, Theorem \ref{thm:DP-OTB:general-norm} with $\calD=\calN(0,I)$ implies that
+Before proving this result, let's consider the setting where $\calX$ is the Euclidean norm and $\calR$ is the Gaussian distribution (which is an $(\alpha,\sqrt{d})$-RDP distribution). Many OCO algorithms, such as OSD, OMD, and FTRL, satisfy that if $\E[\|\nabla\ell_t(\vecw_t)\|_\ast^2]\le G_\ell^2$ for all $t$, then $\E[\regret_T(\vecx_\ast)] \leq O(DG_\ell\sqrt{T})$. Hence, Theorem \ref{thm:DP-OTB:general-norm} yields a convergence bound
 \begin{align*}
     \E[f(x_T)-f(\vecx_\ast)] = O\left(\frac{D(G+D\sigma_H)}{\sqrt{T}} + \frac{\sqrt{d}D(G+DH)\log T}{\rho T}\right).
 \end{align*}
-This bound is of $\tilde O(1/\sqrt{T}+\sqrt{d}/\rho T)$, which can be translated  to an equivalent $(\epsilon,\delta)-$DP bound of $\tilde O(1/\sqrt{T} + \sqrt{d\log(1/\delta)}/\epsilon T)$. This bound matches the optimal rate for private stochastic optimization with convex and smooth losses (\cite{bassily2019private}).
-\end{remark}
+This bound is of $\tilde O(1/\sqrt{T}+\sqrt{d}/\rho T)$, which is equivalent to the standard $(\rho,\gamma)$-DP bound of order $\tilde O(1/\sqrt{T} + \sqrt{d\log(1/\gamma)}/\rho T)$. Notably, this matches the optimal rate for private stochastic optimization with convex and smooth losses (\cite{bassily2019private}).
 
 \begin{proof}[Proof of Theorem \ref{thm:DP-OTB:general-norm}]
 From Eq. \eqref{eq:DP-OTB:basic-decomposition-2}, we have:

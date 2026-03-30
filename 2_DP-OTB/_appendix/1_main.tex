@@ -98,7 +98,7 @@ We denote each summand by $X_i$, and we can check $X_i$ satisfies condition (ii)
 \end{align*}
 The last inequality follows from the assumption that $\|w_i-x_{i-1}\|\leq D$ and Proposition \ref{prop:DP-OTB:alphas}.
 
-The last part of the theorem is a direct result from Lemma \ref{lem:DP-OTB:martingale-bound-general-norm}:
+The last part of the theorem is a direct result from Theorem \ref{thm:concentration:martingale-difference}:
 \begin{align*}
     \E[ \| \nabla f(x_t)-g_t \|_*^2]
     \leq \frac{2}{\lambda} \sum_{i=1}^t \E[\|X_i\|_*^2] 
@@ -109,15 +109,3 @@ The last part of the theorem is a direct result from Lemma \ref{lem:DP-OTB:marti
 \end{align*}
 \end{proof}
 
-\LemDpOtbNoiseBound*
-
-\begin{proof}
-By construction, $\gamma_t=\sum_{i\in I_t}R_i$, and $R_i$'s are independent and mean-zero. Therefore, Lemma \ref{lem:DP-OTB:martingale-bound-general-norm} can be applied, which yields
-\begin{align*}
-    \E[\|\gamma_t\|_*^2]
-    &\leq \frac{2}{\lambda}\sum_{i\in I_t} \E[\|R_i\|_*^2] 
-    \leq \frac{2}{\lambda} \sum_{i\in I_t} \bar\sigma_i^2
-    \leq 2(\max_{i\leq t}\bar\sigma^2) \log_2(2t)/\lambda.
-\end{align*}
-The last inequality is from the fact that $|I_t|\leq \log_2(2t)$.
-\end{proof}

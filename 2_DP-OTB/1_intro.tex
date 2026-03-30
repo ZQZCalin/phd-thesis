@@ -135,17 +135,17 @@ If $\calM:\Xi^T\to (\RR^d,\|\cdot\|_2)$ has sensitivity $s$ and $\vecr\sim \calN
 We can extend the Gaussian mechansim for a general Banach space $(\calX,\|\cdot\|)$ beyond Euclidean space. 
 
 \begin{definition}[$(\alpha,\RDPdist)$-RDP distribution]
-Let $\calR$ be a distribution on $(\calX,\|\cdot\|)$ and $\vecr\sim\calR$. $\calR$ is said to be an \emph{$(\alpha,\RDPdist)$-RDP distribution} if (i) $\E[\vecr]=0$, (ii) $\E[\|\vecr\|^2]=1$, and (iii) for all $\sigma, \rho>0$ and $\vecmu,\vecmu'\in\calX$ such that $\sigma/\RDPdist\ge \|\vecmu-\vecmu'\|/\rho$, then $D_\alpha(\sigma \vecr+\vecmu \| \sigma \vecr+\vecmu')\le \alpha\rho^2/2$.
-\label{def:DP-OTB:RDP-noise}
+Let $\calR$ be a distribution on $(\calX,\|\cdot\|)$ and $\vecr\sim\calR$. $\calR$ is said to be an \emph{$(\alpha,\RDPdist)$-RDP distribution} if (i) $\E[\vecr]=0$, (ii) $\E[\|\vecr\|^2]=\RDPdist^2$, and (iii) for all $\sigma, \rho>0$ and $\vecmu,\vecmu'\in\calX$ such that $\sigma\ge \|\vecmu-\vecmu'\|/\rho$, then $D_\alpha(\sigma \vecr+\vecmu \| \sigma \vecr+\vecmu')\le \alpha\rho^2/2$.
+\label{def:DP-OTB:RDP-dist}
 \end{definition}
 
 \begin{theorem}
-If $\calM:\Xi^T\to(\calX,\|\cdot\|)$ has senstivity $s$ and $\calR$ is a $(\alpha,\RDPdist)$-RDP distribution on $\calX$, then $\tilde\calM = \calM + \vecr$ is $(\alpha, \alpha\rho^2/2)$-RDP where $\vecr\sim \sigma\calR$ and $\sigma = \RDPdist \cdot s/\rho$.
+If $\calM:\Xi^T\to(\calX,\|\cdot\|)$ has senstivity $s$ and $\calR$ is a $(\alpha,\RDPdist)$-RDP distribution on $\calX$, then $\tilde\calM = \calM + \vecr$ is $(\alpha, \alpha\rho^2/2)$-RDP where $\vecr\sim \sigma\calR$ and $\sigma = s/\rho$.
 \label{thm:DP-OTB:RDP-mechanism}
 \end{theorem}
 
-Clearly, the Guassian distribution $\calN(0,\matI)$ is an $(\alpha,1)$-RDP distribution on the Euclidean space. 
-$(\alpha, \RDPdist)$-RDP distribution extends Gaussian mechanism to general Banach space, and $\RDPdist$ is the additional noise factor to achieve privacy depending on the distribution. Since the goal of this thesis does not focus on privacy mechanism design, we treat this as a general definition and does not provide mechanisms on non-Eucliean spaces. Notably, this definition decouples privacy mechanism from the subsequent convergence analysis.
+The Guassian distribution $\calN(0,\matI)$ is an $(\alpha,\sqrt{d})$-RDP distribution on the Euclidean space. 
+In general, $(\alpha, \RDPdist)$-RDP distribution extends Gaussian mechanism to Banach space beyond the Euclidean sapce, and $\RDPdist$ captures the additional noise factor to achieve privacy which depends on both the distribution and the geometry of $\calX$. Since the goal of this thesis does not focus on privacy mechanism design, we treat this as a general definition and does not provide mechanisms on non-Eucliean spaces. Notably, this definition decouples privacy mechanism from the subsequent convergence analysis.
 
 \paragraph{Composition and Post-Processing}
 The \emph{standard composition mechanism} states that the privacy budget of the composition of randomized algorithms is equal to the sum of privacy budget of all the sub-algorithms.
@@ -179,7 +179,7 @@ The following results formally state the privacy guarantee of the tree mechanism
 \label{thm:tree-mechanism:privacy}
 Let $\tilde\calS_k = \calS_k + \tree(k)$ and let $\tilde\calS=(\tilde\calS_1,\ldots,\tilde\calS_n)$ be their composition. Suppose $\calM_k(\vecx,\cdot)$ has sensitivity $s_k$ for all $\vecx\in\calX$ and $\calR$ is an $(\alpha,\RDPdist)$-RDP distribution. Then the composition $\tilde\calS$ is $(\alpha, \alpha\rho^2/2)$-RDP where
 \begin{equation}
-    \rho \le \RDPdist\sqrt{2\log_2(2n)} \cdot \max_{k\in[n]} \frac{\max_{i\le k} s_i}{\sigma_k}.
+    \rho \le \sqrt{2\log_2(2n)} \cdot \max_{k\in[n]} \frac{\max_{i\le k} s_i}{\sigma_k}.
     \label{eq:tree-mechanism:privacy}
 \end{equation}
 \end{restatable}
