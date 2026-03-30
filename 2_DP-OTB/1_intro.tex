@@ -173,13 +173,22 @@ At the core of our proposed conversion algorithms, it incorporates a variant of 
 
 Standard composition (Theorem \ref{thm:DP-OTB:composition}) yields sub-optimal privacy guarantee for the streaming sum problem: each summation $\calS_k$ requires $O(n)$ noise to be achieve privacy level $\rho/n$ in order to make the composition $\rho$-private. On the other hand, via the tree mechanism presented in Algorithm \ref{alg:DP-OTB:tree}, $\tilde\calS_k = \calS_k + \tree(k)$ only requires noise of order $\log(n)$ to achieve the same level of privacy, because $|\node(n)|\lesssim \log(n)$ (e.g., $\node(7)=\{4,6,7\}$).\footnote{The tree mechanism seems to require $O(n)$ memory space to store all random noises. However, in practice, it only requires $O(\log(n))$ by sampling the noises in a streaming order and discarding unnecessary noises. See Appendix \ref{app:prelim:tree-mechanism:implementation} for more detailed discussion. In tha main text, we choose the simplest presentation for better understanding.}
 
-The following result formally states the privacy guarantee of the tree mechanism. The proof can be found in Appendix \ref{app:prelim:tree-mechanism:privacy}.
+The following results formally state the privacy guarantee of the tree mechanism. The proofs can be found in Appendix \ref{app:prelim:tree-mechanism:privacy}.
 
-% TODO: update theormem statement
-\begin{theorem}
-\label{thm:DP-OTB:tree}
+\begin{restatable}{theorem}{ThmTreePrivacy}
+\label{thm:tree-mechanism:privacy}
 Let $\tilde\calS_k = \calS_k + \tree(k)$ and let $\tilde\calS=(\tilde\calS_1,\ldots,\tilde\calS_n)$ be their composition. Suppose $\calM_k(\vecx,\cdot)$ has sensitivity $s_k$ for all $\vecx\in\calX$ and $\calR$ is an $(\alpha,\RDPdist)$-RDP distribution. Then the composition $\tilde\calS$ is $(\alpha, \alpha\rho^2/2)$-RDP where
-\begin{equation*}
-    \rho \le \RDPdist\sqrt{2\log_2(n)} \cdot \max_{k\in[n]} \frac{\max_{i\le k} s_i}{\sigma_k}.
-\end{equation*}
-\end{theorem}
+\begin{equation}
+    \rho \le \RDPdist\sqrt{2\log_2(2n)} \cdot \max_{k\in[n]} \frac{\max_{i\le k} s_i}{\sigma_k}.
+    \label{eq:tree-mechanism:privacy}
+\end{equation}
+\end{restatable}
+
+\begin{restatable}{theorem}{ThmTreeNoise}
+\label{thm:tree-mechanism:noise}
+If $\E[\calR]=0$ and $\E[\|\calR\|^2]=1$, and $\|\cdot\|_\ast^2$ is $\lambda$-strongly convex with respect to $\|\cdot\|_\ast$, then
+\begin{equation}
+    \E[\|\tree(k)\|^2] \le \frac{2\log_2(2k)}{\lambda}\max_{i\le k} \sigma_i^2.
+    \label{eq:tree-mechanism:noise} 
+\end{equation}
+\end{restatable}

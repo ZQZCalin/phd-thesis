@@ -1,5 +1,62 @@
 % This chapters elaborates some discussions in the preliminary sections, and provides useful tools that will be commonly used in subsequent proofs and analyses.
 
+\section{Concentration Inequalities}
+\label{app:prelim:concentration}
+
+This section includes several useful concentration inequalities in probability theory.
+
+\subsection{Martingale Difference on Banach Space}
+
+\begin{restatable}{theorem}{LemMartingaleConcentration}
+\label{thm:concentration:martingale-difference}
+Let $(\calX,\|\cdot\|)$ be a Banach space with dual norm $\|\cdot\|_\ast$, and let $X_1,\ldots,X_T$ be a sequence of random vectors on $\calX$. If $\|\cdot\|_\ast^2$ is $\lambda$-strongly convex with respect to $\|\cdot\|_\ast$ itself, $\E[\|X_t\|]<\infty$, and $\E[X_{t+1}\mid X_1,\ldots,X_t]=0$ for all $t$, then
+\begin{align}
+    \E\left[ \left\| \sum_{t=1}^T X_t \right\|^2 \right]
+    &\le \frac{2}{\lambda}\sum_{t=1}^T\E[\|X_t\|^2].
+    \label{eq:concentration:martingale-difference}
+\end{align}
+\end{restatable}
+
+\begin{proof}
+We use the regret approach to prove this statement. Let $(\calX_\ast,\|\cdot\|_\ast)$ be the dual space of $\calX$ and $\langle\cdot,\cdot\rangle$ be the dual pairing. Consider an online learner with linear loss $\ell_t:\calX_\ast\to \RR$ such that $\ell_t(w)=\langle X_t, w\rangle$. Then for any $u$,
+\begin{align*}
+    - \langle X_{1:T}, u\rangle = \regret_T(u) - \sum_{t=1}^T \langle X_t, w_t\rangle.
+\end{align*}
+Since $w_t$ only depends on $X_{1:t-1}$ but \textit{not} on $X_t$, $w_t$ is constant given $X_{1:t-1}$. Therefore,
+\begin{align*}
+    \E[\langle X_t, w_t\rangle]
+    &= \E\Ex_{X_t}[\langle X_t, w_t\rangle | X_1,\ldots,X_t] \\
+    &= \E\left[\langle \Ex_{X_t}[X_t|X_1,\ldots,X_{t-1}], w_t\rangle \right] = 0,
+\end{align*}
+where the second equality follows from the assumption that $\E[X_t|X_1,\ldots,X_{t-1}]=0$. Hence,
+\begin{align*}
+    \E[\langle X_{1:T}, -u\rangle] = \E[\regret_T(u)].
+\end{align*}
+Recall the definition of the dual norm that $\|X_{1:T}\| = \sup_{\|w\|_\ast=1} \langle X_{1:T},w\rangle$. Therefore, if we define $u^\star=\|X_{1:T}\|_*\argmax_{\|u\|_\ast=1}\langle X_{1:T},-u\rangle$, then it holds that
+\begin{align*}
+    \langle X_{1:T},-u^\star\rangle = \|X_{1:T}\|^2 \quad\textit{and}\quad \|u^\star\|_\ast=\|X_{1:T}\|.
+\end{align*}
+Let the follow-the-regularized-leader (FTRL) algorithm be the online learner. \cite{orabona2019modern} proved that for any regularizer $\psi$ that is $\lambda$-strongly convex w.r.t. $\|\cdot\|_\ast$, FTRL achieves the following regret:
+\begin{align*}
+    \regret_T(u) \leq \frac{\psi(u)}{\eta} +\frac{\eta}{2\lambda} \sum_{t=1}^T\|X_t\|^2.
+\end{align*}
+Since we assume $\|\cdot\|_\ast^2$ is $\lambda$-strongly convex w.r.t. $\|\cdot\|_\ast$, choosing $\psi(w)=\|w\|_\ast^2$ yields
+\begin{align*}
+    \E[\|X_{1:T}\|^2] 
+    &= \E[\langle X_{1:T}, -u^\star\rangle] \\
+    &= \E[\regret_T(u^\star)]
+    \le \E\left[ \frac{\|X_{1:T}\|^2}{\eta} + \frac{\eta}{2\lambda} \sum_{t=1}^T \|X_t\|^2 \right].
+\end{align*}
+Equivalently, upon moving terms around we have:
+\begin{align*}
+    \E[\|X_{1:T}\|_\ast^2]
+    &\le \E\left[ \frac{\eta^2}{2\lambda (\eta-1)} \sum_{t=1}^T\|X_t\|_*^2 \right].
+    % \leq \E\left[\frac{2}{\lambda}\sum_{t=1}^T\|X_t\|_*^2\right].
+\end{align*}
+We conclude the proof with the identity $\inf_\eta \frac{\eta^2}{\eta-1}=4$ when $\eta=2$.
+\end{proof}
+
+
 \section{The Tree Privacy Mechanism}
 \label{app:prelim:tree-mechanism}
 
@@ -33,7 +90,7 @@ Altogether, we prove that $\calI_k=\node(k)$.
 Moreover, this also implies the buffer size is $|R_k| = |\node(k)| = O(\log(k))$.
 
 
-\subsection{Privacy Guarantee: Proof of Theorem \ref{thm:DP-OTB:tree}}
+\subsection{Privacy Guarantee}
 \label{app:prelim:tree-mechanism:privacy}
 
 Before we prove the main theorem, we first prove a more general composition of RDP mechanisms. For two datasets $\calZ_T,\calZ_T'\in\Xi^T$, we denote $\calZ_T\simeq_k \calZ_T'$ if $\calZ_T,\calZ_T'$ are neighbors and they differ at the $k$-th entry. We consider the following setup. Let $\calX_i$ be auxiliary domains which are Banach spaces. Let $\calM_1,\ldots,\calM_n$ be a sequence of randomized algorithms such that $\calM_1:\calZ_T\mapsto \vecx_1\in\calX_1$ and $\calM_i:(\vecx_1,\ldots,\vecx_{i-1},\calZ_T)\mapsto \vecx_i\in\calX_i$ iteratively. $\calM$ is the composition such that $\calM:\calZ_T\mapsto (\vecx_1,\ldots,\vecx_n)$.
@@ -64,9 +121,9 @@ For each $i\in[n]$, if $i\in\IN(t)$, then $P_i=Q_i$; if $i\in\OUT(t)$, since $\c
 \end{equation*}
 \end{proof}
 
-Now we are ready to prove the main theorem (Theorem \ref{thm:DP-OTB:tree}).
+Now we are ready to prove the main theorem.
 
-% \TreeMechanism*
+\ThmTreePrivacy*
 
 \begin{proof}
 The proof sketch is to reduce the streaming sum composition into the advanced composition setup in Lemma \ref{lem:app:tree-mechanism:RDP-composition}.
@@ -99,4 +156,17 @@ Hence, by Lemma \ref{lem:app:tree-mechanism:RDP-composition}, $\tilde\calS$ is $
     &\le \RDPdist \cdot \max_{t\in[T]} \sqrt{|\OUT(t)|} \max_{i\in\OUT(t)} \frac{\max_{j\in [a,i]}s_j}{\sigma_i}.
 \end{align*}
 Note that $\calA_i$ depends on data $\xi_t$ if and only if $\xi_t\in\calZ_{p_j}$ where $(j,j)$ is a leaf node of the node $\phi(i)$. Hence, $|\OUT(t)|\le \log_2(2n)$. This concludes the proof.
+\end{proof}
+
+\ThmTreeNoise*
+
+\begin{proof}
+Recall that $\tree(k)=\sum_{i\in \node(k)}\vecr_i$ where $\vecr_i\sim \sigma_i\calR$ independently, so by Theorem \ref{thm:concentration:martingale-difference},
+\begin{align*}
+    \E[\|\tree(k)\|^2]
+    &\le \frac{2}{\lambda}\sum_{i\in \node(k)} \E[\|\vecr_i\|^2] 
+    \le \frac{2}{\lambda} \sum_{i\in \node(k)} \sigma_i^2
+    \le \frac{2|\node(k)|}{\lambda} \max_{i\in\node(k)} \sigma_i^2.
+\end{align*}
+We conclude the proof by our previous observation that $|\node(k)|\le \log_2(2k)$.
 \end{proof}

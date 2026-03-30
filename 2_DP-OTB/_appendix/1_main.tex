@@ -24,59 +24,6 @@ Next, we move $\sum \weight_tf(x_t)$ to the right, giving:
 where the equality follows from (i) the telescopic sum of $\weight_{1:t-1}\nabla f(x_{t-1})+\weight_{1:t}\nabla f(x_t)$ and (ii) the definition of regret that $\regret_T(u)=\sum_{t=1}^T \langle g_t,w_t-u\rangle$.
 \end{proof}
 
-\begin{lemma}
-\label{lem:DP-OTB:martingale-bound-general-norm}
-Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex w.r.t. $\|\cdot\|$, and let $\{X_t\}$ be a sequence of random vectors such that (i) $\E[\|X_t\|_*]<\infty$ and (ii) $\E[X_{t+1}\mid X_{1:t}]=0$ for all $t$. Then,
-\begin{align*}
-    \E\left[ \left\| \sum_{t=1}^T X_t \right\|_*^2 \right]
-    &\leq \frac{2}{\lambda}\sum_{t=1}^T\E[\|X_t\|_*^2].
-\end{align*}
-% Consequently, by Jensen's inequality,
-% \begin{align*}
-%     \E\left[ \left\| \sum_{t=1}^T X_t \right\|_* \right]
-%     &\leq \sqrt{\frac{2}{\lambda}\sum_{t=1}^T\E[\|X_t\|_*^2]}.
-% \end{align*}
-\end{lemma}
-
-\begin{proof}
-We use the regret approach to prove this statement. For simplicity, denote $M_T=\sum_{t=1}^T X_t$. Consider an online learner which receives $\ell_t(x)=\langle X_t, x\rangle$ as $t$-th loss and updates $w_{t+1}$. Then by definition of regret, for any $u$,
-\begin{align*}
-    - \langle M_T, u\rangle \leq \regret_T(u) - \sum_{t=1}^T \langle X_t, w_t\rangle.
-\end{align*}
-Since $w_t$ only depends on $X_{1:t-1}$ but \textit{not} on $X_t$, $w_t$ is constant given $X_{1:t-1}$. Therefore,
-\begin{align*}
-    \E[\langle X_t, w_t\rangle]
-    &= \E_{X_{1:t-1}}\E_{X_t}[\langle X_t, w_t\rangle | X_{1:t-1}] \\
-    &= \E_{X_{1:t-1}} \left[\langle \E_{X_t}[X_t|X_{1:t-1}], w_t\rangle \right] = 0,
-\end{align*}
-where the second equality follows from the assumption that $\E[X_t|X_{1:t-1}]=0$. Therefore,
-\begin{align*}
-    \E[\langle M_T, -u\rangle] \leq \E[\regret_T(u)].
-\end{align*}
-Recall the definition of the dual norm that $\|M_T\|_* = \sup_{\|x\|=1} \langle M_T,x\rangle$. Therefore, if we define $u^*=\|M_T\|_*\argmax_{\|u\|=1}\langle M_T,-u\rangle$, then it holds that
-\begin{align*}
-    \langle M_T,-u^*\rangle = \|M_T\|_*^2 \quad\textit{and}\quad \|u^*\|=\|M_T\|_*.
-\end{align*}
-Let the follow-the-regularized-leader (FTRL) algorithm be the online learner. \cite{orabona2019modern} proved that for any regularizer $\psi$ that is $\lambda$-strongly convex w.r.t. $\|\cdot\|$,  FTRL achieves the following regret:
-\begin{align*}
-    \regret_T(u) \leq \frac{\psi(u)}{\eta} +\frac{\eta}{2\lambda} \sum_{t=1}^T\|X_t\|_*^2.
-\end{align*}
-Since we assume $\|\cdot\|^2$ is $\lambda$-strongly convex w.r.t. $\|\cdot\|$, we can define $\psi(x)=\|x\|^2$ and get:
-\begin{align*}
-    \E[\langle M_T, -u^*\rangle]
-    = \E[\|M_T\|_*^2] 
-    &\leq \E[\regret_T(u^*)] 
-    \leq \E\left[ \frac{\|M_T\|_*^2}{\eta} + \frac{\eta}{2\lambda} \sum_{t=1}^T \|X_t\|_*^2 \right].
-\end{align*}
-Equivalently, upon moving terms around we have:
-\begin{align*}
-    \E[\|M_T\|_*^2]
-    &\leq \E\left[ \frac{\eta^2}{2\lambda (\eta-1)} \sum_{t=1}^T\|X_t\|_*^2 \right] 
-    \leq \E\left[\frac{2}{\lambda}\sum_{t=1}^T\|X_t\|_*^2\right].
-\end{align*}
-The second inequality holds because $\inf_\eta \frac{\eta^2}{\eta-1}=4$ when $\eta=2$.
-\end{proof}
-
 In this paper, we will always set $\weight_t=t^k$ for some $k\geq 1$. The following proposition gives relevant bounds for $\weight_t-\weight_{t-1}$ and $\weight_t^2/\weight_{1:t}$.
 
 \begin{proposition}
@@ -101,25 +48,18 @@ For the second part, for any increasing function $f$, it holds that $\sum_{i=1}^
 Hence, $\weight_t^2/\weight_{1:t} \leq (k+1)t^{k-1}$.
 \end{proof}
 
-\begin{lemma}
-\label{lem:DP-OTB:variance-expectation-bound}
-Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex, $W$ is bounded by $D$, and $\ell$ is $G$-Lipschitz and $H$-smooth. If we set $\weight_t=t^k$, then
+\begin{lemma}[Lemma \ref{lem:DP-OTB:variance-expectation-bound}, detailed version]
+\label{lem:DP-OTB:variance-expectation-bound:detailed}
+Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex, $\calX$ is bounded by $D$, and $F$ is $G$-Lipschitz and $H$-smooth. If we set $\weight_t=t^k$, then
 \[
-% \|\delta_t\|_*\leq |\weight_t-\weight_{i-1}|G + (\weight_i^2/\weight_{1:i})H\|w_t-x_{t-1}\|.
 \|\delta_t\|_* \leq (k+1) (G+H\|w_t-x_{t-1}\|) t^{k-1}.
 \]
 If we further assume Assumption \ref{as:DP-OTB:sigma-G} and \ref{as:DP-OTB:sigma-H},
-% i.e., for all $x,y,z$, $\E[\|\nabla\ell(x,z)-\nabla f(x)\|_*^2]\leq \sigma_G^2$ and $\E[\|[\nabla\ell(x,z)-\nabla\ell(y,z)]-[\nabla f(x)-\nabla f(y)]\|_*^2]\leq \sigma_H^2\|x-y\|^2$, 
-% \begin{align*}
-%     & \E[\|\nabla\ell(x,z)-\nabla f(x)\|_*^2]\leq \sigma_G^2, \\
-%     & \E[\|[\nabla\ell(x,z)-\nabla\ell(y,z)]-[\nabla f(x)-\nabla f(y)]\|_*^2]\leq \sigma_H^2\|x-y\|^2,
-% \end{align*}
 then $\weight_t\nabla f(x_t)-g_t = \sum_{i=1}^tX_i$ such that:
 \begin{align*}
 (i)\ & X_i = [\weight_i\nabla f(x_i)-\weight_{i-1}\nabla f(x_{i-1})] - [\weight_i\nabla\ell(x_i,z_i)-\weight_{i-1}\nabla\ell(x_{i-1},z_i)], \\
 (ii)\ & \E[X_i|z_{1:i-1}]=0, \quad \text{and} \quad
 (iii)\ \E[\|X_i\|_*^2] 
-% \leq 2(\weight_i-\weight_{i-1})^2\sigma_G^2 + 2(\weight_i^2/\weight_{1:i})^2 D^2\sigma_H^2.
 \leq 2(k+1)^2(\sigma_G^2+D^2\sigma_H^2)i^{2k-2}.
 \end{align*}
 Consequently,
@@ -169,14 +109,7 @@ The last part of the theorem is a direct result from Lemma \ref{lem:DP-OTB:marti
 \end{align*}
 \end{proof}
 
-\begin{lemma}
-\label{lem:DP-OTB:privacy-expectation}
-Suppose $\E[R_t]=0$ and $\E[\|R_t\|_*^2]\leq \bar\sigma_t^2$, then
-\begin{align*}
-    \E[\|\gamma_t\|_*^2]
-    &\leq 2(\max_{i\leq t}\bar\sigma_i^2)\log_2(2t)/\lambda.
-\end{align*}
-\end{lemma}
+\LemDpOtbNoiseBound*
 
 \begin{proof}
 By construction, $\gamma_t=\sum_{i\in I_t}R_i$, and $R_i$'s are independent and mean-zero. Therefore, Lemma \ref{lem:DP-OTB:martingale-bound-general-norm} can be applied, which yields
@@ -188,37 +121,3 @@ By construction, $\gamma_t=\sum_{i\in I_t}R_i$, and $R_i$'s are independent and 
 \end{align*}
 The last inequality is from the fact that $|I_t|\leq \log_2(2t)$.
 \end{proof}
-
-% ========== old proof ==========
-
-% \begin{theorem}
-% \label{thm:regret-expectation}
-% Consider any online learner $\A$ that satisfies
-% \begin{align*}
-%     R_T(x^*)=O\left(D_2\sqrt{\sum_{t=1}^T \|g_t\|_2^2}\right),
-% \end{align*}
-% where $g_t\in\partial \ell_t(w_t)$ and $\ell_t$ is the $t$-th loss. If we set $\weight_t$ and $R_t$ according to Theorem \ref{thm:DP-OTB-general-norm}, then
-% \begin{align*}
-%     \frac{\E[R_T(x^*)]}{T^2} = O\left( \frac{D_2G_2}{\sqrt{T}} + D_2(G_2+D_2H_2) \left(\frac{1}{T} + \frac{\log T}{\epsilon T^{3/2}} \right)\right).
-% \end{align*}
-% \end{theorem}
-
-% \begin{proof}
-% Recall that in Algorithm \ref{alg:DP-OTB}, the $t$-th gradient is $g_t+\gamma_t$, and 
-% \begin{align*}
-%     \|g_t+\gamma_t\|_2^2 
-%     &\leq 3\|\weight_t\nabla f(x_t)\|_2^2 + 3\|\weight_t\nabla f(x_t)-g_t\|_2^2 + 3\|\gamma_t\|_2^2.
-% \end{align*}
-% Since $f$ is $G_2$-Lipschitz, $\|\weight_t\nabla f(x_t)\|_2^2 \leq t^2G_2^2$. In the proof of Lemma \ref{lem:variance-expectation-bound} and \ref{lem:privacy-expectation}, if we use the stronger version of Lemma \ref{lem:DP-OTB:martingale-bound-general-norm} for 2-norm and set $\weight_t, R_t$ accordingly, we get
-% \begin{align*}
-%     &\E[\|\weight_t\nabla f(x_t)-g_t\|_2^2] \leq 4(G_2+2D_2H_2)^2 t, \\
-%     &\E[\|\gamma_t\|_2^2] \leq 4(G_2+2D_2H_2)^2\log_2(2t)/\epsilon^2.
-% \end{align*}
-% In conclusion,
-% \begin{align*}
-%     \frac{\E[R_t(x^*)]}{T^2}
-%     &\leq O\left( \frac{D_2}{T^2} \sqrt{\sum_{t=1}^T G_2^2t^2 + (G_2+D_2H_2)^2\left(t + \frac{\log t}{\epsilon^2}\right)} \right) \\
-%     &= O\left( \frac{D_2G_2}{\sqrt{T}} + D_2(G_2+D_2H_2) \left(\frac{1}{T} + \frac{\log T}{\epsilon T^{3/2}} \right)\right).
-% \end{align*}
-% \end{proof}
-

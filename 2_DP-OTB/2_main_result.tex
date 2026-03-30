@@ -42,23 +42,35 @@ Following Theorem \ref{lem:DP-OTB:basic-lemma} and Fenchel-Young's inequality, A
     \label{eq:DP-OTB:basic-decomposition-2}
 \end{align}
 
-\eqref{eq:DP-OTB:basic-decomposition-2} decomposes the suboptimality gap $f(\vecx_T)-f(\vecx_\ast)$ into three components: (i) regret $\regret_T(\vecx_\ast)$, (ii) error associated with variance of $\vecg_t$, measured by $\|\weight_t\nabla f(\vecx_t)-\vecg_t\|_*$, and (iii) error from DP mechanism, measured by $\|\gamma_t\|_*$.
-To get a tight bound, we observe that $\weight_t\nabla f(\vecx_t)-\vecg_t$ and $\overline\vecr_t$ are sums of conditionally mean-zero random vectors (Lemma \ref{lem:DP-OTB:variance-expectation-bound} in Appendix \ref{app:DP-OTB:proof-A}). With a martingale bound in high dimension with general norm (Lemma \ref{lem:DP-OTB:martingale-bound-general-norm}), we can derive the following bounds. In particular, we show (Lemma \ref{lem:DP-OTB:variance-expectation-bound}) that if Assumption \ref{as:DP-OTB:sc-norm} - \ref{as:DP-OTB:sigma-H} hold and set $\weight_t=t^k$, then
-\begin{align}
-    \E[\|\weight_t\nabla f(\vecx_t)-\vecg_t\|_*^2] \leq 4(k+1)^2(\sigma_G^2+D^2\sigma_H^2) t^{2k-1}/\lambda, \label{eq:DP-OTB:variance-norm}.
-\end{align}
-We also show (Lemma \ref{lem:DP-OTB:privacy-expectation}) that the total noise of tree mechanism is bounded by
-\begin{align}
+\eqref{eq:DP-OTB:basic-decomposition-2} decomposes the suboptimality gap $f(\vecx_T)-f(\vecx_\ast)$ into three components: (i) regret $\regret_T(\vecx_\ast)$, (ii) error associated with variance of $\vecg_t$, measured by $\|\weight_t\nabla f(\vecx_t)-\vecg_t\|_*$, and (iii) noise from the tree mechanism, measured by $\|\overline\vecr_t\|_*$. While the first regret term depends on the OCO subroutine, the other two terms could be bounded as follows.
+
+To get a tight bound, we observe that $\weight_t\nabla f(\vecx_t)-\vecg_t$ and $\overline\vecr_t$ are sums of conditionally mean-zero random vectors. With a martingale bound in high dimension with general norm (formally stated as Lemma \ref{lem:DP-OTB:martingale-bound-general-norm}), we can derive the following bounds. 
+
+\begin{lemma}[DP-OTB Variance Bound]
+\label{lem:DP-OTB:variance-expectation-bound}
+If Assumptions \ref{as:DP-OTB:sc-norm}--\ref{as:DP-OTB:sigma-H} hold and $\weight_t = t^k$, then
+\begin{equation}
+    \E\left[\|\weight_t\nabla f(\vecx_t)-\vecg_t\|_\ast^2\right] \le 4(k+1)^2(\sigma_G^2+D^2\sigma_H^2)t^{2k-1}/\lambda.
+    \label{eq:DP-OTB:variance-norm}
+\end{equation}
+\end{lemma}
+
+\begin{restatable}[DP-OTB Privacy Noise Bound]{lemma}{LemDpOtbNoiseBound}
+\label{lem:DP-OTB:privacy-expectation}
+Suppose $\E[R_t]=0$ and $\E[\|R_t\|_*^2]\leq \bar\sigma_t^2$, then
+\begin{equation}
     \E[\|\overline\vecr_t\|_*^2] \leq 2(\max_{i\leq t}\bar \sigma_i^2)\log_2(2t)/\lambda. \label{eq:DP-OTB:privacy-norm}
-\end{align}
+\end{equation}
+\end{restatable}
+
 
 \paragraph{Privacy}
 
-The next step is to determine how much noise is sufficient to achieve privacy guarantee.
-Moreover, we can compose RDP mechanisms via the tree aggregation mechanism. Specifically, we set $\weight_t=t^k$ and define the variance $\sigma_t^2$ in Algorithm \ref{alg:DP-OTB:main} as follows:
+Suppose $F$ is $G$-Lipschitz, $H$-smooth, and the domain $\calX$ has bounded diameter $D$. Let $\weight_t=t^k$ and define the noise constant $\sigma_t$ in Algorithm \ref{alg:DP-OTB:main} as 
 \begin{align}
-    \sigma_t^2 
-    &= \frac{4(k+1)^2}{\rho^2}(G+H\max_{i\in[t]}\|w_i-x_{i-1}\|)^2\log_2(2T)t^{2k-2}, \label{eq:DP-OTB:RDP-noise}
+    \sigma_t
+    &= \frac{2(k+1)}{\rho}(G+H\max_{i\in[t]}\|w_i-x_{i-1}\|)\log_2(2T)t^{2k-2}, 
+    \label{eq:DP-OTB:RDP-noise}
 \end{align}
 % Since we assume domain $W$ is bounded by diameter $D$, $\|w_i-x_{i-1}\|\leq D$. 
 We assume $\|w_i-x_{i-1}\|\leq D$. 
