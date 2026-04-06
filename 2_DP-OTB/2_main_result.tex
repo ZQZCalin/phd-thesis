@@ -117,15 +117,18 @@ This bound is of $\tilde O(1/\sqrt{T}+\sqrt{d}/\rho T)$, which is equivalent to 
 \begin{proof}[Proof of Theorem \ref{thm:DP-OTB:general-norm}]
 From Eq. \eqref{eq:DP-OTB:basic-decomposition-2}, we have:
 \begin{align*}
-    & \E[f(x_T)-f(\vecx_\ast)] 
-    \leq \frac{1}{\weight_{1:T}} \E\left[ \regret_T(\vecx_\ast) + D\sum_{t=1}^T (\|\weight_t\nabla f(x_t)-g_t\|_* + \|\gamma_t\|_*) \right] \\
-    \intertext{Recall the bounds of $\E[\|\weight_t\nabla f(x_t)-g_t\|_*^2]$ and $\E[\|\gamma_t\|_*^2]$ in \eqref{eq:DP-OTB:variance-norm} and \eqref{eq:DP-OTB:gamma-bound}. By Jensen's inequality, $\E[\|X\|_*]\leq \sqrt{\E[\|X\|_*^2]}$. Moreover, since $\weight_t=t^k$ and $k\geq 1$, it holds that $\weight_{1:T} \geq T^{k+1}/k+1$, so:}
-    &\leq \frac{\E[\regret]}{\weight_{1:T}}  + \frac{D}{\weight_{1:T}}\sum_{t=1}^T \frac{2(k+1)(\sigma_G+D\sigma_H) t^{k-\frac{1}{2}}}{\sqrt{\lambda}} + \frac{\sqrt{8V}(k+1)(G+DH)\log_2(2T) t^{k-1}}{\sqrt{\lambda}\rho}\\
+    & \E[f(\vecx_T)-f(\vecx_\star)] 
+    \leq \frac{1}{\weight_{1:T}} \E\left[ \regret_T(\vecx_\star) + D\sum_{t=1}^T (\|\weight_t\nabla f(\vecx_t)-\vecg_t\|_\ast + \|\overline\vecr_t\|_\ast) \right] \\
+    \intertext{
+    Upon applying the variance bound in \eqref{eq:DP-OTB:variance-norm} on the second term and Theorem \ref{thm:tree-mechanism:noise} on the third term, together with Jensen's inequality $\E[\|X\|_*]\leq \sqrt{\E[\|X\|_*^2]}$, we have
+    % Recall the bounds of $\E[\|\weight_t\nabla f(x_t)-g_t\|_*^2]$ and $\E[\|\gamma_t\|_*^2]$ in \eqref{eq:DP-OTB:variance-norm} and \eqref{eq:DP-OTB:gamma-bound}. By Jensen's inequality, $\E[\|X\|_*]\leq \sqrt{\E[\|X\|_*^2]}$. Moreover, since $\weight_t=t^k$ and $k\geq 1$, it holds that $\weight_{1:T} \geq T^{k+1}/k+1$, so:
+    }
+    &\lesssim \frac{\E[\regret_T(\vecx_\star)]}{\weight_{1:T}} + \frac{D}{\weight_{1:T}}\sum_{t=1}^T \frac{(\sigma_G+D\sigma_H) t^{k-1/2}}{\sqrt{\lambda}} + \frac{\RDPdist(G+DH)\log(T) t^{k-1}}{\sqrt{\lambda}\rho}\\
     % &\quad \ + \sum_{t=1}^T \frac{\sqrt{8V}(k+1)D(G+DH)\log_2(2T) t^{k-1}}{\weight_{1:T}\sqrt{\lambda}\rho} \\ 
     % \intertext{Since we define $\weight_t=t^k$ and $k\geq 1$, it holds that $\weight_{1:T} \geq T^{k+1}/k+1$, so:}
     % &\leq \frac{(k+1)\E[\regret_T(\vecx_\ast)]}{T^{k+1}} + \frac{2(k+1)^2D(\sigma_G+D\sigma_H)}{\sqrt{\lambda T}} \\
     % &\quad \ + \frac{\sqrt{8V} (k+1)^2 D(G+DH)\log_2(2T)}{\sqrt{\lambda}\rho T} \\
-    &\leq \frac{(k+1)\E[\regret_T(\vecx_\ast)]}{T^{k+1}} + \frac{2(k+1)^2D}{\sqrt{\lambda}}\left(\frac{\sigma_G+D\sigma_H}{\sqrt{T}}+\frac{\sqrt{2V}(G+DH)\log_2(2T)}{\rho T}\right).
+    &\lesssim \frac{\E[\regret_T(\vecx_\ast)]}{T^{k+1}} + \frac{D}{\sqrt{\lambda}}\left(\frac{\sigma_G+D\sigma_H}{\sqrt{T}}+\frac{\RDPdist(G+DH)\log(T)}{\rho T}\right).
 \end{align*}
 For the second part of the theorem, 
 \begin{align*}

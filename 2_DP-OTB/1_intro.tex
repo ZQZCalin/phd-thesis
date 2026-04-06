@@ -186,9 +186,9 @@ Let $\tilde\calS_k = \calS_k + \tree(k)$ and let $\tilde\calS=(\tilde\calS_1,\ld
 
 \begin{restatable}{theorem}{ThmTreeNoise}
 \label{thm:tree-mechanism:noise}
-If $\E[\calR]=0$ and $\E[\|\calR\|^2]=1$, and $\|\cdot\|_\ast^2$ is $\lambda$-strongly convex with respect to $\|\cdot\|_\ast$, then
+If $\calR$ is an $(\alpha,\RDPdist)$-RDP distribution and $\|\cdot\|_\ast^2$ is $\lambda$-strongly convex with respect to $\|\cdot\|_\ast$, then
 \begin{equation}
-    \E[\|\tree(k)\|^2] \le \frac{2\log_2(2k)}{\lambda}\max_{i\le k} \sigma_i^2.
+    \E[\|\tree(k)\|^2] \le \frac{2\log_2(2k)}{\lambda} \RDPdist^2 \max_{i\le k} \sigma_i^2.
     \label{eq:tree-mechanism:noise} 
 \end{equation}
 \end{restatable}
