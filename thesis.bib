@@ -96,13 +96,12 @@
   journal = {Advances in Neural Information Processing Systems},
   year    = {2024}
 }
-@misc{ahn2024understanding,
+@inproceedings{ahn2024understanding,
   title         = {Understanding Adam Optimizer via Online Learning of Updates: Adam is FTRL in Disguise},
   author        = {Kwangjun Ahn and Zhiyu Zhang and Yunbum Kook and Yan Dai},
+  booktitle     = {International Conference on Machine Learning},
+  organization  = {PMLR},
   year          = {2024},
-  eprint        = {2402.01567},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.LG}
 }
 @article{aigner2023data,
   title     = {Data-driven distributionally robust optimization over time},
@@ -453,17 +452,17 @@
 @inproceedings{arora2018optimization,
   title        = {On the optimization of deep networks: Implicit acceleration by overparameterization},
   author       = {Arora, Sanjeev and Cohen, Nadav and Hazan, Elad},
-  booktitle    = {International Conference on Machine Learning},
+  booktitle    = {Proceedings of the 35th International Conference on Machine Learning},
   pages        = {244--253},
   year         = {2018},
   organization = {PMLR}
 }
-@misc{arora2023faster,
+@inproceedings{arora2023faster,
   title         = {Faster Rates of Convergence to Stationary Points in Differentially Private Optimization},
   author        = {Raman Arora and Raef Bassily and Tomás González and Cristóbal Guzmán and Michael Menart and Enayat Ullah},
   year          = {2023},
-  eprint        = {2206.00846},
-  archiveprefix = {arXiv}
+  booktitle     = {Proceedings of the 40th International Conference on Machine Learning},
+  organization  = {PMLR},
 }
 @article{he2019practical,
   title   = {The practical implementation of artificial intelligence technologies in medicine},
@@ -1527,7 +1526,7 @@
 @inproceedings{carmon2017convex,
   title        = {``Convex Until Proven Guilty'': Dimension-Free Acceleration of Gradient Descent on Non-Convex Functions},
   author       = {Carmon, Yair and Duchi, John C and Hinder, Oliver and Sidford, Aaron},
-  booktitle    = {International Conference on Machine Learning},
+  booktitle    = {Proceedings of the 34th International Conference on Machine Learning},
   pages        = {654--663},
   year         = {2017},
   organization = {PMLR}
@@ -1879,21 +1878,22 @@
   year         = {2022},
   organization = {IEEE}
 }
-@misc{chen2023faster,
-  title         = {Faster Gradient-Free Algorithms for Nonsmooth Nonconvex Stochastic Optimization},
-  author        = {Lesi Chen and Jing Xu and Luo Luo},
-  year          = {2023},
-  eprint        = {2301.06428},
-  archiveprefix = {arXiv},
-  primaryclass  = {math.OC}
+@InProceedings{chen2023faster,
+  title = 	  {Faster Gradient-Free Algorithms for Nonsmooth Nonconvex Stochastic Optimization},
+  author =    {Chen, Lesi and Xu, Jing and Luo, Luo},
+  booktitle = {Proceedings of the 40th International Conference on Machine Learning},
+  pages = 	  {5219--5233},
+  year = 	    {2023},
+  publisher = {PMLR},
 }
-@misc{chen2023symbolic,
-  title         = {Symbolic Discovery of Optimization Algorithms},
-  author        = {Xiangning Chen and Chen Liang and Da Huang and Esteban Real and Kaiyuan Wang and Yao Liu and Hieu Pham and Xuanyi Dong and Thang Luong and Cho-Jui Hsieh and Yifeng Lu and Quoc V. Le},
-  year          = {2023},
-  eprint        = {2302.06675},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.LG}
+@inproceedings{chen2023symbolic,
+  title={Symbolic Discovery of Optimization Algorithms},
+  author={Chen, Xiangning and Liang, Chen and Huang, Da and Real, Esteban and Wang, Kaiyuan and Liu, Yao and Pham, Hieu and Dong, Xuanyi and Luong, Thang and Hsieh, Cho-Jui and Lu, Yifeng and Le, Quoc V},
+  booktitle={Advances in Neural Information Processing Systems},
+  volume={36},
+  pages={31189--31221},
+  year={2023},
+  publisher={Curran Associates, Inc.}
 }
 @article{chen2024optimistic,
   title   = {Optimistic online mirror descent for bridging stochastic and adversarial online convex optimization},
@@ -2938,7 +2938,7 @@
 @article{dwork2014algorithmic,
   title   = {The algorithmic foundations of differential privacy.},
   author  = {Dwork, Cynthia and Roth, Aaron},
-  journal = {Found. Trends Theor. Comput. Sci.},
+  journal = {Foundations and Trends in Theoretical Computer Science},
   pages   = {211--407},
   year    = {2014}
 }
@@ -3087,13 +3087,14 @@
   pages     = {1192--1234},
   year      = {2019}
 }
-@misc{fang2021online,
-  title         = {Online mirror descent and dual averaging: keeping pace in the dynamic case},
-  author        = {Huang Fang and Nicholas J. A. Harvey and Victor S. Portella and Michael P. Friedlander},
-  year          = {2021},
-  eprint        = {2006.02585},
-  archiveprefix = {arXiv},
-  primaryclass  = {cs.LG}
+@InProceedings{fang2021online,
+  title     = {Online mirror descent and dual averaging: keeping pace in the dynamic case},
+  author    = {Fang, Huang and Harvey, Nick and Portella, Victor and Friedlander, Michael},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning},
+  pages     = {3008--3017},
+  year      = {2020},
+  volume    = {119},
+  publisher = {PMLR},
 }
 @inproceedings{faw22power,
   title     = {The Power of Adaptivity in SGD: Self-Tuning Step Sizes with Unbounded Gradients and Affine Variance},
@@ -3562,11 +3563,12 @@
   volume     = {13},
   number     = {1},
   issn       = {0025-5610},
+  howpublished  = {\url{https://doi.org/10.1007/BF01584320}},
   url        = {https://doi.org/10.1007/BF01584320},
   doi        = {10.1007/BF01584320},
-  journal    = {Math. Program.},
+  journal    = {Mathematical Programming},
   month      = {dec},
-  pages      = {14–22},
+  pages      = {14-–22},
   numpages   = {9}
 }
 @inproceedings{goldwasser11confidence,
@@ -4559,11 +4561,12 @@
   timestamp = {Mon, 16 Apr 2018 12:15:20 +0200},
   bibsource = {dblp computer science bibliography, https://dblp.org}
 }
-@article{joulani2020simpler,
+@inproceedings{joulani2020simpler,
   title   = {A Simpler Approach to Accelerated Stochastic Optimization: Iterative Averaging Meets Optimism},
   author  = {Joulani, Pooria and Raj, Anant and Gy{\"o}rgy, Andr{\'a}s and Szepesv{\'a}ri, Csaba},
   year    = {2020},
-  journal = {Internation Conference on Machine Learning}
+  journal = {Proceedings of the 37th International Conference on Machine Learning},
+  publisher = {PLMR},
 }
 @inproceedings{judge06qtb,
   author    = {J. Judge and A. Cahill and J. v. Genabith},
@@ -9524,9 +9527,10 @@
   volume  = {103},
   journal = {Learning and Individual Differences}
 }
-@misc{boyd2004convex,
+@book{boyd2004convex,
   title     = {Convex Optimization},
   author    = {Boyd, S. and Vandenberghe, L.},
   publisher = {Cambridge University Press},
-  year      = {2004}
+  year      = {2004},
+  isbn      = {0521833787},
 }
