@@ -42,8 +42,6 @@ Following Theorem \ref{lem:DP-OTB:basic-lemma} and Fenchel-Young's inequality, A
     \label{eq:DP-OTB:basic-decomposition-2}
 \end{align}
 
-\eqref{eq:DP-OTB:basic-decomposition-2} decomposes the suboptimality gap $f(\vecx_T)-f(\vecx_\ast)$ into three components: (i) regret $\regret_T(\vecx_\ast)$, (ii) error associated with variance of $\vecg_t$, measured by $\|\weight_t\nabla f(\vecx_t)-\vecg_t\|_*$, and (iii) noise from the tree mechanism, measured by $\|\overline\vecr_t\|_*$. The first regret term depends on the OCO subroutine and could not be simplified further; the third noise term follows the bound in Theorem \ref{thm:tree-mechanism:noise}; the second term can be bounded using a general martingale difference concentration bound (formally stated as Theorem \ref{thm:concentration:martingale-difference}).
-
 \begin{lemma}[DP-OTB Variance Bound]
 \label{lem:DP-OTB:variance-expectation-bound}
 If Assumptions \ref{as:DP-OTB:sc-norm}--\ref{as:DP-OTB:sigma-H} hold and $\weight_t = t^k$, then
@@ -53,30 +51,20 @@ If Assumptions \ref{as:DP-OTB:sc-norm}--\ref{as:DP-OTB:sigma-H} hold and $\weigh
 \end{equation}
 \end{lemma}
 
+As a remark, \eqref{eq:DP-OTB:basic-decomposition-2} decomposes the suboptimality gap $f(\vecx_T)-f(\vecx_\ast)$ into three components. The first term is the \emph{regret} of the online learner, $\regret_T(\vecx_\ast)$, which depends on the OCO subroutine and could not be simplified further. The second term captures the total \emph{bias error} of the biased sum of gradient difference estimator $\vecg_t$. Using a general martingale difference concentration inequality (formally stated as Theorem \ref{thm:concentration:martingale-difference}), we can show hat each error term is bounded by $\|\weight_t\nabla f(\vecx_t)-\vecg_t\|_*\approx t^{k-1/2}$. Lemma \ref{lem:DP-OTB:variance-expectation-bound} provides a more formal technical bound. Lastly, the third term captures the \emph{privacy noise} from the tree mechanism, and the previous result (Theorem \ref{thm:tree-mechanism:noise}) implies that $\|\overline\vecr_i\|_\ast \approx \RDPdist \cdot \sigma_t \approx \RDPdist \cdot t^{k-1}/\rho$, where $\sigma_t$'s are tunable noise levels in the tree mechanism whose optimal values are specified in Theorem \ref{thm:DP-OTB:main-privacy}. Overall, if we assume $\weight_t=1$ (i.e., $k=0$) and use the Gaussian mechanism with $\RDPdist=\sqrt{d}$, then \eqref{eq:DP-OTB:basic-decomposition-2} implies
+\begin{equation}
+\E[f(\vecx_T) - f(\vecx_\ast)] \approx \frac{1}{T}\E[\regret_T(\vecx_\ast)] + \frac{1}{\sqrt{T}} + \frac{\sqrt{d}}{\rho T}.
+\label{eq:DP-OTB:main:approx-bound}
+\end{equation}
+We will provide a more careful analysis in the following section. Notably, for any online learner with $O(\sqrt{T})$ regret, the DP-OTB framework automatically achieves the \emph{near-optimal} convergence rate $\tilde O(1/\sqrt{T} + \sqrt{d} / \rho T)$.
+
 
 \paragraph{Privacy}
-
-% TODO: uncomment if necessary
-% Suppose $F$ is $G$-Lipschitz, $H$-smooth, and the domain $\calX$ has bounded diameter $D$. Let $\weight_t=t^k$ and define the noise constant $\sigma_t$ in the {\tree} mechanism as 
-% \begin{align}
-%     \sigma_t
-%     &= \frac{2(k+1)}{\rho}(G+H\max_{i\in[t]}\|w_i-x_{i-1}\|)\log_2(2T)t^{2k-2}, 
-%     \label{eq:DP-OTB:RDP-noise}
-% \end{align}
-% We assume $\|w_i-x_{i-1}\|\leq D$. 
-% Upon substituting \eqref{eq:DP-OTB:RDP-noise} into \eqref{eq:DP-OTB:privacy-norm}, we get $\E[\|R_t\|_*^2] \leq \bar \sigma_t^2 \leq V\sigma_t^2$ and:
-% \begin{align}
-%     \E[\|\gamma_t\|_*^2]
-%     % &\leq \frac{2K\log_2(2t)}{\lambda}\left(\frac{2(k+1)(G+DH)t^{k-1}\log_2(2T)}{\rho}\right)^2. \\
-%     &\leq \frac{8(k+1)^2V(G+DH)^2}{\lambda\rho^2} \log_2^2(2T)t^{2k-2}.
-%     \label{eq:DP-OTB:gamma-bound}
-% \end{align}
-% The following theorem shows that Algorithm \ref{alg:DP-OTB:main} is R\'enyi differentially private if we define $\sigma_t^2$ as in \eqref{eq:DP-OTB:RDP-noise}. Its proof is presented in Appendix \ref{app:DP-OTB:tree-aggregation-RDP}. Note that the privacy guarantee does \emph{not} require i.i.d. $Z$.
 
 Upon using the {\tree} mechanism with carefully chosen noises, we can ensure that DP-OTB (Algorithm \ref{alg:DP-OTB:main}) is RDP. The proof is deferred to Appendix \ref{app:DP-OTB:tree-aggregation-RDP}.
 
 \begin{restatable}[DP-OTB Privacy]{theorem}{ThmDpOtbPrivacy}
-\label{thm:main-privacy}
+\label{thm:DP-OTB:main-privacy}
 Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex, $\calX$ is bounded by $D$, $F$ is $G$-Lipschitz and $H$-smooth, and $\calR$ is a $(\alpha,\RDPdist)$-RDP distribution. 
 Then Algorithm \ref{alg:DP-OTB:main} is $(\alpha,\alpha\rho^2/2)$-RDP if we define $\weight_t=t^k$ and $\sigma_t^2$ in {\tree} as 
 \begin{equation}
