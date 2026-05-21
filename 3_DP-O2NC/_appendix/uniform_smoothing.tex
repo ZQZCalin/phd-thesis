@@ -113,8 +113,9 @@ Consequently, we have
 \end{equation*}
 We finish the proof by induction. For $n=1$, $\frac{1!!}{0!!} = 1 \le \sqrt{2\cdot 1}$. For $n=2$, $\frac{2!!}{1!!}=2 \le \sqrt{2\cdot 2}$. Now assume $\frac{m!!}{(m-1)!!} \le \sqrt{2m}$ for all $m\le n$. Then
 \begin{align*}
-    \frac{(n+1)!!}{n!!} = \frac{n+1}{n} \frac{(n-1)!!}{(n-2)!!}
-    \le \frac{n+1}{n} \sqrt{2(n-1)} = \sqrt{2(n+1)}\frac{\sqrt{(n+1)(n-1)}}{n} \le \sqrt{2(n+1)}.
+    &\frac{(n+1)!!}{n!!} = \frac{n+1}{n} \frac{(n-1)!!}{(n-2)!!} \\
+    &\le \frac{n+1}{n} \sqrt{2(n-1)} = \sqrt{2(n+1)}\frac{\sqrt{(n+1)(n-1)}}{n} \\
+    &\le \sqrt{2(n+1)}.
 \end{align*}
 This concludes the proof by induction.
 \end{proof}
@@ -125,7 +126,8 @@ This concludes the proof by induction.
 % \SmoothReduction*
 
 \begin{proof}
-Recall that the $\delta$-subdifferential of $\hat F_\delta$ is defined as $\partial_\delta \hat F_\delta(\vecx) = \conv(\cup_{\vecy \in B(\vecx,\delta)} \nabla \hat F_\delta (\vecy))$. In other words, for each $\vecg\in \partial_\delta \hat F_\delta(\vecx)$, $\vecg$ is of form of $\vecg=\sum \lambda_i \nabla \hat F_\delta(\vecy_i)$ where $\lambda_i$’s are convex coefficients and $\vecy_i\in B(\vecx,\delta)$. \citep[Theorem 10]{lin2022gradient} has proved that $\nabla \hat F_\delta(\vecy_i) \in \partial_\delta F(\vecy_i)$. In addition, since $\|\vecy_i-\vecx\| \le \delta$, we have $\partial_\delta F(\vecy_i) \subset \partial_{2\delta} F(\vecx)$. Consequently, we have 
+Recall that the $\delta$-subdifferential of $\hat F_\delta$ is defined as \\
+$\partial_\delta \hat F_\delta(\vecx) = \conv(\cup_{\vecy \in B(\vecx,\delta)} \nabla \hat F_\delta (\vecy))$. In other words, for each $\vecg\in \partial_\delta \hat F_\delta(\vecx)$, $\vecg$ is of form of $\vecg=\sum \lambda_i \nabla \hat F_\delta(\vecy_i)$ where $\lambda_i$’s are convex coefficients and $\vecy_i\in B(\vecx,\delta)$. \citep[Theorem 10]{lin2022gradient} has proved that $\nabla \hat F_\delta(\vecy_i) \in \partial_\delta F(\vecy_i)$. In addition, since $\|\vecy_i-\vecx\| \le \delta$, we have $\partial_\delta F(\vecy_i) \subset \partial_{2\delta} F(\vecx)$. Consequently, we have 
 \begin{equation*}
     \nabla \hat F_\delta(\vecy_i) \in \partial_\delta F(\vecy_i) \subset \partial_{2\delta}F(\vecx)
 \end{equation*}

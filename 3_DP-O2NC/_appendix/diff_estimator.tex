@@ -4,7 +4,8 @@
 % \GradEstimator*
 
 \begin{proof}
-For simplicity, let $\vecg_{ij} = \frac{d}{2\delta}(f(\vecx+\delta\vecu_{ij},z_i)-f(\vecx-\delta\vecu_{ij},z_i))\vecu_{ij}$ so that $\grad_{f,\delta}(\vecx,z_{1:b}) = \frac{1}{b}\sum_{i=1}^b\frac{1}{d}\sum_{j=1}^d \vecg_{ij}$. Since $f$ is $L$-Lipschitz, it follows that $\|\vecg_{ij}\| \le dL$.
+For simplicity, let $\vecg_{ij} = \frac{d}{2\delta}(f(\vecx+\delta\vecu_{ij},z_i)-f(\vecx-\delta\vecu_{ij},z_i))\vecu_{ij}$ so that \\
+$\grad_{f,\delta}(\vecx,z_{1:b}) = \frac{1}{b}\sum_{i=1}^b\frac{1}{d}\sum_{j=1}^d \vecg_{ij}$. Since $f$ is $L$-Lipschitz, it follows that $\|\vecg_{ij}\| \le dL$.
 
 First, by $F(\vecx)=\E_z[f(\vecx,z)]$ and Lemma \ref{lem:DP-O2NC:uniform-smoothing} (iv),
 \begin{align*}
@@ -60,7 +61,8 @@ Finally, let $\vecg'_{ij},\overline\vecg'_i$ be defined in the same way as $\vec
 % \DiffEstimator*
 
 \begin{proof}
-Let $\vecd_{ij} = \tfrac{d}{\delta}(f(\vecx+\delta\vecu_{ij},z_i)-f(\vecy+\delta\vecu_{ij},z_i))\vecu_{ij}$. Then it follows that $\diff_{f,\delta}(\vecx,\vecy,z_{1:b}) = \frac{1}{b}\sum_{i=1}^b\frac{1}{d}\sum_{j=1}^d\vecd_{ij}$. Since $f$ is $L$-Lipschitz, it also holds that $\|\vecd_{ij}\| \le \frac{dL}{\delta}\|\vecx-\vecy\|$.
+Let $\vecd_{ij} = \tfrac{d}{\delta}(f(\vecx+\delta\vecu_{ij},z_i)-f(\vecy+\delta\vecu_{ij},z_i))\vecu_{ij}$. Then it follows that \\
+$\diff_{f,\delta}(\vecx,\vecy,z_{1:b}) = \frac{1}{b}\sum_{i=1}^b\frac{1}{d}\sum_{j=1}^d\vecd_{ij}$. Since $f$ is $L$-Lipschitz, it also holds that $\|\vecd_{ij}\| \le \frac{dL}{\delta}\|\vecx-\vecy\|$.
 
 First, by $F(\vecx)=\E_z[f(\vecx,z)]$ and Lemma \ref{lem:DP-O2NC:uniform-smoothing} (iv),
 \begin{align*}

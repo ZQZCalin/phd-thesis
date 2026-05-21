@@ -19,7 +19,8 @@ Note that $\nabla_\vecx D_\psi(\vecx,\vecy) = \nabla \psi(\vecx) - \nabla\psi(\v
 Let $\psi, \phi$ be convex, and define $\vecw_{t+1} = \argmin_\vecw \langle \tilde\vecg_t,\vecw\rangle + D_\psi(\vecw,\vecw_t) + \phi(\vecw)$. Then for any $\vecu$,
 \begin{align*}
     \langle \tilde\vecg_t, \vecw_t-\vecu\rangle 
-    &\le \langle \tilde\vecg_t, \vecw_t-\vecw_{t+1}\rangle + D_\psi(\vecu,\vecw_t) - D_\psi(\vecu,\vecw_{t+1}) - D_\psi(\vecw_{t+1},\vecw_t) + \phi(\vecu) - \phi(\vecw_{t+1}).
+    &\le \langle \tilde\vecg_t, \vecw_t-\vecw_{t+1}\rangle + D_\psi(\vecu,\vecw_t) \\
+    &- D_\psi(\vecu,\vecw_{t+1}) - D_\psi(\vecw_{t+1},\vecw_t) + \phi(\vecu) - \phi(\vecw_{t+1}).
 \end{align*}
 \end{lemma}
 
@@ -29,7 +30,8 @@ Let $f(\vecw) = \langle \tilde\vecg_t,\vecw\rangle + D_\psi(\vecw,\vecw_t) + \ph
     0 
     &\le \langle \nabla f(\vecw_{t+1}), \vecu-\vecw_{t+1}\rangle \\
     &= \langle \tilde\vecg_t + \nabla\psi(\vecw_{t+1}) - \nabla\psi(\vecw_t) + \nabla\phi(\vecw_{t+1}), \vecu-\vecw_{t+1}\rangle \\
-    &= \langle\tilde\vecg_t, \vecu-\vecw_t\rangle + \langle\tilde\vecg_t,\vecw_t-\vecw_{t+1}\rangle + \langle \nabla\psi(\vecw_{t+1})-\nabla\psi(\vecw_t),\vecu-\vecw_{t+1}\rangle + \langle\nabla \phi(\vecw_{t+1}),\vecu-\vecw_{t+1}\rangle.
+    &= \langle\tilde\vecg_t, \vecu-\vecw_t\rangle + \langle\tilde\vecg_t,\vecw_t-\vecw_{t+1}\rangle \\
+    &+ \langle \nabla\psi(\vecw_{t+1})-\nabla\psi(\vecw_t),\vecu-\vecw_{t+1}\rangle + \langle\nabla \phi(\vecw_{t+1}),\vecu-\vecw_{t+1}\rangle.
 \end{align*}
 Since $\phi$ is convex, $\langle \phi(\vecw_{t+1}),\vecu-\vecw_{t+1}\rangle \le \phi(\vecu)-\phi(\vecw_{t+1})$. Moreover, by the three-point identity with $\vecz=\vecu, \vecx=\vecw_{t+1}, \vecy=\vecw_t$, we have
 \begin{align*}
@@ -63,21 +65,21 @@ Denote $\psi_t(\vecw)=\frac{1}{2\eta_t}\|\vecw\|^2$. Since $\psi_t,\phi_t,\calR_
 \end{align*}
 Equivalently,
 \begin{align}
-    \langle \tilde\vecg_t, \vecw_t-\vecu\rangle + \calR_t(\vecw_t) - \calR_t(\vecu)
+    &\langle \tilde\vecg_t, \vecw_t-\vecu\rangle + \calR_t(\vecw_t) - \calR_t(\vecu) \notag\\
     &\le \langle \tilde\vecg_t,\vecw_t - \vecw_{t+1}\rangle + D_{\psi_t}(\vecu,\vecw_t) - D_{\psi_t}(\vecu,\vecw_{t+1}) - D_{\psi_t}(\vecw_{t+1},\vecw_t) \notag\\
     &\quad + \phi_t(\vecu) - \phi_t(\vecw_{t+1}) + \calR_t(\vecw_t) - \calR_{t+1}(\vecw_{t+1}) + \calR_{t+1}(\vecu) - \calR_t(\vecu).
     \label{eq:Exp-O2NC:ogd-vary-1}
 \end{align}
 By Young's inequality,
 \begin{align*}
-    \langle \tilde\vecg_t,\vecw_t - \vecw_{t+1}\rangle - D_{\psi_t}(\vecw_{t+1},\vecw_t) 
+    &\langle \tilde\vecg_t,\vecw_t - \vecw_{t+1}\rangle - D_{\psi_t}(\vecw_{t+1},\vecw_t) \\
     &\le \frac{\eta_t}{2}\|\tilde\vecg_t\|^2 + \frac{1}{2\eta_t}\|\vecw_{t+1}-\vecw_t\|^2 - \frac{1}{2\eta_t}\|\vecw_{t+1}-\vecw_t\|^2 
     = \frac{\eta_t}{2}\|\tilde\vecg_t\|^2.
     % \tag{a}
 \end{align*}
 Next, note that
 \begin{align*}
-    D_{\psi_t}(\vecu,\vecw_t) - D_{\psi_t}(\vecu,\vecw_{t+1}) 
+    &D_{\psi_t}(\vecu,\vecw_t) - D_{\psi_t}(\vecu,\vecw_{t+1}) \\
     &= D_{\psi_t}(\vecu,\vecw_t) - D_{\psi_{t+1}}(\vecu,\vecw_{t+1}) + D_{\psi_{t+1}}(\vecu,\vecw_{t+1}) - D_{\psi_t}(\vecu,\vecw_{t+1}).
     % &= D_{\psi_t}(\vecu,\vecw_t) - D_{\psi_{t+1}}(\vecu,\vecw_{t+1}) + \left(\frac{1}{2\eta_{t+1}} - \frac{1}{2\eta_t}\right)\|\vecu-\vecw_{t+1}\|^2.
     % \tag{b}
@@ -86,13 +88,13 @@ Since $\|\vecu-\vecw_{t+1}\|^2 \le 2\|\vecu\|^2 + 2\|\vecw_{t+1}\|^2$ and $\frac
 \begin{align*}
     &D_{\psi_{t+1}}(\vecu,\vecw_{t+1}) - D_{\psi_t}(\vecu,\vecw_{t+1}) + \phi_t(\vecu)-\phi_t(\vecw_{t+1}) \\
     % \left(\frac{1}{2\eta_{t+1}} - \frac{1}{2\eta_t}\right)\|\vecu-\vecw_{t+1}\|^2 + \phi_t(\vecu)-\phi_t(\vecw_{t+1}) 
-    &= \left(\frac{1}{2\eta_{t+1}}-\frac{1}{2\eta_t}\right)\|\vecu-\vecw_{t+1}\|^2 + \left(\frac{1}{\eta_{t+1}}-\frac{1}{\eta_t}\right)(\|\vecu\|^2-\|\vecw_{t+1}\|^2) 
-    \le \left(\frac{2}{\eta_{t+1}} - \frac{2}{\eta_t}\right)\|\vecu\|^2.
+    &= \left(\frac{1}{2\eta_{t+1}}-\frac{1}{2\eta_t}\right)\|\vecu-\vecw_{t+1}\|^2 + \left(\frac{1}{\eta_{t+1}}-\frac{1}{\eta_t}\right)(\|\vecu\|^2-\|\vecw_{t+1}\|^2) \\
+    &\le \left(\frac{2}{\eta_{t+1}} - \frac{2}{\eta_t}\right)\|\vecu\|^2.
     % \tag{c}
 \end{align*}
 Upon substituting back into \eqref{eq:Exp-O2NC:ogd-vary-1}, we have
 \begin{align*}
-    \langle \tilde\vecg_t, \vecw_t-\vecu\rangle + \calR_t(\vecw_t) - \calR_t(\vecu)
+    &\langle \tilde\vecg_t, \vecw_t-\vecu\rangle + \calR_t(\vecw_t) - \calR_t(\vecu) \\
     &\le \frac{\eta_t}{2}\|\tilde\vecg_t\|^2 + D_{\psi_t}(\vecu,\vecw_t) - D_{\psi_{t+1}}(\vecu,\vecw_{t+1}) + \left(\frac{2}{\eta_{t+1}} - \frac{2}{\eta_t}\right)\|\vecu\|^2 \\
     &\quad + \calR_t(\vecw_t) - \calR_{t+1}(\vecw_{t+1}) + \calR_{t+1}(\vecu) - \calR_t(\vecu).
 \end{align*}

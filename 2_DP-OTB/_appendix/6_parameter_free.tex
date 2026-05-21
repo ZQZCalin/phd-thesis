@@ -68,7 +68,7 @@ Hence, by Lemma \ref{lem:DP-OTB:normSG}, $X_i|X_{1:i-1}$ and $R_i|R_{1:i-1}$ are
 \begin{proof}
 We start with Eq. \eqref{eq:DP-OTB:parameter-free-base}:
 \begin{align}
-    \weight_{1:T}(f(x_T)-f(x^*))
+    &\weight_{1:T}(f(x_T)-f(x^*)) \\
     &\leq R_T(x^*) + \sum_{t=1}^T\langle \weight_t\nabla f(x_t)-g_t-\gamma_t,w_t-x^*\rangle \notag\\
     % \intertext{By Fenchel-Young's inequality and triangle inequality,}
     &\leq R_T(x^*) + \sum_{t=1}^T \left(\|\weight_t\nabla f(x_t)-g_t\|_2+\|\gamma_t\|_2\right) (\|w_t-x^*\|_2). \label{eq:DP-OTB:parameter-free-base}
@@ -256,7 +256,7 @@ By union bound, with probability at least $1-\delta/2$,
 
 In conclusion, we take the union bound on the results from \textbf{step 1.} and \textbf{step 2.} and substitute it back to the starting point \eqref{eq:DP-OTB:parameter-free-base}.  Then with probability at least $1-\delta$,
 \begin{align*}
-    \weight_{1:T}(f(x_T)-f(x^*))
+    &\weight_{1:T}(f(x_T)-f(x^*)) \\
     &\leq R_T(x^*) + \sum_{t=1}^T 28AH\Phi t^{5/2}(\|w_t\|_2^2+\|x^*\|_2^2)  \\
     & \quad \ + \sum_{t=1}^T \left(AG\Phi t^{5/2} + A'(G+DH)\frac{\Phi\log_2(2T)t^2}{\rho}\right)(\|w_t\|_2+\|x^*\|_2).
 \end{align*}

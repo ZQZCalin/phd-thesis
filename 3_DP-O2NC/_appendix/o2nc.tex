@@ -24,7 +24,7 @@ Note that $\langle \nabla F(\vecw_t^k), \Delta_t^k \rangle = \langle \nabla F(\v
 \end{equation*}
 Upon rearranging the inequality and applying $F(\vecx_{T+1}^K)-F(\vecx_1^1)\le F^*$, we have
 \begin{align*}
-    \sum_{k=1}^K D\E\left\|\sum_{t=1}^T\nabla F(\vecw_t^k)\right\|
+    &\sum_{k=1}^K D\E\left\|\sum_{t=1}^T\nabla F(\vecw_t^k)\right\| \\
     &\le F^* + \sum_{k=1}^K \E\regret_T(\vecu^k) + \E\sum_{k=1}^K\sum_{t=1}^T \langle \nabla F(\vecw_t^k)-\tilde\vecg_t^k, \Delta_t^k-\vecu_t^k \rangle.
 \end{align*}
 Finally, note that $\|\vecw_t^k-\overline w^k\| \le DT = \delta$, so $\|\nabla F(\overline w^k)\|_\delta \le \|\frac{1}{T}\sum_{t=1}^T \nabla F(\vecw_t^k)\|$ by definition of $\|\cdot\|_\delta$. Moreover, $\E\|\nabla F(\overline\vecw)\|_\delta = \E[\frac{1}{K}\sum_{i=1}^K\|\nabla F(\overline w^k)\|_\delta]$. Therefore, dividing both sides of the inequality by $DKT$ concludes the proof.

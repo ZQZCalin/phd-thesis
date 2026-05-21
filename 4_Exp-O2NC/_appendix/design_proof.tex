@@ -88,8 +88,8 @@ Upon substituting this back into \eqref{eq:Exp-O2NC:lam-sum-2b} and simplifying 
 \begin{align*}
     \lambda_{n,t}
     &= 4\left(\frac{1-\beta}{1-\beta^n}\right)^2 \cdot \left[
-    \left( \frac{\beta^{a+1} - \beta^{b+1}}{(1-\beta)^2} + \frac{a\beta^{a}-b\beta^{b}}{1-\beta} \right) \cdot \frac{1-\beta^a}{1-\beta}
-    - \frac{\beta^a-\beta^b}{1-\beta} \cdot \left(\frac{\beta-\beta^{a+1}}{(1-\beta)^2} - \frac{a\beta^a}{1-\beta}\right)
+    \left( \frac{\beta^{a+1} - \beta^{b+1}}{(1-\beta)^2} + \frac{a\beta^{a}-b\beta^{b}}{1-\beta} \right) \cdot \frac{1-\beta^a}{1-\beta} \right. \\
+    &\phantom{= 4\left(\frac{1-\beta}{1-\beta^n}\right)^2 \cdot }\ - \left. \frac{\beta^a-\beta^b}{1-\beta} \cdot \left(\frac{\beta-\beta^{a+1}}{(1-\beta)^2} - \frac{a\beta^a}{1-\beta}\right)
     \right] \\
     &= 4\frac{(a\beta^a-b\beta^b)(1-\beta^a) + a\beta^a(\beta^a-\beta^b)}{(1-\beta^n)^2} 
     % &= \frac{a\beta^a - b\beta^b + (b-a)\beta^{a+b}}{(1-\beta^n)^2} \\
@@ -137,8 +137,8 @@ For the second summation in \eqref{eq:Exp-O2NC:lam-sum-1}, for all $n\ge K \ge \
 (i) holds because $\frac{1}{1-\beta^n}$ is decreasing. (ii) holds because $f(x)=\frac{1}{1-x^{\frac{1}{1-x}}}$ is increasing for $x\ge 0$, so $f(\beta) \le \lim_{x\to 1}f(x)$ for all $\beta\in(0,1)$. Consequently, the second summation in \eqref{eq:Exp-O2NC:lam-sum-1} can be bounded by
 \begin{align}
     \sum_{n=\max\{t,K\}}^N \lambda_{n,t}
-    \le \sum_{n=\max\{t,K\}}^N 4\cdot \frac{(n-t+1)\beta^{n-t+1}}{1-\beta^n} 
-    \le 8\sum_{n=t}^N (n-t+1)\beta^{n-t+1} 
+    &\le \sum_{n=\max\{t,K\}}^N 4\cdot \frac{(n-t+1)\beta^{n-t+1}}{1-\beta^n} \\
+    &\le 8\sum_{n=t}^N (n-t+1)\beta^{n-t+1} 
     = 8\sum_{n=1}^{N-t} n\beta^n
     % \le \frac{8}{(1-\beta)^2}.
     \label{eq:Exp-O2NC:lam-sum-1b}
@@ -159,10 +159,10 @@ We then conclude the proof by substituting \eqref{eq:Exp-O2NC:lam-sum-1a}, \eqre
 \begin{proof}
 By Proposition \ref{prop:Exp-O2NC:variance-regularizer} and Proposition \ref{prop:Exp-O2NC:tech-lam-t:N}, we have
 \begin{align*}
-    \Ex_s\sum_{n=1}^N\Ex_{\vecy_n} \|\vecy_n-\overline\vecx_n\|^2 
-    \stackrel{(i)}{\le} \sum_{n=1}^N\sum_{t=1}^n \lambda_{n,t}\|\Delta_t\|^2 
-    \stackrel{(ii)}{=} \sum_{t=1}^N\left(\sum_{n=t}^N \lambda_{n,t}\right) \|\Delta_t\|^2 
-    \stackrel{(iii)}{\le} \sum_{t=1}^N \frac{12}{(1-\beta)^2} \|\Delta_t\|^2. 
+    &\Ex_s\sum_{n=1}^N\Ex_{\vecy_n} \|\vecy_n-\overline\vecx_n\|^2 \\
+    &\stackrel{(i)}{\le} \sum_{n=1}^N\sum_{t=1}^n \lambda_{n,t}\|\Delta_t\|^2 \\
+    &\stackrel{(ii)}{=} \sum_{t=1}^N\left(\sum_{n=t}^N \lambda_{n,t}\right) \|\Delta_t\|^2 \\
+    &\stackrel{(iii)}{\le} \sum_{t=1}^N \frac{12}{(1-\beta)^2} \|\Delta_t\|^2. 
 \end{align*}
 Here (i) is from Proposition \ref{prop:Exp-O2NC:variance-regularizer}, (ii) is from change of summation, and (iii) is from Proposition \ref{prop:Exp-O2NC:tech-lam-t:N}.
 \end{proof}
