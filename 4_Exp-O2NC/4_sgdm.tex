@@ -88,7 +88,7 @@ Remarkably, this update formula recovers the standard SGDM update, with the slig
 \paragraph{Smooth case}
 As discussed earlier, when $F$ is smooth, we set $c=O(\epsilon^{-1})$ to recover the optimal rate $N=O(\epsilon^{-4})$. This implies $c=O(N^{1/4})$. Consequently, we can check the parameters defined in Theorem \ref{thm:Exp-O2NC:sgdm} have order $\alpha = O(N^{-1/2})$, $\eta = O(N^{-1})$, and $\mu=O(N^{1/2})$ (note that $\eta\mu\approx \alpha$). Therefore, the effective momentum constant is roughly $\tilde\beta \approx 1-\frac{1}{\sqrt{N}}$, and the effective learning rate is roughly $\tilde\eta\approx \frac{1}{\sqrt{N}}$. Interestingly, these values align with prior works \cite{cutkosky2020momentum}.
 
-% \input{figure}
+\input{4_Exp-O2NC/figure.tex}
 
 \paragraph{Second-order smooth case}
 When $F$ is second-order smooth and we set $c=O(1)$, we can check that $\alpha = O(N^{-4/7})$, $\eta=O(N^{-1})$, and $\mu=O(N^{3/7})$ (again $\eta\mu\approx \alpha$). Consequently, the effective momentum should be set to $\tilde\beta \approx 1-\frac{1}{N^{4/7}}$ and the effective learning rate should be $\tilde\eta \approx \frac{1}{N^{3/7}}$. It is interesting to note that in both smooth and second-order smooth cases, $(1-\tilde\beta)\tilde\eta \approx \frac{1}{N}$.

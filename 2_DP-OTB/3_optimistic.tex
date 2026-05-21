@@ -3,18 +3,27 @@
 
 In this section, we show that choosing an optimistic online learner \citep{chiang2012online, rakhlin2013online, steinhardt2014adaptivity} will accelerate our DP online-to-batch algorithm. Optimistic algorithms  are provided with additional ``hints'' in the form of $\hat \ell_t(w)=\langle \hat g_t, w\rangle$ as an approximation of the true loss $\ell_t(w)=\langle g_t,w\rangle$, and they can incorporate $\hat \ell_t$ to decide $w_t$. The regret of an optimistic algorithm depends on the quality of hints: if $\hat{g}_t\approx g_t$, then it achieves a low regret.  Formally, in this paper, we say an online learning algorithm is \textit{optimistic w.r.t. norm $\|\cdot\|$} if its regret is the following:
 \begin{equation}
-    \regret_T(x^*) \leq O\left( D\sqrt{\sum_{t=1}^T \| \hat{g}_t - g_t\|_*^2 } \right), \label{eq:DP-OTB:optimistic-OL}
+    \regret_T(x^*) \leq O\left( D\sqrt{\sum_{t=1}^T \| \hat{g}_t - g_t\|_*^2 } \right), 
+    \label{eq:DP-OTB:optimistic-OL}
 \end{equation}
 where $D$ denotes the diameter of the learner's domain.
 
 A common choice of the hint $\hat{g}_t$ is $g_{t-1}$, the gradient in the last round since intuitively, one could expect $g_{t-1}\approx g_t$ when the loss functions are smooth. In this section, we also follow this choice. Recall that in Algorithm \ref{alg:DP-OTB:main}, the online learner receives $t$-th loss $\ell_t(w) = \langle g_t+\gamma_t, w\rangle$, where $g_t=\sum_{i=1}^t\delta_i$ is the sum of gradient differences, and $\gamma_t$ is some noise. Therefore, we define the $t$-th hint as $\hat{g}_t = g_{t-1}+\gamma_{t-1}$.
 
-
-\input{2_DP-OTB/_theorems/thm_optimistic_regret}
+\begin{restatable}{theorem}{ThmDpotbOptimistic}
+\label{thm:DP-OTB:optimistic}
+Suppose Assumption \ref{as:DP-OTB:sc-norm} - \ref{as:DP-OTB:smooth} hold, and $\calD$ is a $(\alpha,\RDPdist)$-RDP distribution. Set $\weight_t=t^k$ and $\sigma_t^2$ as defined in \eqref{eq:DP-OTB:RDP-noise},
+If the online learner is optimistic (satisfying \eqref{eq:DP-OTB:optimistic-OL}) with $t$-th gradient $\bar{g}_t=g_t+\gamma_t$ and $t$-th hint $\hat{g}_t=\bar{g}_{t-1}$, then
+\begin{align*}
+    \frac{\E[\regret_T(x^*)]}{\weight_{1:T}} 
+    \leq O\left( D(G+DH)\left(1+\frac{\sqrt{V}\log T}{\sqrt{\lambda}\rho}\right)\frac{1}{T^{3/2}} \right).
+\end{align*}
+\end{restatable}
 
 The proof is in Appendix \ref{app:DP-OTB:optimistic}.
 As an immediate corollary, if we further assume Assumption \ref{as:DP-OTB:sigma-G} and \ref{as:DP-OTB:sigma-H}, then Theorem \ref{thm:DP-OTB:general-norm} applies. Together with this theorem, they imply that optimistic learners achieve the following convergence rate that is adaptive to the variance:
-\begin{align*}
+\begin{equation}
     \E[f(x_T)-f(x^*)] = O\left( \frac{D(\sigma_G+D\sigma_H)}{\sqrt{T}} + \frac{\sqrt{d}D(G+DH)\log T}{\rho T} \right).
-\end{align*}
-Compared to the bound in the non-optimistic case (Remark \ref{rmk:DP-OTB:base-result}), this bound has $\sigma_G$ instead of $G$ in the first term. Thus, when the gradient $\nabla\ell(x_t,z_t)$ has low variance, i.e., $\sigma_G\ll G$, the optimistic bound outperforms the standard bound.
+    \label{eq:DP-OTB:optimistic:formal-bound}
+\end{equation}
+Compared to the bound in the non-optimistic case \eqref{eq:DP-OTB:main:formal-bound}, this bound has $\sigma_G$ instead of $G$ in the first term. Thus, when the gradient $\nabla\ell(x_t,z_t)$ has low variance, i.e., $\sigma_G\ll G$, the optimistic bound outperforms the standard bound.

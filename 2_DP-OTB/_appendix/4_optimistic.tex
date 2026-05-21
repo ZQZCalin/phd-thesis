@@ -1,23 +1,22 @@
 \section{Proofs for the Optimistic Case (Section \ref{sec:DP-OTB_optimistic})}
 \label{app:DP-OTB:optimistic}
 
-\input{2_DP-OTB/_theorems/thm_optimistic_regret}
+\ThmDpotbOptimistic*
 
 \begin{proof}
-Recall that $g_t=\sum_{i=1}^t \delta_i$, then
+Recall that $g_t=\sum_{i=1}^t \vecd_i$, then
 \begin{align*}
-    \|\Bar{g}_t - \hat{g}_t\|_*^2
-    &= \|\delta_t + \gamma_t - \gamma_{t-1}\|_*^2
-    \leq 3\|\delta_t\|_*^2 + 3\|\gamma_t\|_*^2 + 3\|\gamma_{t-1}\|_*^2.
+    \|\overline \vecg_t - \hat \vecg_t\|_*^2
+    &= \|\vecd_t + \overline\vecr_t - \overline\vecr_{t-1}\|_*^2
+    \leq 3\|\vecd_t\|_*^2 + 3\|\overline\vecr_t\|_*^2 + 3\|\overline\vecr_{t-1}\|_*^2.
 \end{align*}
 We showed (Lemma \ref{lem:DP-OTB:variance-expectation-bound}) that
 \begin{align*}
-    \|\delta_t\|_* 
-    % &\leq kt^{k-1}G+(k+1)t^{k-1}DH \\
+    \|\vecd_t\|_* 
     \leq (k+1)(G+H\|w_t-x_{t-1}\|)t^{k-1}
     \leq (k+1)(G+DH)t^{k-1}.
 \end{align*}
-Also recall the bound of $\E[\|\gamma_t\|_*^2]$ in \eqref{eq:DP-OTB:gamma-bound}, so:
+Also recall the bound of $\E[\|\overline\vecr_t\|_*^2]$ in \eqref{eq:DP-OTB:gamma-bound}, so:
 \begin{align*}
     \E[\|\bar{g}_t-\hat{g}_t\|_*^2]
     &\leq 3(k+1)^2(G+DH)^2t^{2k-2} + \frac{48(k+1)^2V(G+DH)^2}{\lambda\rho^2}\log_2^2(2T)t^{2k-2} \\

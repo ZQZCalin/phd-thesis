@@ -11,9 +11,33 @@ In general, the proof extends to any Banach space and any distribution $\calD$ t
 
 In previous analysis (Equation \eqref{eq:DP-OTB:basic-decomposition-2}), we roughly bound $\|w_t-x^*\|\leq D$. However, in this section, we come up with a finer high probability bound that maintains a dependence on $\|w_t\|, \|x^*\|$. We then replace the loss $\ell_t(w)$ in Algorithm \ref{alg:DP-OTB:main} with a regularized loss $\ell_t(w)+\xi_t\|w\|_2+\nu_t\|w\|_2^2$, and we show that the new algorithm with regularized loss can achieve a parameter-free bound. The complete proof is presented in Appendix \ref{app:DP-OTB:parameter-free}.
 
-\input{2_DP-OTB/_theorems/thm_parameter_free}
+\begin{restatable}{theorem}{ThmDpotbPFA}
+\label{thm:DP-OTB:parameter-free-2-norm-step-1}
+Suppose w.r.t. 2-norm, $W$ is bounded by $D$ and $\ell$ is $G$-Lipschitz and $H$-smooth. Suppose $\calD$ is $(\alpha,\RDPdist)$-RDP distribution and is $\sigma_\calD$-sub-Gaussian. If we set $\weight_t=t^3$ (i.e. $k=3$) and set $\sigma_t^2$ as defined in \eqref{eq:DP-OTB:RDP-noise}, then with probability at least $1-\delta$,
+\begin{align*}
+    f(x_T)-f(x^*) \leq \frac{4}{T^4}\left( \regret_T(x^*) + \sum_{t=1}^T \xi_t(\|w_t\|_2+\|x^*\|_2) + \nu_t(\|w_t\|_2^2+\|x^*\|_2^2) \right).
+\end{align*}
+where $C$ is a universal constant, $A=8\sqrt{2}C^2, A'=8\sqrt{d}\sigma_\calD C^2, \kappa=1+DH/G$, 
+% $\Phi=\sqrt{\log(16dT\log(2\kappa T)/\delta)}$, 
+and
+\begin{align*}
+    &\xi_t = AG\Phi t^{5/2} + A'(G+DH)\frac{\Phi\log_2(2T)t^2}{\rho} , \\
+    &\nu_t = 28AH\Phi t^{5/2}, \\
+    &\Phi = \sqrt{\log\frac{20dT\log(2\kappa T)}{\delta}}.
+\end{align*}
+\end{restatable}
 
-\input{2_DP-OTB/_theorems/thm_parameter_free_2}
+\begin{restatable}{theorem}{ThmDpotbPFB}
+\label{thm:DP-OTB:parameter-free-main}
+Following the assumptions and notations in Theorem \ref{thm:DP-OTB:parameter-free-2-norm-step-1}, if we replace $\ell_t(w)$ in Algorithm \ref{alg:DP-OTB:main} with regularized loss $\bar \ell_t(w) = \ell_t(w) + \xi_t\|w\|_2 + \nu_t\|w\|_2^2$ and denote the associated regret as $\overline \regret_t$, then with probability at least $1-\delta$, $f(x_T)-f(x_\ast)$ is bounded by:
+\begin{align*}
+    \frac{4\overline \regret_T(x^*)}{T^4} + \frac{8A\|x^*\|(G+28\|x^*\|H)\Phi}{\sqrt{T}} + \frac{8A'\|x^*\|(G+DH)\Phi\log_2(2T)}{\rho T}.
+\end{align*}
+Moreover, with probability at least $1-\delta$, for all $t$ and for all $w\in W, \bar g_t \in \partial \bar \ell_t(w)$,
+\begin{align*}
+    \|\bar g_t\|_2 \leq Gt^3 + A(2G+57DH)\Phi t^{5/2} + 2A'(G+DH)\frac{\Phi\log_2(2T)t^2}{\rho}.
+\end{align*}
+\end{restatable}
 
 \begin{remark}
 If $\|\bar g_t\|_2 \leq \hat G$ for all $t$, parameter-free algorithms achieve regret bound $\regret_T(u) = \tilde O(\|u\|_2\hat G\sqrt{T})$. Therefore, with $\calD=\calN(0,I)$, $\calD$ is $1$-sub-Gaussian and $A'=O(\sqrt{d})$, so Theorem \ref{thm:DP-OTB:parameter-free-main} implies that with probability $1-\delta$,

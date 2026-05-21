@@ -1,7 +1,7 @@
 \section{Proofs for Convergence (Section \ref{sec:DP-OTB_OTB})}
 \label{app:DP-OTB:proof-A}
 
-\input{2_DP-OTB/_theorems/lem_anytime_regret}
+\LemAnytimeOTB*
 
 \begin{proof}
 Since $f$ is convex,
@@ -51,9 +51,9 @@ Hence, $\weight_t^2/\weight_{1:t} \leq (k+1)t^{k-1}$.
 \begin{lemma}[Lemma \ref{lem:DP-OTB:variance-expectation-bound}, detailed version]
 \label{lem:DP-OTB:variance-expectation-bound:detailed}
 Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex, $\calX$ is bounded by $D$, and $F$ is $G$-Lipschitz and $H$-smooth. If we set $\weight_t=t^k$, then
-\[
-\|\delta_t\|_* \leq (k+1) (G+H\|w_t-x_{t-1}\|) t^{k-1}.
-\]
+\begin{equation}
+    \|\vecd_t\|_* \leq (k+1) (G+H\|w_t-x_{t-1}\|) t^{k-1}.
+\end{equation}
 If we further assume Assumption \ref{as:DP-OTB:sigma-G} and \ref{as:DP-OTB:sigma-H},
 then $\weight_t\nabla f(x_t)-g_t = \sum_{i=1}^tX_i$ such that:
 \begin{align*}
@@ -63,15 +63,15 @@ then $\weight_t\nabla f(x_t)-g_t = \sum_{i=1}^tX_i$ such that:
 \leq 2(k+1)^2(\sigma_G^2+D^2\sigma_H^2)i^{2k-2}.
 \end{align*}
 Consequently,
-\[
-\E[\|\weight_t\nabla f(x_t)-g_t\|_*^2] \leq 4(k+1)^2(\sigma_G^2+D^2\sigma_H^2)t^{2k-1}/\lambda.
-\]
+\begin{equation}
+    \E[\|\weight_t\nabla f(x_t)-g_t\|_*^2] \leq 4(k+1)^2(\sigma_G^2+D^2\sigma_H^2)t^{2k-1}/\lambda.
+\end{equation}
 \end{lemma}
 
 \begin{proof}
 For the first part, note that
 \begin{align*}
-    \delta_t &= \weight_t\nabla\ell(x_t,z_t)-\weight_{t-1}\nabla\ell(x_{t-1},z_t) \\
+    \vecd_t &= \weight_t\nabla\ell(x_t,z_t)-\weight_{t-1}\nabla\ell(x_{t-1},z_t) \\
     &= (\weight_{t}-\weight_{t-1}) \nabla\ell(x_{t-1},z_t) + \weight_t(\nabla\ell(x_t,z_t)-\nabla\ell(x_{t-1},z_t)).
 \end{align*}
 Since $\ell$ is $G$-Lipschitz and $H$-smooth, $\|\nabla\ell(x_{t-1},z_t)\|_*\leq G$ and
@@ -81,7 +81,7 @@ Since $\ell$ is $G$-Lipschitz and $H$-smooth, $\|\nabla\ell(x_{t-1},z_t)\|_*\leq
 \end{align*}
 where the second inequality follows from the definition of $x_t$ that $\weight_{1:t}(x_t-x_{t-1})=\weight_t(w_t-x_{t-1})$. The first result then follows from Proposition \ref{prop:DP-OTB:alphas}.
 
-For the second part, by telescopic sum $\weight_t\nabla f(x_t) = \sum_{i=1}^t \weight_i\nabla f(x_i) - \weight_{i-1}\nabla f(x_{i-1})$, and recall that $g_t=\sum_{i=1}^t \delta_i$. Therefore,
+For the second part, by telescopic sum $\weight_t\nabla f(x_t) = \sum_{i=1}^t \weight_i\nabla f(x_i) - \weight_{i-1}\nabla f(x_{i-1})$, and recall that $g_t=\sum_{i=1}^t \vecd_i$. Therefore,
 \begin{align*}
     \weight_t\nabla f(x_t)-g_t 
     &= \sum_{i=1}^t [\weight_i\nabla f(x_i) - \weight_{i-1}\nabla f(x_{i-1})] - [\weight_i\nabla\ell(x_i,z_i)-\weight_{i-1}\nabla\ell(x_{i-1},z_i)].
