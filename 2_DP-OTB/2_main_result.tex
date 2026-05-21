@@ -68,7 +68,7 @@ Upon using the {\tree} mechanism with carefully chosen noises, we can ensure tha
 Suppose $\|\cdot\|^2$ is $\lambda$-strongly convex, $\calX$ is bounded by $D$, $F$ is $G$-Lipschitz and $H$-smooth, and $\calR$ is a $(\alpha,\RDPdist)$-RDP distribution. 
 Then Algorithm \ref{alg:DP-OTB:main} is $(\alpha,\alpha\rho^2/2)$-RDP if we define $\weight_t=t^k$ and $\sigma_t^2$ in {\tree} as 
 \begin{equation}
-    \sigma_t = 2(k+1)\RDPdist(G+DH)\sqrt{\log_2(2T)}t^{2k-2} / \rho, 
+    \sigma_t = 2(k+1)(G+DH)\sqrt{\log_2(2T)}t^{k-1} / \rho, 
     \label{eq:DP-OTB:RDP-noise}
 \end{equation}
 \end{restatable}
@@ -122,9 +122,14 @@ For the second part of the theorem,
 \begin{align*}
     &\E[\|g_t+\gamma_t\|_*^2]
     \leq 3\E[\|\weight_t\nabla f(x_t)\|_*^2 + \|g_t-\weight_t\nabla f(x_t)\|_*^2 + \|\gamma_t\|_*^2] \\
-    \intertext{We bound the first term by Lipschitzness, the second by \eqref{eq:DP-OTB:variance-norm}, and the third by \eqref{eq:DP-OTB:gamma-bound}}
     &\leq 3t^{2k}G^2 + \frac{12(k+1)^2(\sigma_G^2+D^2\sigma_H^2)t^{2k-1}}{\lambda}
     + \frac{24V(k+1)^2(G+DH)^2\log_2^2(2T)t^{2k-2}}{\lambda \rho^2} \\
     &= 3t^{2k}\left(G^2 + \frac{4(k+1)^2}{\lambda}\left(\frac{(\sigma_G+D\sigma_H)^2}{t}+\frac{2V(G+DH)^2\log_2^2(2T)}{\rho^2t^2}\right) \right).
 \end{align*}
+In the second line, the first term is bounded by Lipschitzness, the second term follows from \eqref{eq:DP-OTB:variance-norm}, and the third is bounded by the combination of \eqref{thm:tree-mechanism:noise} and \eqref{eq:DP-OTB:RDP-noise}, namely
+\begin{equation}
+    \E[\|\overline\vecr_t\|_\ast^2] \le \frac{8(k+1)^2(G+DH)^2\RDPdist^2\log_2(2T)t^{2k-2}}{\lambda\rho^2}.
+    \label{eq:DP-OTB:main:total-tree-noise}
+\end{equation}
+We then conclude the proof by putting everything together.
 \end{proof}
